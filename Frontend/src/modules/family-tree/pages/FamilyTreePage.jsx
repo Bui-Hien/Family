@@ -34,66 +34,87 @@ const FamilyTreePage = () => {
       if (posChange) {
         const draggedNode = nds.find((n) => n.id === posChange.id);
         if (draggedNode && posChange.position.y !== undefined) {
-          let deltaY = posChange.position.y - draggedNode.position.y;
+          const deltaY = posChange.position.y - draggedNode.position.y;
           
           if (deltaY !== 0) {
             const draggedGeneration = draggedNode.data?.member?.generation;
             
             if (draggedGeneration !== undefined) {
-              // Find coordinates of previous and next generation layers
-              const prevGenNodes = nds.filter((n) => n.data?.member?.generation === draggedGeneration - 1);
-              const prevGenY = prevGenNodes.length > 0 ? prevGenNodes[0].position.y : null;
+              // 1. Gather all unique generations and their current Y coordinates
+              const allGenerations = Array.from(
+                new Set(nds.map((n) => n.data?.member?.generation).filter((g) => g !== undefined))
+              ).sort((a, b) => a - b);
               
-              const nextGenNodes = nds.filter((n) => n.data?.member?.generation === draggedGeneration + 1);
-              const nextGenY = nextGenNodes.length > 0 ? nextGenNodes[0].position.y : null;
+              const currentYPerGen = {};
+              allGenerations.forEach((g) => {
+                const genNodes = nds.filter((n) => n.data?.member?.generation === g);
+                if (genNodes.length > 0) {
+                  currentYPerGen[g] = genNodes[0].position.y;
+                }
+              });
               
-              const minYGap = 160; // Minimum vertical gap between generations to avoid card overlap
-              let targetNewY = draggedNode.position.y + deltaY;
+              // 2. Set the initial target position for the dragged generation
+              const newYPerGen = { ...currentYPerGen };
+              newYPerGen[draggedGeneration] = currentYPerGen[draggedGeneration] + deltaY;
               
-              // Upper boundary check (cannot overlap with parents/previous generation)
-              if (prevGenY !== null && targetNewY < prevGenY + minYGap) {
-                targetNewY = prevGenY + minYGap;
-                deltaY = targetNewY - draggedNode.position.y;
+              const minYGap = 160; // Minimum vertical gap between generations
+              
+              // 3. Push previous generations upwards sequentially
+              for (let i = draggedGeneration - 1; i >= allGenerations[0]; i--) {
+                if (currentYPerGen[i] === undefined) continue;
+                const maxAllowedY = newYPerGen[i + 1] - minYGap;
+                if (newYPerGen[i] > maxAllowedY) {
+                  newYPerGen[i] = maxAllowedY;
+                }
               }
               
-              // Lower boundary check (cannot overlap with children/next generation)
-              if (nextGenY !== null && targetNewY > nextGenY - minYGap) {
-                targetNewY = nextGenY - minYGap;
-                deltaY = targetNewY - draggedNode.position.y;
+              // 4. Push next generations downwards sequentially
+              const maxGen = allGenerations[allGenerations.length - 1];
+              for (let i = draggedGeneration + 1; i <= maxGen; i++) {
+                if (currentYPerGen[i] === undefined) continue;
+                const minAllowedY = newYPerGen[i - 1] + minYGap;
+                if (newYPerGen[i] < minAllowedY) {
+                  newYPerGen[i] = minAllowedY;
+                }
               }
               
-              // If deltaY is clamped to 0, ignore the position change
-              if (deltaY === 0) {
-                return nds;
-              }
-              
-              // Apply vertical shift to all nodes in the same generation
+              // 5. Generate position adjustments for all other nodes based on their generation's new Y
               const rowChanges = nds
-                .filter((n) => n.id !== draggedNode.id && n.data?.member?.generation === draggedGeneration)
-                .map((n) => ({
-                  id: n.id,
-                  type: 'position',
-                  position: {
-                    x: n.position.x, // Keep horizontal position
-                    y: n.position.y + deltaY, // Shift vertically with the dragged node
-                  },
-                }));
+                .filter((n) => n.id !== draggedNode.id)
+                .map((n) => {
+                  const gen = n.data?.member?.generation;
+                  if (gen !== undefined && newYPerGen[gen] !== undefined) {
+                    const nodeDeltaY = newYPerGen[gen] - n.position.y;
+                    if (nodeDeltaY !== 0) {
+                      return {
+                        id: n.id,
+                        type: 'position',
+                        position: {
+                          x: n.position.x, // Keep horizontal position
+                          y: newYPerGen[gen], // Update to new Y position (pushed)
+                        },
+                      };
+                    }
+                  }
+                  return null;
+                })
+                .filter(Boolean);
               
-              // Clamp the dragged node change position to the allowed boundary
+              // Apply the calculated new Y to the currently dragged node
               const updatedChanges = changes.map((c) => {
                 if (c.id === posChange.id && c.type === 'position' && c.position) {
                   return {
                     ...c,
                     position: {
                       x: c.position.x,
-                      y: draggedNode.position.y + deltaY,
+                      y: newYPerGen[draggedGeneration],
                     },
                   };
                 }
                 return c;
               });
               
-              // Merge original changes and row synchronized changes
+              // Merge changes
               const allChanges = [...updatedChanges];
               rowChanges.forEach((rowChange) => {
                 if (!allChanges.some((c) => c.id === rowChange.id)) {
