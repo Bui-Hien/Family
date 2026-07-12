@@ -37,8 +37,9 @@ public class AuditLogServiceImpl implements AuditLogService {
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public <T> void logChanges(List<T> oldEntities, List<T> newEntities) {
-        UUID userId = SecurityUtils.getCurrentUserId()
-                .orElseThrow(() -> new SecurityException("User not logged in"));
+//        UUID userId = SecurityUtils.getCurrentUserId()
+//                .orElseThrow(() -> new SecurityException("User not logged in"));
+        UUID userId = UUID.fromString("019f37d7-5988-7183-a6d9-5c0b61f1b189");
 
         List<AuditLog> logsToSave = new ArrayList<>();
 
@@ -65,8 +66,10 @@ public class AuditLogServiceImpl implements AuditLogService {
 
     @Override
     public <T> void logChange(T oldEntity, T newEntity) {
-        UUID userId = SecurityUtils.getCurrentUserId()
-                .orElseThrow(() -> new SecurityException("User not logged in"));
+        UUID userId = UUID.fromString("019f37d7-5988-7183-a6d9-5c0b61f1b189");
+//
+//        UUID userId = SecurityUtils.getCurrentUserId()
+//                .orElseThrow(() -> new SecurityException("User not logged in"));
 
         Diff diff = javers.compare(oldEntity, newEntity);
 
