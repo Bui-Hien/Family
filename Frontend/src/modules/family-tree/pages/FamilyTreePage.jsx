@@ -34,13 +34,40 @@ const FamilyTreePage = () => {
       if (posChange) {
         const draggedNode = nds.find((n) => n.id === posChange.id);
         if (draggedNode && posChange.position.y !== undefined) {
-          const deltaY = posChange.position.y - draggedNode.position.y;
+          let deltaY = posChange.position.y - draggedNode.position.y;
           
           if (deltaY !== 0) {
             const draggedGeneration = draggedNode.data?.member?.generation;
             
-            // Only group by generation to shift the row vertically, avoiding collision with other rows
             if (draggedGeneration !== undefined) {
+              // Find coordinates of previous and next generation layers
+              const prevGenNodes = nds.filter((n) => n.data?.member?.generation === draggedGeneration - 1);
+              const prevGenY = prevGenNodes.length > 0 ? prevGenNodes[0].position.y : null;
+              
+              const nextGenNodes = nds.filter((n) => n.data?.member?.generation === draggedGeneration + 1);
+              const nextGenY = nextGenNodes.length > 0 ? nextGenNodes[0].position.y : null;
+              
+              const minYGap = 160; // Minimum vertical gap between generations to avoid card overlap
+              let targetNewY = draggedNode.position.y + deltaY;
+              
+              // Upper boundary check (cannot overlap with parents/previous generation)
+              if (prevGenY !== null && targetNewY < prevGenY + minYGap) {
+                targetNewY = prevGenY + minYGap;
+                deltaY = targetNewY - draggedNode.position.y;
+              }
+              
+              // Lower boundary check (cannot overlap with children/next generation)
+              if (nextGenY !== null && targetNewY > nextGenY - minYGap) {
+                targetNewY = nextGenY - minYGap;
+                deltaY = targetNewY - draggedNode.position.y;
+              }
+              
+              // If deltaY is clamped to 0, ignore the position change
+              if (deltaY === 0) {
+                return nds;
+              }
+              
+              // Apply vertical shift to all nodes in the same generation
               const rowChanges = nds
                 .filter((n) => n.id !== draggedNode.id && n.data?.member?.generation === draggedGeneration)
                 .map((n) => ({
@@ -52,8 +79,22 @@ const FamilyTreePage = () => {
                   },
                 }));
               
+              // Clamp the dragged node change position to the allowed boundary
+              const updatedChanges = changes.map((c) => {
+                if (c.id === posChange.id && c.type === 'position' && c.position) {
+                  return {
+                    ...c,
+                    position: {
+                      x: c.position.x,
+                      y: draggedNode.position.y + deltaY,
+                    },
+                  };
+                }
+                return c;
+              });
+              
               // Merge original changes and row synchronized changes
-              const allChanges = [...changes];
+              const allChanges = [...updatedChanges];
               rowChanges.forEach((rowChange) => {
                 if (!allChanges.some((c) => c.id === rowChange.id)) {
                   allChanges.push(rowChange);
