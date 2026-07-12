@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 import com.family.modules.profile.entity.Profile;
 import com.family.modules.user.entity.User;
+import org.javers.core.metamodel.annotation.DiffIgnore;
 
 @Getter
 @Setter
@@ -21,6 +22,7 @@ public class Transaction extends BaseEntity {
     @Column(name = "fund_id", nullable = false)
     private UUID fundId;
 
+    @DiffIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fund_id", nullable = false, insertable = false, updatable = false)
     private Fund fund;
@@ -28,6 +30,7 @@ public class Transaction extends BaseEntity {
     @Column(name = "profile_id")
     private UUID profileId;
 
+    @DiffIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "profile_id", insertable = false, updatable = false)
     private Profile profile;
@@ -50,6 +53,7 @@ public class Transaction extends BaseEntity {
     @Column(name = "approved_by")
     private UUID approvedBy;
 
+    @DiffIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "approved_by", insertable = false, updatable = false)
     private User approvedByUser;

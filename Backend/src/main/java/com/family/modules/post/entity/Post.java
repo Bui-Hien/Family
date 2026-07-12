@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import java.util.UUID;
 import com.family.modules.user.entity.User;
+import org.javers.core.metamodel.annotation.DiffIgnore;
 
 @Getter
 @Setter
@@ -44,6 +45,7 @@ public class Post extends BaseEntity {
     @Column(name = "author_id")
     private UUID authorId;
 
+    @DiffIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author_id", insertable = false, updatable = false)
     private User author;

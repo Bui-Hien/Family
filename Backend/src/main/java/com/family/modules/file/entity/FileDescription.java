@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import java.util.UUID;
 import com.family.modules.user.entity.User;
+import org.javers.core.metamodel.annotation.DiffIgnore;
 
 @Getter
 @Setter
@@ -43,6 +44,7 @@ public class FileDescription extends BaseEntity {
     @Column(name = "uploaded_by")
     private UUID uploadedBy;
 
+    @DiffIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "uploaded_by", insertable = false, updatable = false)
     private User uploader;

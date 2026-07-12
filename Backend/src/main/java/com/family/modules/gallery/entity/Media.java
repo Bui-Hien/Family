@@ -8,6 +8,8 @@ import lombok.Setter;
 
 import java.util.UUID;
 
+import org.javers.core.metamodel.annotation.DiffIgnore;
+
 @Getter
 @Setter
 @Entity
@@ -17,6 +19,7 @@ public class Media extends BaseEntity {
     @Column(name = "gallery_id", nullable = false)
     private UUID galleryId;
 
+    @DiffIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "gallery_id", nullable = false, insertable = false, updatable = false)
     private Gallery gallery;

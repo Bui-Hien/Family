@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.util.Map;
 import java.util.UUID;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.javers.core.metamodel.annotation.DiffIgnore;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 import com.family.modules.user.entity.User;
@@ -55,6 +56,7 @@ public class Profile extends BaseEntity {
     private UUID fatherId;
 
     @JsonIgnore
+    @DiffIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "father_id", insertable = false, updatable = false)
     private Profile father;
@@ -63,6 +65,7 @@ public class Profile extends BaseEntity {
     private UUID motherId;
 
     @JsonIgnore
+    @DiffIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "mother_id", insertable = false, updatable = false)
     private Profile mother;
@@ -71,6 +74,7 @@ public class Profile extends BaseEntity {
     private UUID parentId;
 
     @JsonIgnore
+    @DiffIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id", insertable = false, updatable = false)
     private Profile parent;
@@ -79,6 +83,7 @@ public class Profile extends BaseEntity {
     private UUID spouseId;
 
     @JsonIgnore
+    @DiffIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "spouse_id", insertable = false, updatable = false)
     private Profile spouse;
@@ -87,6 +92,7 @@ public class Profile extends BaseEntity {
     private UUID userId;
 
     @JsonIgnore
+    @DiffIgnore
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", insertable = false, updatable = false)
     private User user;

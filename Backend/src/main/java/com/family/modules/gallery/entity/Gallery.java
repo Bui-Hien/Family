@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import java.util.UUID;
 import com.family.modules.event.entity.Event;
+import org.javers.core.metamodel.annotation.DiffIgnore;
 
 @Getter
 @Setter
@@ -31,6 +32,7 @@ public class Gallery extends BaseEntity {
     @Column(name = "event_id")
     private UUID eventId;
 
+    @DiffIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "event_id", insertable = false, updatable = false)
     private Event event;
