@@ -20,6 +20,7 @@ import { useFormik, FormikProvider } from 'formik';
 import * as Yup from 'yup';
 import { usePostStore } from '@/modules/posts/store/usePostStore';
 import CommonEditor from '@/common/components/form/CommonEditor.jsx';
+import CommonSelectInput from '@/common/components/form/CommonSelectInput';
 import { PostCategory, PostStatus } from '@/common/constants';
 
 const validationSchema = Yup.object({
@@ -77,34 +78,28 @@ const PostForm = () => {
 
               <Grid container spacing={2}>
                 <Grid item xs={12} sm={6}>
-                  <FormControl fullWidth size="small">
-                    <InputLabel id="category-select-label">Danh mục bài viết</InputLabel>
-                    <Select
-                      labelId="category-select-label"
-                      name="category"
-                      label="Danh mục bài viết"
-                      value={formik.values.category}
-                      onChange={formik.handleChange}
-                    >
-                      <MenuItem value="TIN_TUC">Tin tức chung dòng họ</MenuItem>
-                      <MenuItem value="HOAT_DONG">Hoạt động / Sự kiện đã diễn ra</MenuItem>
-                    </Select>
-                  </FormControl>
+                  <CommonSelectInput
+                    name="category"
+                    label="Danh mục bài viết"
+                    required
+                    noNullOption
+                    options={[
+                      { value: 'TIN_TUC', name: 'Tin tức chung dòng họ' },
+                      { value: 'HOAT_DONG', name: 'Hoạt động / Sự kiện đã diễn ra' }
+                    ]}
+                  />
                 </Grid>
                 <Grid item xs={12} sm={6}>
-                  <FormControl fullWidth size="small">
-                    <InputLabel id="status-select-label">Trạng thái xuất bản</InputLabel>
-                    <Select
-                      labelId="status-select-label"
-                      name="status"
-                      label="Trạng thái xuất bản"
-                      value={formik.values.status}
-                      onChange={formik.handleChange}
-                    >
-                      <MenuItem value="PUBLISHED">Công khai (Xuất bản ngay)</MenuItem>
-                      <MenuItem value="DRAFT">Nháp (Lưu trữ tạm)</MenuItem>
-                    </Select>
-                  </FormControl>
+                  <CommonSelectInput
+                    name="status"
+                    label="Trạng thái xuất bản"
+                    required
+                    noNullOption
+                    options={[
+                      { value: 'PUBLISHED', name: 'Công khai (Xuất bản ngay)' },
+                      { value: 'DRAFT', name: 'Nháp (Lưu trữ tạm)' }
+                    ]}
+                  />
                 </Grid>
               </Grid>
 

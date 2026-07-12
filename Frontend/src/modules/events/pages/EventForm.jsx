@@ -20,6 +20,7 @@ import { useFormik, FormikProvider } from 'formik';
 import * as Yup from 'yup';
 import { useEventStore } from '@/modules/events/store/useEventStore';
 import CommonDateTimePicker from '@/common/components/form/CommonDateTimePicker';
+import CommonSelectInput from '@/common/components/form/CommonSelectInput';
 import { EventStatus } from '@/common/constants';
 
 const validationSchema = Yup.object({
@@ -85,19 +86,16 @@ const EventForm = () => {
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
-                  <FormControl fullWidth size="small" sx={{ mt: 0.5 }}>
-                    <InputLabel id="status-select-label">Trạng thái sự kiện</InputLabel>
-                    <Select
-                      labelId="status-select-label"
-                      name="status"
-                      label="Trạng thái sự kiện"
-                      value={formik.values.status}
-                      onChange={formik.handleChange}
-                    >
-                      <MenuItem value="ACTIVE">Hoạt động (Sắp diễn ra)</MenuItem>
-                      <MenuItem value="INACTIVE">Hủy bỏ / Tạm hoãn</MenuItem>
-                    </Select>
-                  </FormControl>
+                  <CommonSelectInput
+                    name="status"
+                    label="Trạng thái sự kiện"
+                    required
+                    noNullOption
+                    options={[
+                      { value: 'ACTIVE', name: 'Hoạt động (Sắp diễn ra)' },
+                      { value: 'INACTIVE', name: 'Hủy bỏ / Tạm hoãn' }
+                    ]}
+                  />
                 </Grid>
               </Grid>
 
