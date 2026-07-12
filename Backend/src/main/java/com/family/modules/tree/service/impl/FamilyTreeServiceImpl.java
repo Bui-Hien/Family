@@ -184,6 +184,34 @@ public class FamilyTreeServiceImpl implements FamilyTreeService {
             if (spouseProfile != null) {
                 node.setSpouse(convertToDto(spouseProfile, profileMap));
             }
+        } else {
+            // Tự động suy luận quan hệ vợ/chồng từ cha/mẹ của các con (Inferred Spouse)
+            List<Profile> children = childrenMap.get(profile.getId());
+            if (children != null && !children.isEmpty()) {
+                UUID impliedSpouseId = null;
+                if ("M".equals(profile.getGender()) || "MALE".equalsIgnoreCase(profile.getGender())) {
+                    // Nếu main member là Nam, tìm motherId của các con
+                    impliedSpouseId = children.stream()
+                            .map(Profile::getMotherId)
+                            .filter(Objects::nonNull)
+                            .findFirst()
+                            .orElse(null);
+                } else {
+                    // Nếu main member là Nữ, tìm fatherId của các con
+                    impliedSpouseId = children.stream()
+                            .map(Profile::getFatherId)
+                            .filter(Objects::nonNull)
+                            .findFirst()
+                            .orElse(null);
+                }
+                
+                if (impliedSpouseId != null) {
+                    Profile spouseProfile = profileMap.get(impliedSpouseId);
+                    if (spouseProfile != null) {
+                        node.setSpouse(convertToDto(spouseProfile, profileMap));
+                    }
+                }
+            }
         }
 
         List<Profile> children = childrenMap.get(profile.getId());
