@@ -1,7 +1,22 @@
 import React from 'react';
-import { Grid } from '@mui/material';
-import { useFormik } from 'formik';
+import { 
+  Grid, 
+  Table, 
+  TableBody, 
+  TableCell, 
+  TableContainer, 
+  TableHead, 
+  TableRow, 
+  Paper, 
+  Button, 
+  IconButton, 
+  Box,
+  TextField,
+  Typography
+} from '@mui/material';
+import { useFormik, FieldArray } from 'formik';
 import * as Yup from 'yup';
+import { Add as AddIcon, Delete as DeleteIcon } from '@mui/icons-material';
 import { useMemberStore } from '@/modules/members/store/useMemberStore';
 import CommonPopupForm from '@/common/components/popup/CommonPopupForm';
 import CommonTextField from '@/common/components/form/CommonTextField';
@@ -13,20 +28,49 @@ const validationSchema = Yup.object({
   fullName: Yup.string().required('Họ và tên không được để trống'),
   gender: Yup.string().required('Giới tính không được để trống'),
   generation: Yup.number().typeError('Thế hệ phải là số').required('Thế hệ không được để trống'),
-  additionalInfo: Yup.string().test(
-    'is-json',
-    'Thông tin bổ sung phải là định dạng JSON hợp lệ (ví dụ: {"key": "value"})',
-    (value) => {
-      if (!value) return true;
-      try {
-        JSON.parse(value);
-        return true;
-      } catch (e) {
-        return false;
-      }
-    }
+  additionalInfo: Yup.array().of(
+    Yup.object().shape({
+      key: Yup.string().test(
+        'key-required',
+        'Tên thuộc tính không được để trống',
+        function (value) {
+          const { value: val } = this.parent;
+          if (val && !value) return false;
+          return true;
+        }
+      ),
+      value: Yup.string().test(
+        'value-required',
+        'Giá trị không được để trống',
+        function (value) {
+          const { key } = this.parent;
+          if (key && !value) return false;
+          return true;
+        }
+      ),
+    })
   ),
 });
+
+const getInitialAdditionalInfo = (info) => {
+  if (!info) return [{ key: '', value: '' }];
+  if (typeof info === 'object') {
+    const entries = Object.entries(info);
+    if (entries.length === 0) return [{ key: '', value: '' }];
+    return entries.map(([key, value]) => ({ key, value: typeof value === 'object' ? JSON.stringify(value) : String(value) }));
+  }
+  try {
+    const obj = JSON.parse(info);
+    if (obj && typeof obj === 'object') {
+      const entries = Object.entries(obj);
+      if (entries.length === 0) return [{ key: '', value: '' }];
+      return entries.map(([key, value]) => ({ key, value: typeof value === 'object' ? JSON.stringify(value) : String(value) }));
+    }
+  } catch (e) {
+    // Ignore parse error
+  }
+  return [{ key: '', value: '' }];
+};
 
 const MemberForm = () => {
   const {
@@ -50,13 +94,25 @@ const MemberForm = () => {
       fatherId: selectedRow?.fatherId || '',
       motherId: selectedRow?.motherId || '',
       spouseId: selectedRow?.spouseId || '',
-      additionalInfo: selectedRow?.additionalInfo || '',
+      additionalInfo: getInitialAdditionalInfo(selectedRow?.additionalInfo),
     },
     enableReinitialize: true,
     validationSchema,
     onSubmit: async (values, { setSubmitting }) => {
       try {
-        await saveMember(values);
+        const infoObj = {};
+        if (values.additionalInfo && Array.isArray(values.additionalInfo)) {
+          values.additionalInfo.forEach(item => {
+            if (item.key && item.key.trim()) {
+              infoObj[item.key.trim()] = item.value || '';
+            }
+          });
+        }
+        const submitValues = {
+          ...values,
+          additionalInfo: Object.keys(infoObj).length > 0 ? JSON.stringify(infoObj) : null
+        };
+        await saveMember(submitValues);
       } catch (error) {
         console.error(error);
       } finally {
@@ -141,13 +197,84 @@ const MemberForm = () => {
           <CommonTextField name="achievements" label="Thành tích / Đóng góp nổi bật" isTextArea rows={2} />
         </Grid>
         <Grid item xs={12}>
-          <CommonTextField
-            name="additionalInfo"
-            label="Thông tin bổ sung đặc biệt (định dạng JSON)"
-            isTextArea
-            rows={4}
-            placeholder='Ví dụ: { "Học vị": "Tiến sĩ", "Nơi sống": "Hà Nội" }'
-          />
+          <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 'bold' }}>
+            Thông tin bổ sung đặc biệt
+          </Typography>
+          <FieldArray name="additionalInfo">
+            {({ push, remove }) => (
+              <TableContainer component={Paper} variant="outlined">
+                <Table size="small">
+                  <TableHead>
+                    <TableRow sx={{ bgcolor: 'action.hover' }}>
+                      <TableCell sx={{ fontWeight: 'bold', width: '40%' }}>Tên thuộc tính (Key)</TableCell>
+                      <TableCell sx={{ fontWeight: 'bold', width: '50%' }}>Giá trị (Value)</TableCell>
+                      <TableCell align="center" sx={{ fontWeight: 'bold', width: '10%' }}>Thao tác</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {(formik.values.additionalInfo || []).map((item, index) => {
+                      const keyName = `additionalInfo[${index}].key`;
+                      const valueName = `additionalInfo[${index}].value`;
+                      const isKeyTouched = formik.touched.additionalInfo?.[index]?.key;
+                      const keyError = formik.errors.additionalInfo?.[index]?.key;
+                      const isValTouched = formik.touched.additionalInfo?.[index]?.value;
+                      const valError = formik.errors.additionalInfo?.[index]?.value;
+
+                      return (
+                        <TableRow key={index}>
+                          <TableCell sx={{ verticalAlign: 'top', pt: 1, pb: 1 }}>
+                            <TextField
+                              size="small"
+                              fullWidth
+                              name={keyName}
+                              value={item.key}
+                              onChange={formik.handleChange}
+                              onBlur={formik.handleBlur}
+                              placeholder="Ví dụ: Học vị"
+                              error={Boolean(isKeyTouched && keyError)}
+                              helperText={isKeyTouched && keyError ? keyError : ''}
+                            />
+                          </TableCell>
+                          <TableCell sx={{ verticalAlign: 'top', pt: 1, pb: 1 }}>
+                            <TextField
+                              size="small"
+                              fullWidth
+                              name={valueName}
+                              value={item.value}
+                              onChange={formik.handleChange}
+                              onBlur={formik.handleBlur}
+                              placeholder="Ví dụ: Tiến sĩ"
+                              error={Boolean(isValTouched && valError)}
+                              helperText={isValTouched && valError ? valError : ''}
+                            />
+                          </TableCell>
+                          <TableCell align="center" sx={{ verticalAlign: 'top', pt: 1 }}>
+                            <IconButton
+                              color="error"
+                              onClick={() => remove(index)}
+                              disabled={formik.values.additionalInfo.length === 1 && !item.key && !item.value}
+                              size="small"
+                            >
+                              <DeleteIcon fontSize="small" />
+                            </IconButton>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+                <Box sx={{ p: 1, display: 'flex', justifyContent: 'flex-start' }}>
+                  <Button
+                    size="small"
+                    startIcon={<AddIcon />}
+                    onClick={() => push({ key: '', value: '' })}
+                  >
+                    Thêm dòng
+                  </Button>
+                </Box>
+              </TableContainer>
+            )}
+          </FieldArray>
         </Grid>
       </Grid>
     </CommonPopupForm>
