@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.family.modules.profile.entity.Profile;
 
 @Getter
@@ -44,6 +45,7 @@ public class User extends BaseEntity {
     @Column(name = "profile_id")
     private UUID profileId;
 
+    @JsonIgnore
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "profile_id", insertable = false, updatable = false)
     private Profile profile;

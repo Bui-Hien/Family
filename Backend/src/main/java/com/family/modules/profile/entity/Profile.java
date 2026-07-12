@@ -8,6 +8,7 @@ import lombok.Setter;
 import java.time.LocalDate;
 import java.util.Map;
 import java.util.UUID;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 import com.family.modules.user.entity.User;
@@ -53,6 +54,7 @@ public class Profile extends BaseEntity {
     @Column(name = "father_id")
     private UUID fatherId;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "father_id", insertable = false, updatable = false)
     private Profile father;
@@ -60,6 +62,7 @@ public class Profile extends BaseEntity {
     @Column(name = "mother_id")
     private UUID motherId;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "mother_id", insertable = false, updatable = false)
     private Profile mother;
@@ -67,6 +70,7 @@ public class Profile extends BaseEntity {
     @Column(name = "parent_id")
     private UUID parentId;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id", insertable = false, updatable = false)
     private Profile parent;
@@ -74,6 +78,7 @@ public class Profile extends BaseEntity {
     @Column(name = "spouse_id")
     private UUID spouseId;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "spouse_id", insertable = false, updatable = false)
     private Profile spouse;
@@ -81,6 +86,7 @@ public class Profile extends BaseEntity {
     @Column(name = "user_id")
     private UUID userId;
 
+    @JsonIgnore
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", insertable = false, updatable = false)
     private User user;
