@@ -1,16 +1,9 @@
-import React from 'react';
 import { Box, Typography, Button } from '@mui/material';
 import { Add as AddIcon } from '@mui/icons-material';
 import { useMemberStore } from '@/modules/members/store/useMemberStore';
-import CommonInputSearch from '@/common/components/form/CommonInputSearch';
 
 const MemberToolbar = () => {
-  const { handleOpenCreateEdit, setSearchObject, pagingMember } = useMemberStore();
-
-  const handleSearch = (val) => {
-    setSearchObject({ keyword: val, pageIndex: 1 });
-    pagingMember();
-  };
+  const { handleOpenCreateEdit } = useMemberStore();
 
   return (
     <Box>
@@ -21,11 +14,6 @@ const MemberToolbar = () => {
         <Button variant="contained" startIcon={<AddIcon />} onClick={() => handleOpenCreateEdit(null)} size="small">
           Thêm thành viên
         </Button>
-      </Box>
-
-      {/* Filter and Search */}
-      <Box sx={{ mb: 2 }}>
-        <CommonInputSearch onSearch={handleSearch} placeholder="Tìm theo tên thành viên..." />
       </Box>
     </Box>
   );

@@ -9,6 +9,9 @@ export const useMemberStore = create((set, get) => ({
     pageIndex: 1,
     pageSize: 10,
     keyword: '',
+    gender: 'ALL',
+    generation: 'ALL',
+    status: 'ALL',
   },
   totalElements: 0,
   dataList: [],
@@ -32,7 +35,7 @@ export const useMemberStore = create((set, get) => ({
   },
 
   resetStore: () => set({
-    searchObject: { pageIndex: 1, pageSize: 10, keyword: '' },
+    searchObject: { pageIndex: 1, pageSize: 10, keyword: '', gender: 'ALL', generation: 'ALL', status: 'ALL' },
     totalElements: 0,
     dataList: [],
     membersList: [],
@@ -76,15 +79,48 @@ export const useMemberStore = create((set, get) => ({
 
   pagingMember: async (skipLoading = false) => {
     if (!skipLoading) set({ loading: true });
-    const { pageIndex, pageSize, keyword } = get().searchObject;
+    const { pageIndex, pageSize, keyword, gender, generation, status } = get().searchObject;
     try {
-      const res = await memberService.getPaged(pageIndex, pageSize, keyword);
-      if (res.success && res.data) {
-        set({
-          dataList: res.data.content || [],
-          totalElements: res.data.totalElements || 0,
-        });
+      let list = [...get().membersList];
+
+      // 1. Filter by keyword
+      if (keyword && keyword.trim() !== '') {
+        const kw = keyword.toLowerCase().trim();
+        list = list.filter(m => 
+          (m.fullName && m.fullName.toLowerCase().includes(kw)) ||
+          (m.occupation && m.occupation.toLowerCase().includes(kw)) ||
+          (m.branchCode && m.branchCode.toLowerCase().includes(kw))
+        );
       }
+
+      // 2. Filter by gender
+      if (gender && gender !== 'ALL') {
+        list = list.filter(m => m.gender === gender);
+      }
+
+      // 3. Filter by generation
+      if (generation && generation !== 'ALL') {
+        list = list.filter(m => m.generation === Number(generation));
+      }
+
+      // 4. Filter by status (alive or deceased)
+      if (status && status !== 'ALL') {
+        if (status === 'ALIVE') {
+          list = list.filter(m => !m.deathDate);
+        } else if (status === 'DECEASED') {
+          list = list.filter(m => !!m.deathDate);
+        }
+      }
+
+      // 5. Apply local pagination
+      const totalElements = list.length;
+      const startIndex = (pageIndex - 1) * pageSize;
+      const paginatedList = list.slice(startIndex, startIndex + pageSize);
+
+      set({
+        dataList: paginatedList,
+        totalElements: totalElements
+      });
     } catch (error) {
       console.error(error);
     } finally {
