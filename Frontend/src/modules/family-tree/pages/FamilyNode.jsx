@@ -186,7 +186,7 @@ const FamilyNode = ({ data }) => {
                   <Tooltip title="Chỉnh sửa">
                     <IconButton 
                       size="small" 
-                      onClick={(e) => { e.stopPropagation(); onEditClick(member.spouse); }} 
+                      onClick={(e) => { e.stopPropagation(); onEditClick({ ...member.spouse, spouseId: member.id }); }} 
                       color="primary"
                       sx={{ p: 0.5 }}
                     >

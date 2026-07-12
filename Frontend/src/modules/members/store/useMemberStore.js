@@ -154,7 +154,7 @@ export const useMemberStore = create((set, get) => ({
           achievements: row.achievements || '',
           fatherId: row.fatherId || '',
           motherId: row.motherId || '',
-          spouseId: row.spouseId || '',
+          spouseId: row.spouseId || (row.spouse ? row.spouse.id : ''),
           avatarUrl: row.avatarUrl || '',
           additionalInfo: row.additionalInfo ? JSON.stringify(row.additionalInfo, null, 2) : '',
         },
