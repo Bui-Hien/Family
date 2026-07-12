@@ -9,6 +9,12 @@ export const useFundStore = create((set, get) => ({
   funds: [],
   selectedFundId: '',
   transactions: [],
+  transactionsList: [],
+  searchObject: {
+    keyword: '',
+    type: 'ALL',
+    status: 'ALL',
+  },
   members: [],
   loading: false,
   txLoading: false,
@@ -24,6 +30,12 @@ export const useFundStore = create((set, get) => ({
     funds: [],
     selectedFundId: '',
     transactions: [],
+    transactionsList: [],
+    searchObject: {
+      keyword: '',
+      type: 'ALL',
+      status: 'ALL',
+    },
     members: [],
     loading: false,
     txLoading: false,
@@ -33,6 +45,8 @@ export const useFundStore = create((set, get) => ({
     confirmApprove: { id: null, status: null },
     deleteFundId: null,
   }),
+
+  setSearchObject: (obj) => set((state) => ({ searchObject: { ...state.searchObject, ...obj } })),
 
   fetchInitialData: async () => {
     set({ loading: true });
@@ -76,20 +90,44 @@ export const useFundStore = create((set, get) => ({
 
   fetchTransactions: async (fundId) => {
     if (!fundId) {
-      set({ transactions: [] });
+      set({ transactions: [], transactionsList: [] });
       return;
     }
     set({ txLoading: true });
     try {
       const res = await fundService.getTransactions(fundId);
       if (res.success) {
-        set({ transactions: res.data || [] });
+        set({ transactionsList: res.data || [] });
+        get().applyFilters();
       }
     } catch (error) {
       console.error('Error fetching transactions:', error);
     } finally {
       set({ txLoading: false });
     }
+  },
+
+  applyFilters: () => {
+    const { keyword, type, status } = get().searchObject;
+    let list = [...get().transactionsList];
+
+    if (keyword && keyword.trim() !== '') {
+      const kw = keyword.toLowerCase().trim();
+      list = list.filter(t => 
+        (t.note && t.note.toLowerCase().includes(kw)) ||
+        (t.profileName && t.profileName.toLowerCase().includes(kw))
+      );
+    }
+
+    if (type && type !== 'ALL') {
+      list = list.filter(t => t.type === type);
+    }
+
+    if (status && status !== 'ALL') {
+      list = list.filter(t => t.status === status);
+    }
+
+    set({ transactions: list });
   },
 
   setSelectedFundId: async (id) => {

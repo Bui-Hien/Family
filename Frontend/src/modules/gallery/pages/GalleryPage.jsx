@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { Box, Typography, Button } from '@mui/material';
 import { Add as AddIcon } from '@mui/icons-material';
 import { useGalleryStore } from '@/modules/gallery/store/useGalleryStore';
@@ -6,6 +6,7 @@ import CommonLoading from '@/common/components/display/CommonLoading';
 import HasPermission from '@/common/components/auth/HasPermission';
 import { UserRole } from '@/common/constants';
 import AlbumList from './AlbumList';
+import GalleryFilter from './GalleryFilter';
 import AlbumDetail from './AlbumDetail';
 import AlbumForm from './AlbumForm';
 
@@ -48,6 +49,7 @@ const GalleryPage = () => {
         </HasPermission>
       </Box>
 
+      <GalleryFilter />
       <AlbumList />
       <AlbumForm />
     </Box>

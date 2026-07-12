@@ -13,6 +13,11 @@ const getImageUrl = (url) => {
 
 export const useGalleryStore = create((set, get) => ({
   galleries: [],
+  albumsList: [],
+  searchObject: {
+    keyword: '',
+    visibility: 'ALL',
+  },
   loading: true,
   selectedAlbum: null,
   albumMedia: [],
@@ -24,6 +29,11 @@ export const useGalleryStore = create((set, get) => ({
 
   resetStore: () => set({
     galleries: [],
+    albumsList: [],
+    searchObject: {
+      keyword: '',
+      visibility: 'ALL',
+    },
     loading: true,
     selectedAlbum: null,
     albumMedia: [],
@@ -34,19 +44,40 @@ export const useGalleryStore = create((set, get) => ({
 
   setOpenAlbumForm: (open) => set({ openAlbumForm: open }),
   setConfirmDeleteMediaId: (id) => set({ confirmDeleteMediaId: id }),
+  setSearchObject: (obj) => set((state) => ({ searchObject: { ...state.searchObject, ...obj } })),
 
   fetchGalleries: async () => {
     set({ loading: true });
     try {
       const res = await galleryService.getAll();
       if (res.success) {
-        set({ galleries: res.data || [] });
+        set({ albumsList: res.data || [] });
+        get().applyFilters();
       }
-    } catch (error) {
+    } catch {
       useUiStore.getState().showNotification('Lỗi khi tải thư viện ảnh', 'error');
     } finally {
       set({ loading: false });
     }
+  },
+
+  applyFilters: () => {
+    const { keyword, visibility } = get().searchObject;
+    let list = [...get().albumsList];
+
+    if (keyword && keyword.trim() !== '') {
+      const kw = keyword.toLowerCase().trim();
+      list = list.filter(a => 
+        (a.name && a.name.toLowerCase().includes(kw)) ||
+        (a.description && a.description.toLowerCase().includes(kw))
+      );
+    }
+
+    if (visibility && visibility !== 'ALL') {
+      list = list.filter(a => a.visibility === visibility);
+    }
+
+    set({ galleries: list });
   },
 
   loadAlbumMedia: async (albumId) => {
@@ -56,7 +87,7 @@ export const useGalleryStore = create((set, get) => ({
       if (res.success) {
         set({ albumMedia: res.data || [] });
       }
-    } catch (error) {
+    } catch {
       useUiStore.getState().showNotification('Lỗi khi tải danh sách hình ảnh trong album', 'error');
     } finally {
       set({ mediaLoading: false });

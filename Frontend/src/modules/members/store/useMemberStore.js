@@ -63,7 +63,7 @@ export const useMemberStore = create((set, get) => ({
   fetchInitialData: async () => {
     set({ loading: true });
     try {
-      const [listRes, pageRes] = await Promise.all([
+      const [listRes] = await Promise.all([
         memberService.getAll().catch(() => ({ success: false, data: [] })),
         get().pagingMember(true),
       ]);

@@ -9,8 +9,10 @@ export const useAdminStore = create((set, get) => ({
     pageIndex: 1,
     pageSize: 10,
     keyword: '',
+    role: 'ALL',
   },
   totalElements: 0,
+  usersList: [],
   dataList: [],
   loading: false,
   members: [],
@@ -22,8 +24,9 @@ export const useAdminStore = create((set, get) => ({
   deleteId: null,
 
   resetStore: () => set({
-    searchObject: { pageIndex: 1, pageSize: 10, keyword: '' },
+    searchObject: { pageIndex: 1, pageSize: 10, keyword: '', role: 'ALL' },
     totalElements: 0,
+    usersList: [],
     dataList: [],
     loading: false,
     members: [],
@@ -38,7 +41,7 @@ export const useAdminStore = create((set, get) => ({
   fetchInitialData: async () => {
     set({ loading: true });
     try {
-      const [usersRes, membersRes] = await Promise.all([
+      const [, membersRes] = await Promise.all([
         get().fetchUsersInternal(),
         memberService.getAll().catch(() => ({ success: false, data: [] })),
       ]);
@@ -53,14 +56,11 @@ export const useAdminStore = create((set, get) => ({
   },
 
   fetchUsersInternal: async () => {
-    const { pageIndex, pageSize, keyword } = get().searchObject;
     try {
-      const res = await userService.getPaged(pageIndex, pageSize, keyword);
+      const res = await userService.getAll();
       if (res.success && res.data) {
-        set({
-          dataList: res.data.content || [],
-          totalElements: res.data.totalElements || 0,
-        });
+        set({ usersList: res.data || [] });
+        get().applyFilters();
       }
       return res;
     } catch (error) {
@@ -69,19 +69,43 @@ export const useAdminStore = create((set, get) => ({
     }
   },
 
-  pagingUser: async () => {
-    set({ loading: true });
-    try {
-      await get().fetchUsersInternal();
-    } finally {
-      set({ loading: false });
+  applyFilters: () => {
+    const { pageIndex, pageSize, keyword, role } = get().searchObject;
+    let list = [...get().usersList];
+
+    if (keyword && keyword.trim() !== '') {
+      const kw = keyword.toLowerCase().trim();
+      list = list.filter(u => 
+        (u.username && u.username.toLowerCase().includes(kw)) ||
+        (u.fullName && u.fullName.toLowerCase().includes(kw)) ||
+        (u.email && u.email.toLowerCase().includes(kw)) ||
+        (u.phoneNumber && u.phoneNumber.toLowerCase().includes(kw))
+      );
     }
+
+    if (role && role !== 'ALL') {
+      list = list.filter(u => u.role === role);
+    }
+
+    const totalElements = list.length;
+    const startIndex = (pageIndex - 1) * pageSize;
+    const paginatedList = list.slice(startIndex, startIndex + pageSize);
+
+    set({
+      dataList: paginatedList,
+      totalElements: totalElements
+    });
+  },
+
+  pagingUser: async () => {
+    get().applyFilters();
   },
 
   handleSearch: (val) => {
     set((state) => ({
       searchObject: { ...state.searchObject, keyword: val, pageIndex: 1 },
     }));
+    get().applyFilters();
   },
 
   handleOpenCreateEdit: (user) => {

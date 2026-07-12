@@ -1,24 +1,25 @@
 import { Card, CardContent, Grid, MenuItem, TextField, Button, InputAdornment, IconButton } from '@mui/material';
 import { Search as SearchIcon, Clear as ClearIcon, Refresh as RefreshIcon } from '@mui/icons-material';
-import { useEventStore } from '@/modules/events/store/useEventStore';
+import { useAdminStore } from '@/modules/admin/store/useAdminStore';
+import { UserRole } from '@/common/constants';
 
-const EventFilter = () => {
+const AdminFilter = () => {
   const { 
     searchObject, 
     setSearchObject, 
     applyFilters 
-  } = useEventStore();
+  } = useAdminStore();
 
   const handleChange = (field, value) => {
-    setSearchObject({ [field]: value });
+    setSearchObject({ [field]: value, pageIndex: 1 });
     applyFilters();
   };
 
   const handleReset = () => {
     setSearchObject({
+      pageIndex: 1,
       keyword: '',
-      status: 'ALL',
-      annual: 'ALL'
+      role: 'ALL'
     });
     applyFilters();
   };
@@ -37,12 +38,12 @@ const EventFilter = () => {
     >
       <CardContent sx={{ p: '16px !important' }}>
         <Grid container spacing={2} alignItems="center">
-          {/* Tìm kiếm từ khóa */}
-          <Grid item xs={12} sm={5}>
+          {/* Tìm kiếm tài khoản */}
+          <Grid item xs={12} sm={6}>
             <TextField
               fullWidth
               size="small"
-              placeholder="Tìm theo tiêu đề, mô tả, địa điểm..."
+              placeholder="Tìm theo username, họ tên, email, sđt..."
               value={searchObject.keyword || ''}
               onChange={(e) => handleChange('keyword', e.target.value)}
               InputProps={{
@@ -62,35 +63,21 @@ const EventFilter = () => {
             />
           </Grid>
 
-          {/* Lọc Trạng thái */}
-          <Grid item xs={12} sm={3}>
+          {/* Lọc Quyền hạn */}
+          <Grid item xs={12} sm={5}>
             <TextField
               select
               fullWidth
               size="small"
-              label="Trạng thái"
-              value={searchObject.status || 'ALL'}
-              onChange={(e) => handleChange('status', e.target.value)}
+              label="Quyền hạn"
+              value={searchObject.role || 'ALL'}
+              onChange={(e) => handleChange('role', e.target.value)}
             >
-              <MenuItem value="ALL">Tất cả trạng thái</MenuItem>
-              <MenuItem value="ACTIVE">Đang diễn ra / Sắp tới</MenuItem>
-              <MenuItem value="INACTIVE">Đã kết thúc / Tạm hoãn</MenuItem>
-            </TextField>
-          </Grid>
-
-          {/* Lọc Thường niên */}
-          <Grid item xs={12} sm={3}>
-            <TextField
-              select
-              fullWidth
-              size="small"
-              label="Tính chất"
-              value={searchObject.annual || 'ALL'}
-              onChange={(e) => handleChange('annual', e.target.value)}
-            >
-              <MenuItem value="ALL">Tất cả sự kiện</MenuItem>
-              <MenuItem value="YES">Sự kiện thường niên</MenuItem>
-              <MenuItem value="NO">Sự kiện một lần</MenuItem>
+              <MenuItem value="ALL">Tất cả quyền hạn</MenuItem>
+              <MenuItem value={UserRole.SYSTEM_ADMIN}>Quản trị hệ thống (System Admin)</MenuItem>
+              <MenuItem value={UserRole.FAMILY_LEADER}>Trưởng họ (Family Leader)</MenuItem>
+              <MenuItem value={UserRole.FAMILY_ADMIN}>Quản trị viên dòng họ (Family Admin)</MenuItem>
+              <MenuItem value={UserRole.FAMILY_MEMBER}>Thành viên dòng họ (Family Member)</MenuItem>
             </TextField>
           </Grid>
 
@@ -123,4 +110,4 @@ const EventFilter = () => {
   );
 };
 
-export default EventFilter;
+export default AdminFilter;

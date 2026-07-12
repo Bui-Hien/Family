@@ -9,6 +9,10 @@ const userService = {
     });
     return response.data;
   },
+  getAll: async () => {
+    const response = await api.get('/users');
+    return response.data;
+  },
   changeRole: async (id, role) => {
     const response = await api.put(`/users/${id}/role`, null, { params: { role } });
     return response.data;

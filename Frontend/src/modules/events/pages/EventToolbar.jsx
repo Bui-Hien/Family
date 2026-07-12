@@ -1,4 +1,3 @@
-import React from 'react';
 import { Box, Typography, Button } from '@mui/material';
 import { Add as AddIcon } from '@mui/icons-material';
 import { useEventStore } from '@/modules/events/store/useEventStore';

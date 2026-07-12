@@ -5,12 +5,13 @@ import { PostCategory, PostStatus } from '@/common/constants';
 
 export const usePostStore = create((set, get) => ({
   searchObject: {
-    pageIndex: 1,
-    pageSize: 10,
     keyword: '',
+    category: 'ALL',
+    status: 'ALL',
   },
   totalElements: 0,
   totalPages: 0,
+  postsList: [],
   dataList: [],
   openConfirmDeletePopup: false,
   openCreateEditPopup: false,
@@ -26,9 +27,10 @@ export const usePostStore = create((set, get) => ({
   loading: false,
 
   resetStore: () => set({
-    searchObject: { pageIndex: 1, pageSize: 10, keyword: '' },
+    searchObject: { keyword: '', category: 'ALL', status: 'ALL' },
     totalElements: 0,
     totalPages: 0,
+    postsList: [],
     dataList: [],
     openCreateEditPopup: false,
     selectedRow: {
@@ -44,23 +46,50 @@ export const usePostStore = create((set, get) => ({
     loading: false,
   }),
 
+  setSearchObject: (obj) => set((state) => ({ searchObject: { ...state.searchObject, ...obj } })),
+
   pagingPost: async () => {
     set({ loading: true });
     try {
       const res = await postService.getAll();
       if (res.success && res.data) {
         const content = res.data.content || res.data || [];
-        set({
-          dataList: content,
-          totalElements: content.length,
-          totalPages: 1,
-        });
+        set({ postsList: content });
+        get().applyFilters();
       }
     } catch (error) {
       console.error('Error fetching posts:', error);
     } finally {
       set({ loading: false });
     }
+  },
+
+  applyFilters: () => {
+    const { keyword, category, status } = get().searchObject;
+    let list = [...get().postsList];
+
+    if (keyword && keyword.trim() !== '') {
+      const kw = keyword.toLowerCase().trim();
+      list = list.filter(p => 
+        (p.title && p.title.toLowerCase().includes(kw)) ||
+        (p.summary && p.summary.toLowerCase().includes(kw)) ||
+        (p.content && p.content.toLowerCase().includes(kw))
+      );
+    }
+
+    if (category && category !== 'ALL') {
+      list = list.filter(p => p.category === category);
+    }
+
+    if (status && status !== 'ALL') {
+      list = list.filter(p => p.status === status);
+    }
+
+    set({
+      dataList: list,
+      totalElements: list.length,
+      totalPages: 1,
+    });
   },
 
   handleOpenCreateEdit: (row) => {

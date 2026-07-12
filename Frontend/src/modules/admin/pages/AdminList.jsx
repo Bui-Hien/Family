@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Stack, Tooltip, IconButton, FormControl, Select, MenuItem } from '@mui/material';
 import { Delete as DeleteIcon, Edit as EditIcon, History as HistoryIcon } from '@mui/icons-material';
 import { useAdminStore } from '@/modules/admin/store/useAdminStore';
@@ -17,7 +17,6 @@ const AdminList = () => {
     handleOpenCreateEdit,
     handleDelete,
     changeRole,
-    pagingUser,
   } = useAdminStore();
 
   const [historyOpen, setHistoryOpen] = useState(false);

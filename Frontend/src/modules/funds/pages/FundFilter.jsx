@@ -1,13 +1,13 @@
 import { Card, CardContent, Grid, MenuItem, TextField, Button, InputAdornment, IconButton } from '@mui/material';
 import { Search as SearchIcon, Clear as ClearIcon, Refresh as RefreshIcon } from '@mui/icons-material';
-import { useEventStore } from '@/modules/events/store/useEventStore';
+import { useFundStore } from '@/modules/funds/store/useFundStore';
 
-const EventFilter = () => {
+const FundFilter = () => {
   const { 
     searchObject, 
     setSearchObject, 
     applyFilters 
-  } = useEventStore();
+  } = useFundStore();
 
   const handleChange = (field, value) => {
     setSearchObject({ [field]: value });
@@ -17,8 +17,8 @@ const EventFilter = () => {
   const handleReset = () => {
     setSearchObject({
       keyword: '',
-      status: 'ALL',
-      annual: 'ALL'
+      type: 'ALL',
+      status: 'ALL'
     });
     applyFilters();
   };
@@ -37,12 +37,12 @@ const EventFilter = () => {
     >
       <CardContent sx={{ p: '16px !important' }}>
         <Grid container spacing={2} alignItems="center">
-          {/* Tìm kiếm từ khóa */}
+          {/* Tìm kiếm ghi chú / người thực hiện */}
           <Grid item xs={12} sm={5}>
             <TextField
               fullWidth
               size="small"
-              placeholder="Tìm theo tiêu đề, mô tả, địa điểm..."
+              placeholder="Tìm theo nội dung ghi chú, họ tên..."
               value={searchObject.keyword || ''}
               onChange={(e) => handleChange('keyword', e.target.value)}
               InputProps={{
@@ -62,35 +62,36 @@ const EventFilter = () => {
             />
           </Grid>
 
-          {/* Lọc Trạng thái */}
+          {/* Lọc loại giao dịch */}
           <Grid item xs={12} sm={3}>
             <TextField
               select
               fullWidth
               size="small"
-              label="Trạng thái"
+              label="Loại thu chi"
+              value={searchObject.type || 'ALL'}
+              onChange={(e) => handleChange('type', e.target.value)}
+            >
+              <MenuItem value="ALL">Tất cả giao dịch</MenuItem>
+              <MenuItem value="INCOME">Thu quỹ (+)</MenuItem>
+              <MenuItem value="OUTCOME">Chi quỹ (-)</MenuItem>
+            </TextField>
+          </Grid>
+
+          {/* Lọc trạng thái phê duyệt */}
+          <Grid item xs={12} sm={3}>
+            <TextField
+              select
+              fullWidth
+              size="small"
+              label="Trạng thái duyệt"
               value={searchObject.status || 'ALL'}
               onChange={(e) => handleChange('status', e.target.value)}
             >
               <MenuItem value="ALL">Tất cả trạng thái</MenuItem>
-              <MenuItem value="ACTIVE">Đang diễn ra / Sắp tới</MenuItem>
-              <MenuItem value="INACTIVE">Đã kết thúc / Tạm hoãn</MenuItem>
-            </TextField>
-          </Grid>
-
-          {/* Lọc Thường niên */}
-          <Grid item xs={12} sm={3}>
-            <TextField
-              select
-              fullWidth
-              size="small"
-              label="Tính chất"
-              value={searchObject.annual || 'ALL'}
-              onChange={(e) => handleChange('annual', e.target.value)}
-            >
-              <MenuItem value="ALL">Tất cả sự kiện</MenuItem>
-              <MenuItem value="YES">Sự kiện thường niên</MenuItem>
-              <MenuItem value="NO">Sự kiện một lần</MenuItem>
+              <MenuItem value="PENDING">Chờ phê duyệt</MenuItem>
+              <MenuItem value="APPROVED">Đã phê duyệt</MenuItem>
+              <MenuItem value="REJECTED">Đã từ chối</MenuItem>
             </TextField>
           </Grid>
 
@@ -123,4 +124,4 @@ const EventFilter = () => {
   );
 };
 
-export default EventFilter;
+export default FundFilter;

@@ -1,7 +1,8 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { Box } from '@mui/material';
 import { useFundStore } from '@/modules/funds/store/useFundStore';
 import FundToolbar from './FundToolbar';
+import FundFilter from './FundFilter';
 import FundList from './FundList';
 import FundForm from './FundForm';
 import TransactionForm from './TransactionForm';
@@ -47,6 +48,7 @@ const FundsPage = () => {
   return (
     <Box>
       <FundToolbar />
+      <FundFilter />
       <FundList />
 
       {/* Forms */}

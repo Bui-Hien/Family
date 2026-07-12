@@ -1,13 +1,13 @@
 import { Card, CardContent, Grid, MenuItem, TextField, Button, InputAdornment, IconButton } from '@mui/material';
 import { Search as SearchIcon, Clear as ClearIcon, Refresh as RefreshIcon } from '@mui/icons-material';
-import { useEventStore } from '@/modules/events/store/useEventStore';
+import { useGalleryStore } from '@/modules/gallery/store/useGalleryStore';
 
-const EventFilter = () => {
+const GalleryFilter = () => {
   const { 
     searchObject, 
     setSearchObject, 
     applyFilters 
-  } = useEventStore();
+  } = useGalleryStore();
 
   const handleChange = (field, value) => {
     setSearchObject({ [field]: value });
@@ -17,8 +17,7 @@ const EventFilter = () => {
   const handleReset = () => {
     setSearchObject({
       keyword: '',
-      status: 'ALL',
-      annual: 'ALL'
+      visibility: 'ALL'
     });
     applyFilters();
   };
@@ -37,12 +36,12 @@ const EventFilter = () => {
     >
       <CardContent sx={{ p: '16px !important' }}>
         <Grid container spacing={2} alignItems="center">
-          {/* Tìm kiếm từ khóa */}
-          <Grid item xs={12} sm={5}>
+          {/* Tìm kiếm tên album */}
+          <Grid item xs={12} sm={6}>
             <TextField
               fullWidth
               size="small"
-              placeholder="Tìm theo tiêu đề, mô tả, địa điểm..."
+              placeholder="Tìm theo tên album hoặc mô tả..."
               value={searchObject.keyword || ''}
               onChange={(e) => handleChange('keyword', e.target.value)}
               InputProps={{
@@ -62,35 +61,20 @@ const EventFilter = () => {
             />
           </Grid>
 
-          {/* Lọc Trạng thái */}
-          <Grid item xs={12} sm={3}>
+          {/* Lọc Quyền riêng tư */}
+          <Grid item xs={12} sm={5}>
             <TextField
               select
               fullWidth
               size="small"
-              label="Trạng thái"
-              value={searchObject.status || 'ALL'}
-              onChange={(e) => handleChange('status', e.target.value)}
+              label="Quyền xem"
+              value={searchObject.visibility || 'ALL'}
+              onChange={(e) => handleChange('visibility', e.target.value)}
             >
-              <MenuItem value="ALL">Tất cả trạng thái</MenuItem>
-              <MenuItem value="ACTIVE">Đang diễn ra / Sắp tới</MenuItem>
-              <MenuItem value="INACTIVE">Đã kết thúc / Tạm hoãn</MenuItem>
-            </TextField>
-          </Grid>
-
-          {/* Lọc Thường niên */}
-          <Grid item xs={12} sm={3}>
-            <TextField
-              select
-              fullWidth
-              size="small"
-              label="Tính chất"
-              value={searchObject.annual || 'ALL'}
-              onChange={(e) => handleChange('annual', e.target.value)}
-            >
-              <MenuItem value="ALL">Tất cả sự kiện</MenuItem>
-              <MenuItem value="YES">Sự kiện thường niên</MenuItem>
-              <MenuItem value="NO">Sự kiện một lần</MenuItem>
+              <MenuItem value="ALL">Tất cả quyền xem</MenuItem>
+              <MenuItem value="PUBLIC">Công khai (Public)</MenuItem>
+              <MenuItem value="MEMBER">Chỉ thành viên dòng họ (Member)</MenuItem>
+              <MenuItem value="PRIVATE">Chỉ ban quản trị (Private)</MenuItem>
             </TextField>
           </Grid>
 
@@ -123,4 +107,4 @@ const EventFilter = () => {
   );
 };
 
-export default EventFilter;
+export default GalleryFilter;

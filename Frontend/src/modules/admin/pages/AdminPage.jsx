@@ -1,7 +1,8 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { Box } from '@mui/material';
 import { useAdminStore } from '@/modules/admin/store/useAdminStore';
 import AdminToolbar from './AdminToolbar';
+import AdminFilter from './AdminFilter';
 import AdminList from './AdminList';
 import AdminForm from './AdminForm';
 import CommonLoading from '@/common/components/display/CommonLoading';
@@ -30,7 +31,7 @@ const AdminPage = () => {
 
   useEffect(() => {
     pagingUser();
-  }, [searchObject.pageIndex, searchObject.pageSize, searchObject.keyword]);
+  }, [searchObject.pageIndex, searchObject.pageSize, searchObject.keyword, searchObject.role]);
 
   if (loading && dataList.length === 0) {
     return <CommonLoading loading={loading} type="skeleton" rows={5} />;
@@ -39,6 +40,7 @@ const AdminPage = () => {
   return (
     <Box>
       <AdminToolbar />
+      <AdminFilter />
       <AdminList />
 
       {/* Add/Edit Form Dialog */}

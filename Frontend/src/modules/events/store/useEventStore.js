@@ -6,12 +6,13 @@ import { EventStatus } from '@/common/constants';
 
 export const useEventStore = create((set, get) => ({
   searchObject: {
-    pageIndex: 1,
-    pageSize: 10,
     keyword: '',
+    status: 'ALL',
+    annual: 'ALL',
   },
   totalElements: 0,
   totalPages: 0,
+  eventsList: [],
   dataList: [],
   openConfirmDeletePopup: false,
   openCreateEditPopup: false,
@@ -26,9 +27,10 @@ export const useEventStore = create((set, get) => ({
   loading: false,
 
   resetStore: () => set({
-    searchObject: { pageIndex: 1, pageSize: 10, keyword: '' },
+    searchObject: { keyword: '', status: 'ALL', annual: 'ALL' },
     totalElements: 0,
     totalPages: 0,
+    eventsList: [],
     dataList: [],
     openCreateEditPopup: false,
     selectedRow: {
@@ -43,23 +45,51 @@ export const useEventStore = create((set, get) => ({
     loading: false,
   }),
 
+  setSearchObject: (obj) => set((state) => ({ searchObject: { ...state.searchObject, ...obj } })),
+
   pagingEvent: async () => {
     set({ loading: true });
     try {
       const res = await eventService.getAll();
       if (res.success) {
         const content = res.data || [];
-        set({
-          dataList: content,
-          totalElements: content.length,
-          totalPages: 1,
-        });
+        set({ eventsList: content });
+        get().applyFilters();
       }
     } catch (error) {
       console.error('Error fetching events:', error);
     } finally {
       set({ loading: false });
     }
+  },
+
+  applyFilters: () => {
+    const { keyword, status, annual } = get().searchObject;
+    let list = [...get().eventsList];
+
+    if (keyword && keyword.trim() !== '') {
+      const kw = keyword.toLowerCase().trim();
+      list = list.filter(e => 
+        (e.title && e.title.toLowerCase().includes(kw)) ||
+        (e.description && e.description.toLowerCase().includes(kw)) ||
+        (e.location && e.location.toLowerCase().includes(kw))
+      );
+    }
+
+    if (status && status !== 'ALL') {
+      list = list.filter(e => e.status === status);
+    }
+
+    if (annual && annual !== 'ALL') {
+      const isAnnual = annual === 'YES';
+      list = list.filter(e => e.annual === isAnnual);
+    }
+
+    set({
+      dataList: list,
+      totalElements: list.length,
+      totalPages: 1,
+    });
   },
 
   handleOpenCreateEdit: (row) => {
