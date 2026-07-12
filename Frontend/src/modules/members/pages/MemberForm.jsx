@@ -22,6 +22,9 @@ import CommonPopupForm from '@/common/components/popup/CommonPopupForm';
 import CommonTextField from '@/common/components/form/CommonTextField';
 import CommonSelectInput from '@/common/components/form/CommonSelectInput';
 import CommonDateTimePicker from '@/common/components/form/CommonDateTimePicker';
+import CommonImageUpload from '@/common/components/file/CommonImageUpload';
+import { saveFilePublic } from '@/services/FileDescriptionService';
+import { API_ENDPOINT } from '@/common/appConfig';
 import { Gender, GenderOptions } from '@/common/constants';
 
 const validationSchema = Yup.object({
@@ -94,12 +97,21 @@ const MemberForm = () => {
       fatherId: selectedRow?.fatherId || '',
       motherId: selectedRow?.motherId || '',
       spouseId: selectedRow?.spouseId || '',
+      avatarUrl: selectedRow?.avatarUrl || '',
       additionalInfo: getInitialAdditionalInfo(selectedRow?.additionalInfo),
     },
     enableReinitialize: true,
     validationSchema,
     onSubmit: async (values, { setSubmitting }) => {
       try {
+        // Upload avatar nếu user chọn file mới
+        let avatarUrl = values.avatarUrl;
+        if (values.avatarUrl instanceof File) {
+          const uploadRes = await saveFilePublic(values.avatarUrl);
+          const fileId = uploadRes?.data?.data?.id;
+          avatarUrl = fileId ? `${API_ENDPOINT}/api/files/public/${fileId}` : '';
+        }
+
         const infoObj = {};
         if (values.additionalInfo && Array.isArray(values.additionalInfo)) {
           values.additionalInfo.forEach(item => {
@@ -110,6 +122,7 @@ const MemberForm = () => {
         }
         const submitValues = {
           ...values,
+          avatarUrl,
           additionalInfo: Object.keys(infoObj).length > 0 ? JSON.stringify(infoObj) : null
         };
         await saveMember(submitValues);
@@ -130,6 +143,13 @@ const MemberForm = () => {
       size="md"
     >
       <Grid container spacing={2}>
+        {/* Ảnh đại diện */}
+        <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'center' }}>
+          <CommonImageUpload
+            name="avatarUrl"
+            imagePath={selectedRow?.avatarUrl || ''}
+          />
+        </Grid>
         <Grid item xs={12} sm={6}>
           <CommonTextField name="fullName" label="Họ và tên" required />
         </Grid>

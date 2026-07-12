@@ -31,6 +31,7 @@ export const useMemberStore = create((set, get) => ({
     fatherId: '',
     motherId: '',
     spouseId: '',
+    avatarUrl: '',
     additionalInfo: '',
   },
 
@@ -54,6 +55,7 @@ export const useMemberStore = create((set, get) => ({
       fatherId: '',
       motherId: '',
       spouseId: '',
+      avatarUrl: '',
       additionalInfo: '',
     },
   }),
@@ -155,6 +157,7 @@ export const useMemberStore = create((set, get) => ({
           fatherId: row.fatherId || '',
           motherId: row.motherId || '',
           spouseId: row.spouseId || '',
+          avatarUrl: row.avatarUrl || '',
           additionalInfo: row.additionalInfo ? JSON.stringify(row.additionalInfo, null, 2) : '',
         },
         openCreateEditPopup: true,
@@ -173,6 +176,7 @@ export const useMemberStore = create((set, get) => ({
           fatherId: '',
           motherId: '',
           spouseId: '',
+          avatarUrl: '',
           additionalInfo: '',
         },
         openCreateEditPopup: true,
@@ -229,6 +233,7 @@ export const useMemberStore = create((set, get) => ({
       fatherId: values.fatherId || null,
       motherId: values.motherId || null,
       spouseId: values.spouseId || null,
+      avatarUrl: values.avatarUrl || null,
       additionalInfo: values.additionalInfo ? JSON.parse(values.additionalInfo) : null,
     };
     try {
