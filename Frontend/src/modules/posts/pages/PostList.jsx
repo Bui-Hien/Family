@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Box,
   Typography,
@@ -23,7 +24,8 @@ import { UserRole, PostCategory } from '@/common/constants';
 import HasPermission from '@/common/components/auth/HasPermission';
 
 const PostList = () => {
-  const { dataList, handleOpenView, handleOpenCreateEdit, handleDelete } = usePostStore();
+  const { dataList, handleOpenCreateEdit, handleDelete } = usePostStore();
+  const navigate = useNavigate();
 
   if (dataList.length === 0) {
     return (
@@ -60,7 +62,7 @@ const PostList = () => {
               <Button
                 size="small"
                 startIcon={<ViewIcon />}
-                onClick={() => handleOpenView(post)}
+                onClick={() => navigate(`/posts/${post.id}`)}
               >
                 Xem chi tiết
               </Button>

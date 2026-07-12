@@ -13,6 +13,7 @@ import MemberDetailPage from '@/modules/members/pages/MemberDetailPage';
 import FamilyTreePage from '@/modules/family-tree/pages/FamilyTreePage';
 import EventsPage from '@/modules/events/pages/EventsPage';
 import PostsPage from '@/modules/posts/pages/PostsPage';
+import PostDetailPage from '@/modules/posts/pages/PostDetailPage';
 import GalleryPage from '@/modules/gallery/pages/GalleryPage';
 import FundsPage from '@/modules/funds/pages/FundsPage';
 import AdminPage from '@/modules/admin/pages/AdminPage';
@@ -58,6 +59,7 @@ const AppRoutes = () => {
         <Route path="family-tree" element={<FamilyTreePage />} />
         <Route path="events" element={<EventsPage />} />
         <Route path="posts" element={<PostsPage />} />
+        <Route path="posts/:id" element={<PostDetailPage />} />
         <Route path="gallery" element={<GalleryPage />} />
         <Route path="funds" element={<FundsPage />} />
         

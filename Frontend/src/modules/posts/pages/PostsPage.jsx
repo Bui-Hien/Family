@@ -5,7 +5,6 @@ import PostToolbar from './PostToolbar';
 import PostList from './PostList';
 import PostForm from './PostForm';
 import PostFilter from './PostFilter';
-import PostViewDialog from './PostViewDialog';
 import CommonLoading from '@/common/components/display/CommonLoading';
 import CommonConfirmDialog from '@/common/components/popup/CommonConfirmDialog';
 
@@ -17,7 +16,6 @@ const PostsPage = () => {
     resetStore,
     openConfirmDeletePopup,
     openCreateEditPopup,
-    openViewPopup,
     handleClose,
     handleConfirmDelete
   } = usePostStore();
@@ -46,9 +44,6 @@ const PostsPage = () => {
       {/* Add/Edit Form Dialog */}
       {openCreateEditPopup && <PostForm />}
 
-      {/* Viewing Post Detail Dialog */}
-      {openViewPopup && <PostViewDialog />}
-
       {/* Confirm Delete Dialog */}
       <CommonConfirmDialog
         open={openConfirmDeletePopup}
@@ -62,5 +57,6 @@ const PostsPage = () => {
 };
 
 export default PostsPage;
+
 
  
