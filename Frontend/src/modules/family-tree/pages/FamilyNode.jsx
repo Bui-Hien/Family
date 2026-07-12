@@ -48,6 +48,7 @@ const FamilyNode = ({ data }) => {
               bgcolor: 'background.paper',
               boxShadow: 1,
               position: 'relative',
+              overflow: 'visible',
               '&:hover': {
                 borderColor: 'primary.main',
               },
@@ -136,6 +137,7 @@ const FamilyNode = ({ data }) => {
                   bgcolor: 'background.paper',
                   boxShadow: 1,
                   position: 'relative',
+                  overflow: 'visible',
                   '&:hover': {
                     borderColor: 'primary.main',
                   },
