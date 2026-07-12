@@ -28,22 +28,43 @@ const FamilyTreePage = () => {
 
   const onNodesChangeCustom = useCallback((changes) => {
     setNodes((nds) => {
-      const updatedChanges = changes.map((change) => {
-        if (change.type === 'position' && change.position) {
-          const originalNode = nds.find((n) => n.id === change.id);
-          if (originalNode) {
-            return {
-              ...change,
-              position: {
-                x: change.position.x,
-                y: originalNode.position.y, // Lock vertical movement, only allow horizontal panning
-              },
-            };
+      // Find position changes to calculate drag delta
+      const posChange = changes.find((c) => c.type === 'position' && c.position);
+      
+      if (posChange) {
+        const draggedNode = nds.find((n) => n.id === posChange.id);
+        if (draggedNode && posChange.position.y !== undefined) {
+          const deltaY = posChange.position.y - draggedNode.position.y;
+          
+          if (deltaY !== 0) {
+            const targetY = draggedNode.position.y;
+            
+            // Generate position adjustments for all other nodes on the same vertical level
+            const rowChanges = nds
+              .filter((n) => n.id !== draggedNode.id && Math.abs(n.position.y - targetY) < 1)
+              .map((n) => ({
+                id: n.id,
+                type: 'position',
+                position: {
+                  x: n.position.x, // Keep horizontal position
+                  y: n.position.y + deltaY, // Shift vertically with the dragged node
+                },
+              }));
+            
+            // Merge original changes and row synchronized changes
+            const allChanges = [...changes];
+            rowChanges.forEach((rowChange) => {
+              if (!allChanges.some((c) => c.id === rowChange.id)) {
+                allChanges.push(rowChange);
+              }
+            });
+            
+            return applyNodeChanges(allChanges, nds);
           }
         }
-        return change;
-      });
-      return applyNodeChanges(updatedChanges, nds);
+      }
+      
+      return applyNodeChanges(changes, nds);
     });
   }, [setNodes]);
 
