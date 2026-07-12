@@ -23,6 +23,11 @@ public class TreeNodeDto {
     private Integer generation;
     private String avatarUrl;
     
+    private UUID fatherId;
+    private String fatherName;
+    private UUID motherId;
+    private String motherName;
+    
     private TreeNodeDto spouse;
     
     @Builder.Default

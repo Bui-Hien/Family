@@ -111,12 +111,12 @@ public class FamilyTreeServiceImpl implements FamilyTreeService {
             if (parent == null) {
                 break;
             }
-            TreeNodeDto parentDto = convertToDto(parent);
+            TreeNodeDto parentDto = convertToDto(parent, profileMap);
             // Attach parent spouse if available
             if (parent.getSpouseId() != null) {
                 Profile spouse = profileMap.get(parent.getSpouseId());
                 if (spouse != null) {
-                    parentDto.setSpouse(convertToDto(spouse));
+                    parentDto.setSpouse(convertToDto(spouse, profileMap));
                 }
             }
             ancestors.add(parentDto);
@@ -177,12 +177,12 @@ public class FamilyTreeServiceImpl implements FamilyTreeService {
     }
 
     private TreeNodeDto buildNode(Profile profile, Map<UUID, List<Profile>> childrenMap, Map<UUID, Profile> profileMap) {
-        TreeNodeDto node = convertToDto(profile);
+        TreeNodeDto node = convertToDto(profile, profileMap);
         
         if (profile.getSpouseId() != null) {
             Profile spouseProfile = profileMap.get(profile.getSpouseId());
             if (spouseProfile != null) {
-                node.setSpouse(convertToDto(spouseProfile));
+                node.setSpouse(convertToDto(spouseProfile, profileMap));
             }
         }
 
@@ -196,8 +196,8 @@ public class FamilyTreeServiceImpl implements FamilyTreeService {
         return node;
     }
 
-    private TreeNodeDto convertToDto(Profile profile) {
-        return TreeNodeDto.builder()
+    private TreeNodeDto convertToDto(Profile profile, Map<UUID, Profile> profileMap) {
+        TreeNodeDto dto = TreeNodeDto.builder()
                 .id(profile.getId())
                 .fullName(profile.getFullName())
                 .gender(profile.getGender())
@@ -205,6 +205,24 @@ public class FamilyTreeServiceImpl implements FamilyTreeService {
                 .deathDate(profile.getDeathDate())
                 .generation(profile.getGeneration())
                 .avatarUrl(profile.getAvatarUrl())
+                .fatherId(profile.getFatherId())
+                .motherId(profile.getMotherId())
                 .build();
+
+        if (profile.getFatherId() != null && profileMap != null) {
+            Profile father = profileMap.get(profile.getFatherId());
+            if (father != null) {
+                dto.setFatherName(father.getFullName());
+            }
+        }
+
+        if (profile.getMotherId() != null && profileMap != null) {
+            Profile mother = profileMap.get(profile.getMotherId());
+            if (mother != null) {
+                dto.setMotherName(mother.getFullName());
+            }
+        }
+
+        return dto;
     }
 }
