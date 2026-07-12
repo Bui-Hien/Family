@@ -64,76 +64,82 @@ const EventForm = () => {
         </DialogTitle>
         <DialogContent dividers>
           <Box sx={{ mt: 1 }}>
-            <Stack spacing={3}>
-              <TextField
-                fullWidth
-                size="small"
-                name="title"
-                label="Tên sự kiện"
-                value={formik.values.title}
-                onChange={formik.handleChange}
-                error={formik.touched.title && Boolean(formik.errors.title)}
-                helperText={formik.touched.title && formik.errors.title}
-              />
-
-              <Grid container spacing={2}>
-                <Grid item xs={12} sm={6}>
-                  <CommonDateTimePicker
-                    name="eventDate"
-                    label="Thời gian diễn ra"
-                    isDateTimePicker
-                    required
-                  />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <CommonSelectInput
-                    name="status"
-                    label="Trạng thái sự kiện"
-                    required
-                    noNullOption
-                    options={[
-                      { value: 'ACTIVE', name: 'Hoạt động (Sắp diễn ra)' },
-                      { value: 'INACTIVE', name: 'Hủy bỏ / Tạm hoãn' }
-                    ]}
-                  />
-                </Grid>
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  size="small"
+                  name="title"
+                  label="Tên sự kiện"
+                  value={formik.values.title}
+                  onChange={formik.handleChange}
+                  error={formik.touched.title && Boolean(formik.errors.title)}
+                  helperText={formik.touched.title && formik.errors.title}
+                />
               </Grid>
 
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    name="annual"
-                    checked={formik.values.annual}
-                    onChange={formik.handleChange}
-                  />
-                }
-                label="Sự kiện thường niên (lặp lại hàng năm)"
-              />
+              <Grid item xs={12} sm={6}>
+                <CommonDateTimePicker
+                  name="eventDate"
+                  label="Thời gian diễn ra"
+                  isDateTimePicker
+                  required
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <CommonSelectInput
+                  name="status"
+                  label="Trạng thái sự kiện"
+                  required
+                  noNullOption
+                  options={[
+                    { value: 'ACTIVE', name: 'Hoạt động (Sắp diễn ra)' },
+                    { value: 'INACTIVE', name: 'Hủy bỏ / Tạm hoãn' }
+                  ]}
+                />
+              </Grid>
 
-              <TextField
-                fullWidth
-                size="small"
-                name="location"
-                label="Địa điểm diễn ra"
-                value={formik.values.location}
-                onChange={formik.handleChange}
-                error={formik.touched.location && Boolean(formik.errors.location)}
-                helperText={formik.touched.location && formik.errors.location}
-              />
+              <Grid item xs={12}>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      name="annual"
+                      checked={formik.values.annual}
+                      onChange={formik.handleChange}
+                    />
+                  }
+                  label="Sự kiện thường niên (lặp lại hàng năm)"
+                />
+              </Grid>
 
-              <TextField
-                fullWidth
-                size="small"
-                name="description"
-                label="Mô tả chi tiết nội dung sự kiện"
-                multiline
-                rows={4}
-                value={formik.values.description}
-                onChange={formik.handleChange}
-                error={formik.touched.description && Boolean(formik.errors.description)}
-                helperText={formik.touched.description && formik.errors.description}
-              />
-            </Stack>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  size="small"
+                  name="location"
+                  label="Địa điểm diễn ra"
+                  value={formik.values.location}
+                  onChange={formik.handleChange}
+                  error={formik.touched.location && Boolean(formik.errors.location)}
+                  helperText={formik.touched.location && formik.errors.location}
+                />
+              </Grid>
+
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  size="small"
+                  name="description"
+                  label="Mô tả chi tiết nội dung sự kiện"
+                  multiline
+                  rows={4}
+                  value={formik.values.description}
+                  onChange={formik.handleChange}
+                  error={formik.touched.description && Boolean(formik.errors.description)}
+                  helperText={formik.touched.description && formik.errors.description}
+                />
+              </Grid>
+            </Grid>
           </Box>
         </DialogContent>
         <DialogActions sx={{ px: 3, pb: 2 }}>

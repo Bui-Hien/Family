@@ -64,74 +64,80 @@ const PostForm = () => {
         </DialogTitle>
         <DialogContent dividers>
           <Box sx={{ mt: 1 }}>
-            <Stack spacing={3}>
-              <TextField
-                fullWidth
-                size="small"
-                name="title"
-                label="Tiêu đề bài viết"
-                value={formik.values.title}
-                onChange={formik.handleChange}
-                error={formik.touched.title && Boolean(formik.errors.title)}
-                helperText={formik.touched.title && formik.errors.title}
-              />
-
-              <Grid container spacing={2}>
-                <Grid item xs={12} sm={6}>
-                  <CommonSelectInput
-                    name="category"
-                    label="Danh mục bài viết"
-                    required
-                    noNullOption
-                    options={[
-                      { value: 'TIN_TUC', name: 'Tin tức chung dòng họ' },
-                      { value: 'HOAT_DONG', name: 'Hoạt động / Sự kiện đã diễn ra' }
-                    ]}
-                  />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <CommonSelectInput
-                    name="status"
-                    label="Trạng thái xuất bản"
-                    required
-                    noNullOption
-                    options={[
-                      { value: 'PUBLISHED', name: 'Công khai (Xuất bản ngay)' },
-                      { value: 'DRAFT', name: 'Nháp (Lưu trữ tạm)' }
-                    ]}
-                  />
-                </Grid>
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  size="small"
+                  name="title"
+                  label="Tiêu đề bài viết"
+                  value={formik.values.title}
+                  onChange={formik.handleChange}
+                  error={formik.touched.title && Boolean(formik.errors.title)}
+                  helperText={formik.touched.title && formik.errors.title}
+                />
               </Grid>
 
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    name="featured"
-                    checked={formik.values.featured}
-                    onChange={formik.handleChange}
-                  />
-                }
-                label="Đặt làm tin nổi bật (Hiển thị đầu trang chủ)"
-              />
+              <Grid item xs={12} sm={6}>
+                <CommonSelectInput
+                  name="category"
+                  label="Danh mục bài viết"
+                  required
+                  noNullOption
+                  options={[
+                    { value: 'TIN_TUC', name: 'Tin tức chung dòng họ' },
+                    { value: 'HOAT_DONG', name: 'Hoạt động / Sự kiện đã diễn ra' }
+                  ]}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <CommonSelectInput
+                  name="status"
+                  label="Trạng thái xuất bản"
+                  required
+                  noNullOption
+                  options={[
+                    { value: 'PUBLISHED', name: 'Công khai (Xuất bản ngay)' },
+                    { value: 'DRAFT', name: 'Nháp (Lưu trữ tạm)' }
+                  ]}
+                />
+              </Grid>
 
-              <TextField
-                fullWidth
-                size="small"
-                name="summary"
-                label="Tóm tắt ngắn (Summary)"
-                multiline
-                rows={2}
-                value={formik.values.summary}
-                onChange={formik.handleChange}
-                error={formik.touched.summary && Boolean(formik.errors.summary)}
-                helperText={formik.touched.summary && formik.errors.summary}
-              />
+              <Grid item xs={12}>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      name="featured"
+                      checked={formik.values.featured}
+                      onChange={formik.handleChange}
+                    />
+                  }
+                  label="Đặt làm tin nổi bật (Hiển thị đầu trang chủ)"
+                />
+              </Grid>
 
-              <CommonEditor
-                name="content"
-                label="Nội dung chi tiết bài viết"
-              />
-            </Stack>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  size="small"
+                  name="summary"
+                  label="Tóm tắt ngắn (Summary)"
+                  multiline
+                  rows={2}
+                  value={formik.values.summary}
+                  onChange={formik.handleChange}
+                  error={formik.touched.summary && Boolean(formik.errors.summary)}
+                  helperText={formik.touched.summary && formik.errors.summary}
+                />
+              </Grid>
+
+              <Grid item xs={12}>
+                <CommonEditor
+                  name="content"
+                  label="Nội dung chi tiết bài viết"
+                />
+              </Grid>
+            </Grid>
           </Box>
         </DialogContent>
         <DialogActions sx={{ px: 3, pb: 2 }}>
