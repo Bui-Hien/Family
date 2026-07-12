@@ -1,9 +1,10 @@
 import { Handle, Position } from 'reactflow';
-import { Box, Card, CardContent, Typography, Avatar, Stack, Tooltip } from '@mui/material';
+import { Box, Card, CardContent, Typography, Avatar, Stack, Tooltip, IconButton } from '@mui/material';
+import { Edit as EditIcon, Add as AddIcon } from '@mui/icons-material';
 import { Gender } from '@/common/constants';
 
 const FamilyNode = ({ data }) => {
-  const { member, onNodeClick } = data;
+  const { member, onNodeClick, onEditClick, onAddChildClick } = data;
   if (!member) return null;
 
   const hasSpouse = !!member.spouse;
@@ -46,11 +47,62 @@ const FamilyNode = ({ data }) => {
               textAlign: 'center',
               bgcolor: 'background.paper',
               boxShadow: 1,
+              position: 'relative',
               '&:hover': {
                 borderColor: 'primary.main',
+              },
+              '&:hover .node-actions-main': {
+                opacity: 1,
+                visibility: 'visible',
               }
             }}
           >
+            {/* Action buttons overlay */}
+            {onEditClick && onAddChildClick && (
+              <Box
+                className="node-actions-main"
+                sx={{
+                  position: 'absolute',
+                  top: -30,
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  display: 'flex',
+                  gap: 0.5,
+                  opacity: 0,
+                  visibility: 'hidden',
+                  transition: 'opacity 0.2s, visibility 0.2s',
+                  bgcolor: 'background.paper',
+                  borderRadius: 1,
+                  boxShadow: 2,
+                  p: '2px',
+                  zIndex: 10,
+                  border: '1px solid',
+                  borderColor: 'divider',
+                }}
+              >
+                <Tooltip title="Chỉnh sửa">
+                  <IconButton 
+                    size="small" 
+                    onClick={(e) => { e.stopPropagation(); onEditClick(member); }} 
+                    color="primary"
+                    sx={{ p: 0.5 }}
+                  >
+                    <EditIcon sx={{ fontSize: 13 }} />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="Thêm con">
+                  <IconButton 
+                    size="small" 
+                    onClick={(e) => { e.stopPropagation(); onAddChildClick(member); }} 
+                    color="success"
+                    sx={{ p: 0.5 }}
+                  >
+                    <AddIcon sx={{ fontSize: 13 }} />
+                  </IconButton>
+                </Tooltip>
+              </Box>
+            )}
+
             <CardContent sx={{ p: 1, '&:last-child': { pb: 1 } }}>
               <Avatar src={member.avatarUrl} sx={{ mx: 'auto', mb: 0.5, width: 44, height: 44, border: '1px solid #eae3d2' }}>
                 {member.fullName ? member.fullName.charAt(0) : '?'}
@@ -83,11 +135,52 @@ const FamilyNode = ({ data }) => {
                   textAlign: 'center',
                   bgcolor: 'background.paper',
                   boxShadow: 1,
+                  position: 'relative',
                   '&:hover': {
                     borderColor: 'primary.main',
+                  },
+                  '&:hover .node-actions-spouse': {
+                    opacity: 1,
+                    visibility: 'visible',
                   }
                 }}
               >
+                {/* Spouse Action buttons overlay */}
+                {onEditClick && (
+                  <Box
+                    className="node-actions-spouse"
+                    sx={{
+                      position: 'absolute',
+                      top: -30,
+                      left: '50%',
+                      transform: 'translateX(-50%)',
+                      display: 'flex',
+                      gap: 0.5,
+                      opacity: 0,
+                      visibility: 'hidden',
+                      transition: 'opacity 0.2s, visibility 0.2s',
+                      bgcolor: 'background.paper',
+                      borderRadius: 1,
+                      boxShadow: 2,
+                      p: '2px',
+                      zIndex: 10,
+                      border: '1px solid',
+                      borderColor: 'divider',
+                    }}
+                  >
+                    <Tooltip title="Chỉnh sửa">
+                      <IconButton 
+                        size="small" 
+                        onClick={(e) => { e.stopPropagation(); onEditClick(member.spouse); }} 
+                        color="primary"
+                        sx={{ p: 0.5 }}
+                      >
+                        <EditIcon sx={{ fontSize: 13 }} />
+                      </IconButton>
+                    </Tooltip>
+                  </Box>
+                )}
+
                 <CardContent sx={{ p: 1, '&:last-child': { pb: 1 } }}>
                   <Avatar src={member.spouse.avatarUrl} sx={{ mx: 'auto', mb: 0.5, width: 44, height: 44, border: '1px solid #eae3d2' }}>
                     {member.spouse.fullName ? member.spouse.fullName.charAt(0) : '?'}

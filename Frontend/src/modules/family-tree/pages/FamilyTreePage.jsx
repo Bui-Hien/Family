@@ -11,6 +11,8 @@ import 'reactflow/dist/style.css';
 import { Box, Typography, Button, Paper } from '@mui/material';
 import { Download as DownloadIcon } from '@mui/icons-material';
 import { useTreeStore } from '@/modules/family-tree/store/useTreeStore';
+import { useMemberStore } from '@/modules/members/store/useMemberStore';
+import MemberForm from '@/modules/members/pages/MemberForm';
 import CommonLoading from '@/common/components/display/CommonLoading';
 import { useNavigate } from 'react-router-dom';
 import FamilyNode from './FamilyNode';
@@ -23,6 +25,12 @@ const FamilyTreePage = () => {
   const navigate = useNavigate();
   const { treeData, loading, fetchTree, exportTree, resetStore } = useTreeStore();
   
+  const {
+    openCreateEditPopup,
+    handleOpenCreateEdit,
+    fetchMembersList
+  } = useMemberStore();
+
   const [nodes, setNodes] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
 
@@ -134,14 +142,30 @@ const FamilyTreePage = () => {
 
   useEffect(() => {
     fetchTree();
+    fetchMembersList().catch(() => {});
     return () => {
       resetStore();
     };
-  }, [fetchTree, resetStore]);
+  }, [fetchTree, fetchMembersList, resetStore]);
 
   const handleNodeClick = useCallback((id) => {
     navigate(`/members/${id}`);
   }, [navigate]);
+
+  const handleEditClick = useCallback((member) => {
+    fetchMembersList().catch(() => {});
+    handleOpenCreateEdit(member);
+  }, [fetchMembersList, handleOpenCreateEdit]);
+
+  const handleAddChildClick = useCallback((member) => {
+    fetchMembersList().catch(() => {});
+    const defaultValues = {
+      generation: (member.generation || 1) + 1,
+      fatherId: member.gender === 'M' ? member.id : '',
+      motherId: member.gender === 'F' ? member.id : '',
+    };
+    handleOpenCreateEdit(null, defaultValues);
+  }, [fetchMembersList, handleOpenCreateEdit]);
 
   // Convert raw hierarchical tree data into React Flow nodes & edges with dynamic layout positioning
   useEffect(() => {
@@ -161,7 +185,9 @@ const FamilyTreePage = () => {
         type: 'familyNode',
         data: { 
           member: node, 
-          onNodeClick: handleNodeClick 
+          onNodeClick: handleNodeClick,
+          onEditClick: handleEditClick,
+          onAddChildClick: handleAddChildClick
         },
         position: { x: 0, y: depth * yGap },
       };
@@ -247,7 +273,7 @@ const FamilyTreePage = () => {
     const { nodes: layoutNodes, edges: layoutEdges } = buildLayout(treeData, 0);
     setNodes(layoutNodes);
     setEdges(layoutEdges);
-  }, [treeData, handleNodeClick, setEdges, setNodes]);
+  }, [treeData, handleNodeClick, handleEditClick, handleAddChildClick, setEdges, setNodes]);
 
   if (loading) {
     return <CommonLoading loading={loading} type="skeleton" rows={5} />;
@@ -307,6 +333,9 @@ const FamilyTreePage = () => {
           </Box>
         )}
       </Paper>
+
+      {/* Popup Form thêm/sửa thành viên */}
+      {openCreateEditPopup && <MemberForm />}
     </Box>
   );
 };

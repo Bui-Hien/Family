@@ -141,7 +141,7 @@ export const useMemberStore = create((set, get) => ({
     }
   },
 
-  handleOpenCreateEdit: (row) => {
+  handleOpenCreateEdit: (row, defaultValues = null) => {
     if (row) {
       set({
         selectedRow: {
@@ -178,6 +178,7 @@ export const useMemberStore = create((set, get) => ({
           spouseId: '',
           avatarUrl: '',
           additionalInfo: '',
+          ...defaultValues
         },
         openCreateEditPopup: true,
       });
@@ -206,6 +207,11 @@ export const useMemberStore = create((set, get) => ({
       if (res.success) {
         await pagingMember();
         await fetchMembersList();
+        
+        // Cập nhật lại cây gia phả nếu đang mở màn hình cây gia phả
+        const { useTreeStore } = await import('@/modules/family-tree/store/useTreeStore');
+        useTreeStore.getState().fetchTree().catch(() => {});
+
         handleClose();
         useUiStore.getState().showNotification('Xóa thành viên thành công!', 'success');
         return { success: true };
@@ -246,6 +252,11 @@ export const useMemberStore = create((set, get) => ({
       if (res.success) {
         await pagingMember();
         await fetchMembersList();
+
+        // Cập nhật lại cây gia phả nếu đang mở màn hình cây gia phả
+        const { useTreeStore } = await import('@/modules/family-tree/store/useTreeStore');
+        useTreeStore.getState().fetchTree().catch(() => {});
+
         handleClose();
         useUiStore.getState().showNotification(selectedRow?.id ? 'Cập nhật thành công!' : 'Thêm thành viên thành công!', 'success');
         return { success: true };
