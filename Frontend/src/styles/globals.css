@@ -1,0 +1,198 @@
+/* ===== CSS RESET & VARIABLES ===== */
+:root {
+  --font-family-sans: "Inter", "Roboto", "Helvetica Neue", Arial, sans-serif;
+  --font-family-serif: "Playfair Display", "Georgia", serif;
+  --scrollbar-bg: #FAF8F5;
+  --scrollbar-thumb: #C5A059;
+  --primary-color: #8C1D40;
+  --border-color: #EAE3D2;
+  --card-bg: #FFFFFF;
+  --text-color: #2C2C2C;
+}
+
+[data-theme='dark'] {
+  --scrollbar-bg: #121212;
+  --scrollbar-thumb: #333333;
+  --primary-color: #2A0914;
+  --border-color: #333333;
+  --card-bg: #1E1E1E;
+  --text-color: #E0E0E0;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-family-sans);
+  background-color: var(--scrollbar-bg);
+  color: var(--text-color);
+  line-height: 1.6;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--scrollbar-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #B23B68;
+}
+
+/* Premium Typography classes */
+.serif-title {
+  font-family: var(--font-family-serif);
+  font-weight: 700;
+}
+
+/* Micro animations */
+.hover-lift {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0px 8px 24px rgba(140, 29, 64, 0.12);
+}
+
+/* ===== PREMIUM TABLE STYLES ===== */
+.table-root {
+  width: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(140, 29, 64, 0.05);
+  border: 1px solid var(--border-color);
+  background-color: var(--card-bg);
+  transition: box-shadow 0.3s ease;
+  position: relative;
+}
+
+[data-theme='dark'] .table-root {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.table-container {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.row-table-header {
+  background-color: var(--primary-color);
+}
+
+.row-table-header th {
+  padding: 12px 16px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  border-bottom: 2px solid var(--border-color);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #ffffff !important;
+}
+
+.row-table-body {
+  border-bottom: 1px solid var(--border-color);
+  transition: background-color 0.2s ease, transform 0.15s ease;
+}
+
+.row-table-body:hover {
+  background-color: rgba(140, 29, 64, 0.04);
+}
+
+[data-theme='dark'] .row-table-body:hover {
+  background-color: rgba(230, 163, 184, 0.06);
+}
+
+.row-table-body td {
+  padding: 12px 16px;
+  font-size: 0.875rem;
+  color: var(--text-color);
+}
+
+/* Row states */
+.row-selected {
+  background-color: rgba(140, 29, 64, 0.08) !important;
+}
+
+[data-theme='dark'] .row-selected {
+  background-color: rgba(230, 163, 184, 0.12) !important;
+}
+
+.row-choose {
+  background-color: rgba(197, 160, 89, 0.15) !important; /* Gold highlight */
+}
+
+[data-theme='dark'] .row-choose {
+  background-color: rgba(241, 213, 146, 0.2) !important;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+/* Other helper classes used in ref component */
+.flex-wrap {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.align-center {
+  align-items: center;
+}
+
+.p-1 {
+  padding: 4px;
+}
+
+.p-2 {
+  padding: 8px;
+}
+
+.gap-1 {
+  gap: 8px;
+}
+
+.text-blue {
+  color: #1976d2;
+}
+
+[data-theme='dark'] .text-blue {
+  color: #90caf9;
+}
+
+.text-danger {
+  color: #d32f2f;
+}
+
+[data-theme='dark'] .text-danger {
+  color: #f44336;
+}
+
+.bg-green-black {
+  background-color: rgba(46, 125, 50, 0.08);
+}
+
+[data-theme='dark'] .bg-green-black {
+  background-color: rgba(129, 199, 132, 0.12);
+}
+

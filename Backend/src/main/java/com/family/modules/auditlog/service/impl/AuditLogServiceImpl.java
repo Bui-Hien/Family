@@ -1,0 +1,107 @@
+package com.family.modules.auditlog.service.impl;
+
+import com.family.modules.auditlog.entity.AuditLog;
+import com.family.modules.auditlog.repository.AuditLogRepository;
+import com.family.modules.auditlog.service.AuditLogService;
+import com.family.security.SecurityUtils;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.persistence.Id;
+import lombok.RequiredArgsConstructor;
+import org.javers.core.Javers;
+import org.javers.core.diff.Diff;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+@Service
+@RequiredArgsConstructor
+public class AuditLogServiceImpl implements AuditLogService {
+
+    private final ObjectMapper objectMapper;
+    private final Javers javers;
+    private final AuditLogRepository auditLogRepository;
+
+    @Async
+    @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public <T> void logChanges(List<T> oldEntities, List<T> newEntities) {
+        UUID userId = SecurityUtils.getCurrentUserId()
+                .orElseThrow(() -> new SecurityException("User not logged in"));
+
+        List<AuditLog> logsToSave = new ArrayList<>();
+
+        for (int i = 0; i < newEntities.size(); i++) {
+            T oldObj = oldEntities.get(i);
+            T newObj = newEntities.get(i);
+
+            Diff diff = javers.compare(oldObj, newObj);
+
+            if (diff.hasChanges()) {
+                AuditLog log = new AuditLog();
+                log.setEntityId(extractId(newObj)); // Tự động lấy ID
+                log.setEntityName(newObj.getClass().getSimpleName());
+                log.setCreatedBy(userId);
+                log.setData(javers.getJsonConverter().toJson(diff));
+                logsToSave.add(log);
+            }
+        }
+
+        if (!logsToSave.isEmpty()) {
+            auditLogRepository.saveAll(logsToSave);
+        }
+    }
+
+    @Override
+    public <T> void logChange(T oldEntity, T newEntity) {
+        UUID userId = SecurityUtils.getCurrentUserId()
+                .orElseThrow(() -> new SecurityException("User not logged in"));
+
+        Diff diff = javers.compare(oldEntity, newEntity);
+
+        if (diff.hasChanges()) {
+            AuditLog log = new AuditLog();
+            log.setEntityId(extractId(newEntity)); // Tự động lấy ID
+            log.setEntityName(newEntity.getClass().getSimpleName());
+            log.setCreatedBy(userId);
+            log.setData(javers.getJsonConverter().toJson(diff));
+
+            auditLogRepository.save(log);
+        }
+    }
+
+    @Override
+    public <T> T cloneObject(T object, Class<T> clazz) {
+        if (object == null) return null;
+        try {
+            return objectMapper.readValue(objectMapper.writeValueAsString(object), clazz);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Failed to clone object for Audit Log", e);
+        }
+    }
+
+    private UUID extractId(Object entity) {
+        // Tìm field có @Id (hỗ trợ cả class cha nếu cần)
+        Class<?> clazz = entity.getClass();
+        while (clazz != null) {
+            for (Field field : clazz.getDeclaredFields()) {
+                if (field.isAnnotationPresent(Id.class)) {
+                    field.setAccessible(true);
+                    try {
+                        return (UUID) field.get(entity);
+                    } catch (IllegalAccessException e) {
+                        return null;
+                    }
+                }
+            }
+            clazz = clazz.getSuperclass();
+        }
+        return null;
+    }
+}

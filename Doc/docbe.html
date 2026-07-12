@@ -1,0 +1,2139 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kế hoạch Backend - Website Dòng Họ</title>
+    <style>
+        /* ===== RESET ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f0f2f5;
+            color: #1a1a2e;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+            padding: 40px 48px;
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            border-bottom: 3px solid #2563eb;
+            padding-bottom: 20px;
+            margin-bottom: 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1a1a2e;
+            letter-spacing: -0.5px;
+        }
+
+        .header .badge {
+            background: #2563eb;
+            color: #fff;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .header .meta {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        /* ===== SECTION ===== */
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title .icon {
+            font-size: 22px;
+        }
+
+        /* ===== TOC ===== */
+        .toc {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px 24px;
+            margin-bottom: 32px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .toc h3 {
+            font-size: 15px;
+            font-weight: 600;
+            color: #4b5563;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .toc-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 6px 16px;
+        }
+
+        .toc a {
+            color: #2563eb;
+            text-decoration: none;
+            font-size: 14px;
+            padding: 2px 0;
+            display: block;
+            transition: color 0.2s;
+        }
+
+        .toc a:hover {
+            color: #1d4ed8;
+            text-decoration: underline;
+        }
+
+        /* ===== TECH TABLE ===== */
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 12px;
+            margin: 12px 0;
+        }
+
+        .tech-item {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #e5e7eb;
+            font-size: 14px;
+        }
+
+        .tech-item .name {
+            font-weight: 600;
+            color: #1a1a2e;
+        }
+
+        .tech-item .version {
+            background: #e5e7eb;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #4b5563;
+            font-family: 'Courier New', monospace;
+        }
+
+        /* ===== CODE BLOCK ===== */
+        .code-block {
+            background: #0f172a;
+            color: #e2e8f0;
+            border-radius: 10px;
+            padding: 16px 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            overflow-x: auto;
+            line-height: 1.8;
+            margin: 8px 0;
+        }
+
+        .code-block .keyword {
+            color: #f472b6;
+        }
+
+        .code-block .string {
+            color: #a3e635;
+        }
+
+        .code-block .comment {
+            color: #6b7280;
+            font-style: italic;
+        }
+
+        .code-block .func {
+            color: #60a5fa;
+        }
+
+        .code-block .variable {
+            color: #fbbf24;
+        }
+
+        .code-block .annotation {
+            color: #34d399;
+        }
+
+        .code-block .number {
+            color: #f472b6;
+        }
+
+        /* ===== COMPONENT CARD ===== */
+        .component-card {
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 20px 24px;
+            margin-bottom: 16px;
+            background: #fff;
+            transition: box-shadow 0.2s;
+        }
+
+        .component-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+        }
+
+        .component-card .comp-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .component-card .comp-name {
+            font-size: 17px;
+            font-weight: 700;
+            color: #1a1a2e;
+        }
+
+        .component-card .comp-badge {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            padding: 3px 12px;
+            border-radius: 12px;
+        }
+
+        .comp-badge.entity {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .comp-badge.dto {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .comp-badge.controller {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .comp-badge.service {
+            background: #fce4ec;
+            color: #b71c1c;
+        }
+
+        .comp-badge.security {
+            background: #e0e7ff;
+            color: #3730a3;
+        }
+
+        .component-card .comp-desc {
+            color: #4b5563;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .component-card .comp-props {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 12px 16px;
+            font-size: 13px;
+            overflow-x: auto;
+        }
+
+        .component-card .comp-props code {
+            font-family: 'Courier New', monospace;
+            color: #1e293b;
+        }
+
+        .component-card .comp-props .prop {
+            color: #2563eb;
+        }
+
+        .component-card .comp-props .type {
+            color: #7c3aed;
+        }
+
+        /* ===== API TABLE ===== */
+        .api-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+            margin: 12px 0;
+        }
+
+        .api-table th {
+            background: #f1f5f9;
+            text-align: left;
+            padding: 10px 14px;
+            font-weight: 600;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .api-table td {
+            padding: 10px 14px;
+            border-bottom: 1px solid #e5e7eb;
+            vertical-align: top;
+        }
+
+        .api-table .method {
+            font-weight: 700;
+            padding: 2px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .api-table .method.get {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .api-table .method.post {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .api-table .method.put {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .api-table .method.delete {
+            background: #fce4ec;
+            color: #b71c1c;
+        }
+
+        .api-table .endpoint {
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            color: #1e293b;
+        }
+
+        .api-table .desc {
+            color: #4b5563;
+        }
+
+        /* ===== PERMISSION TABLE ===== */
+        .perm-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 12px;
+            margin: 12px 0;
+        }
+
+        .perm-item {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 12px 16px;
+            border: 1px solid #e5e7eb;
+            font-size: 14px;
+        }
+
+        .perm-item .perm-name {
+            font-weight: 600;
+            color: #1a1a2e;
+        }
+
+        .perm-item .perm-desc {
+            color: #6b7280;
+            font-size: 13px;
+        }
+
+        /* ===== FOLDER STRUCTURE ===== */
+        .folder-tree {
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            background: #0f172a;
+            color: #e2e8f0;
+            border-radius: 12px;
+            padding: 20px 24px;
+            overflow-x: auto;
+            line-height: 1.8;
+        }
+
+        .folder-tree .highlight {
+            color: #60a5fa;
+        }
+
+        .folder-tree .folder {
+            color: #fbbf24;
+        }
+
+        .folder-tree .file {
+            color: #a5b4fc;
+        }
+
+        .folder-tree .comment {
+            color: #6b7280;
+            font-style: italic;
+        }
+
+        /* ===== ROADMAP ===== */
+        .roadmap {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 16px;
+            margin: 12px 0;
+        }
+
+        .roadmap-item {
+            background: #f8fafc;
+            border-radius: 10px;
+            padding: 16px 20px;
+            border-left: 4px solid #2563eb;
+        }
+
+        .roadmap-item .week {
+            font-size: 12px;
+            font-weight: 700;
+            color: #2563eb;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .roadmap-item .task {
+            font-weight: 600;
+            color: #1a1a2e;
+            margin-top: 4px;
+            font-size: 14px;
+        }
+
+        .roadmap-item .detail {
+            color: #6b7280;
+            font-size: 13px;
+            margin-top: 4px;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px 16px;
+            }
+
+            .header h1 {
+                font-size: 22px;
+            }
+
+            .tech-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .toc-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .perm-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .roadmap {
+                grid-template-columns: 1fr;
+            }
+
+            .folder-tree {
+                font-size: 11px;
+                padding: 12px 16px;
+            }
+
+            .api-table {
+                font-size: 12px;
+            }
+
+            .api-table th,
+            .api-table td {
+                padding: 6px 8px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .toc-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .component-card .comp-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .api-table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+
+        /* ===== PRINT ===== */
+        @media print {
+            body {
+                background: #fff;
+                padding: 0;
+            }
+
+            .container {
+                box-shadow: none;
+                padding: 20px;
+            }
+
+            .toc a {
+                color: #1a1a2e;
+                text-decoration: none;
+            }
+
+            .folder-tree {
+                background: #f1f5f9;
+                color: #1a1a2e;
+            }
+
+            .folder-tree .highlight {
+                color: #2563eb;
+            }
+
+            .folder-tree .folder {
+                color: #b45309;
+            }
+
+            .folder-tree .file {
+                color: #6d28d9;
+            }
+
+            .code-block {
+                background: #f1f5f9;
+                color: #1a1a2e;
+            }
+
+            .code-block .keyword {
+                color: #d97706;
+            }
+
+            .code-block .string {
+                color: #16a34a;
+            }
+
+            .code-block .comment {
+                color: #6b7280;
+            }
+
+            .code-block .func {
+                color: #2563eb;
+            }
+
+            .code-block .variable {
+                color: #b45309;
+            }
+        }
+
+        .note {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin: 12px 0;
+            font-size: 14px;
+            color: #92400e;
+        }
+
+        .note strong {
+            color: #78350f;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <!-- ============================================================ -->
+    <!-- HEADER -->
+    <!-- ============================================================ -->
+    <header class="header">
+        <div>
+            <h1>⚙️ Kế hoạch triển khai Backend</h1>
+            <p style="color:#4b5563; font-size:15px; margin-top:4px;">
+                Website Dòng Họ &bull; Spring Boot 3.2 + Spring Security 6
+            </p>
+        </div>
+        <div style="text-align:right;">
+            <span class="badge">v2.0</span>
+            <div class="meta">Cập nhật: 2026</div>
+        </div>
+    </header>
+
+    <!-- ============================================================ -->
+    <!-- TOC -->
+    <!-- ============================================================ -->
+    <div class="toc">
+        <h3>📑 Mục lục</h3>
+        <div class="toc-grid">
+            <a href="#overview">1. Tổng quan</a>
+            <a href="#tech-stack">2. Công nghệ</a>
+            <a href="#folder-structure">3. Cấu trúc thư mục</a>
+            <a href="#base-entity">4. Base Entity</a>
+            <a href="#enums">5. Enums</a>
+            <a href="#dto">6. DTOs</a>
+            <a href="#auth">7. Auth (Đăng nhập)</a>
+            <a href="#profile">8. Profile (Thành viên)</a>
+            <a href="#family-tree">9. Gia phả</a>
+            <a href="#event">10. Sự kiện</a>
+            <a href="#post">11. Tin tức</a>
+            <a href="#gallery">12. Thư viện ảnh</a>
+            <a href="#fund">13. Quỹ</a>
+            <a href="#file">14. File management</a>
+            <a href="#security">15. Phân quyền</a>
+            <a href="#api">16. API list</a>
+            <a href="#roadmap">17. Lộ trình</a>
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- 1. OVERVIEW -->
+    <!-- ============================================================ -->
+    <section class="section" id="overview">
+        <h2 class="section-title"><span class="icon">📋</span> 1. Tổng quan</h2>
+
+        <div class="note">
+            <strong>🔐 Lưu ý quan trọng:</strong>
+            <ul style="margin-left:20px; margin-top:6px;">
+                <li><strong>Tài khoản được cấp bởi admin</strong> — không có tính năng đăng ký công khai</li>
+                <li><strong>Quên mật khẩu:</strong> Gửi email reset password với token JWT ngắn hạn (15 phút)</li>
+                <li><strong>UUID v7</strong> làm khóa chính cho tất cả entity</li>
+                <li><strong>Validation</strong> được thực hiện ở DTO level (Jakarta Validation)</li>
+                <li><strong>Phân quyền</strong> chi tiết theo API và phạm vi dữ liệu</li>
+                <li><strong>File</strong> phân loại PUBLIC / PRIVATE (có quyền mới xem được)</li>
+            </ul>
+        </div>
+
+        <p style="color:#4b5563;">
+            Backend được thiết kế theo kiến trúc <strong>Domain-Driven Design (DDD)</strong> với các module riêng biệt.
+            Sử dụng <strong>Spring Data JPA</strong> với <strong>PostgreSQL</strong>, <strong>Flyway</strong> cho migration,
+            <strong>Spring Security</strong> với <strong>JWT</strong> cho xác thực và phân quyền.
+        </p>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- 2. TECH STACK -->
+    <!-- ============================================================ -->
+    <section class="section" id="tech-stack">
+        <h2 class="section-title"><span class="icon">⚡</span> 2. Công nghệ sử dụng</h2>
+        <div class="tech-grid">
+            <div class="tech-item"><span class="name">Spring Boot</span><span class="version">3.2.4</span></div>
+            <div class="tech-item"><span class="name">Java</span><span class="version">17+ (LTS)</span></div>
+            <div class="tech-item"><span class="name">Spring Security</span><span class="version">6.2.4</span></div>
+            <div class="tech-item"><span class="name">PostgreSQL</span><span class="version">16.x</span></div>
+            <div class="tech-item"><span class="name">Spring Data JPA</span><span class="version">3.2.4</span></div>
+            <div class="tech-item"><span class="name">Flyway</span><span class="version">10.11.0</span></div>
+            <div class="tech-item"><span class="name">JJWT</span><span class="version">0.12.5</span></div>
+            <div class="tech-item"><span class="name">SpringDoc OpenAPI</span><span class="version">2.5.0</span></div>
+            <div class="tech-item"><span class="name">Thumbnailator</span><span class="version">0.4.19</span></div>
+            <div class="tech-item"><span class="name">LZ4 Java</span><span class="version">1.8.0</span></div>
+            <div class="tech-item"><span class="name">Lombok</span><span class="version">1.18.30</span></div>
+            <div class="tech-item"><span class="name">Redis (Optional)</span><span class="version">7.x</span></div>
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- 3. FOLDER STRUCTURE -->
+    <!-- ============================================================ -->
+    <section class="section" id="folder-structure">
+        <h2 class="section-title"><span class="icon">📁</span> 3. Cấu trúc thư mục</h2>
+        <div class="folder-tree">
+            <span class="folder">backend/</span><br>
+            │<br>
+            ├── <span class="folder">src/main/java/com/family/</span><br>
+            │&nbsp;&nbsp;&nbsp;├── <span class="folder highlight">FamilyApplication.java</span><br>
+            │&nbsp;&nbsp;&nbsp;│<br>
+            │&nbsp;&nbsp;&nbsp;├── <span class="folder highlight">config/</span> &nbsp;<span class="comment">// Cấu hình</span><br>
+            │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── SecurityConfig.java<br>
+            │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── JwtConfig.java<br>
+            │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── CorsConfig.java<br>
+            │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── FileStorageConfig.java<br>
+            │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── SwaggerConfig.java<br>
+            │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── AsyncConfig.java<br>
+            │&nbsp;&nbsp;&nbsp;│<br>
+            │&nbsp;&nbsp;&nbsp;├── <span class="folder highlight">security/</span> &nbsp;<span class="comment">// Bảo mật</span><br>
+            │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── jwt/<br>
+            │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── JwtTokenProvider.java<br>
+            │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── JwtAuthenticationFilter.java<br>
+            │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── JwtTokenService.java<br>
+            │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── CustomUserDetails.java<br>
+            │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── CustomUserDetailsService.java<br>
+            │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── SecurityUtils.java<br>
+            │&nbsp;&nbsp;&nbsp;│<br>
+            │&nbsp;&nbsp;&nbsp;├── <span class="folder highlight">common/</span> &nbsp;<span class="comment">// Common code</span><br>
+            │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── base/<br>
+            │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── BaseEntity.java<br>
+            │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── BaseEntityWithName.java<br>
+            │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── BaseRepository.java<br>
+            │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── BaseService.java<br>
+            │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── BaseController.java<br>
+            │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── dto/<br>
+            │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── ApiResponse.java<br>
+            │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── PagingRequest.java<br>
+            │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── PagingResponse.java<br>
+            │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── enums/<br>
+            │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── RoleEnum.java<br>
+            │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── StatusEnum.java<br>
+            │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── FileVisibility.java<br>
+            │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── PrivilegeEnum.java<br>
+            │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── exception/<br>
+            │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── BusinessException.java<br>
+            │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── ResourceNotFoundException.java<br>
+            │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── UnauthorizedException.java<br>
+            │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── GlobalExceptionHandler.java<br>
+            │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── util/<br>
+            │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── DateUtils.java<br>
+            │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── FileUtils.java<br>
+            │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── ImageUtils.java<br>
+            │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── SlugUtils.java<br>
+            │&nbsp;&nbsp;&nbsp;│<br>
+            │&nbsp;&nbsp;&nbsp;├── <span class="folder highlight">modules/</span> &nbsp;<span class="comment">// Feature modules</span><br>
+            │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── <span class="folder">auth/</span><br>
+            │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── controller/<br>
+            │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── dto/<br>
+            │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── service/<br>
+            │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── repository/<br>
+            │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│<br>
+            │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── <span class="folder">user/</span> &nbsp;<span class="comment">// Quản lý user (admin)</span><br>
+            │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── <span class="folder">profile/</span> &nbsp;<span class="comment">// Thành viên dòng họ</span><br>
+            │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── <span class="folder">family-tree/</span> &nbsp;<span class="comment">// Gia phả</span><br>
+            │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── <span class="folder">event/</span> &nbsp;<span class="comment">// Sự kiện</span><br>
+            │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── <span class="folder">post/</span> &nbsp;<span class="comment">// Tin tức</span><br>
+            │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── <span class="folder">gallery/</span> &nbsp;<span class="comment">// Thư viện ảnh</span><br>
+            │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── <span class="folder">fund/</span> &nbsp;<span class="comment">// Quỹ</span><br>
+            │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── <span class="folder">file/</span> &nbsp;<span class="comment">// File management</span><br>
+            │&nbsp;&nbsp;&nbsp;│<br>
+            │&nbsp;&nbsp;&nbsp;└── <span class="folder highlight">infrastructure/</span> &nbsp;<span class="comment">// Infrastructure</span><br>
+            │&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── audit/<br>
+            │&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── cache/<br>
+            │&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── scheduler/<br>
+            │<br>
+            ├── <span class="folder">src/main/resources/</span><br>
+            │&nbsp;&nbsp;&nbsp;├── application.yml<br>
+            │&nbsp;&nbsp;&nbsp;├── application-dev.yml<br>
+            │&nbsp;&nbsp;&nbsp;├── application-prod.yml<br>
+            │&nbsp;&nbsp;&nbsp;└── <span class="folder">db/migration/</span><br>
+            │&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── V1__init_schema.sql<br>
+            │&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── V2__add_audit_fields.sql<br>
+            │&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── V3__add_file_tables.sql<br>
+            │<br>
+            ├── <span class="folder">uploads/</span> &nbsp;<span class="comment">// File storage (runtime)</span><br>
+            │&nbsp;&nbsp;&nbsp;├── <span class="folder">public/</span><br>
+            │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── images/large/<br>
+            │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── images/medium/<br>
+            │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── images/small/<br>
+            │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── documents/<br>
+            │&nbsp;&nbsp;&nbsp;└── <span class="folder">private/</span><br>
+            │&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── images/<br>
+            │&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── documents/<br>
+            │<br>
+            ├── pom.xml<br>
+            └── docker-compose.yml
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- 4. BASE ENTITY -->
+    <!-- ============================================================ -->
+    <section class="section" id="base-entity">
+        <h2 class="section-title"><span class="icon">🧬</span> 4. Base Entity</h2>
+
+        <div class="component-card">
+            <div class="comp-header">
+                <span class="comp-name">📄 BaseEntity</span>
+                <span class="comp-badge entity">Base</span>
+            </div>
+            <div class="comp-desc">
+                Entity cơ sở cho tất cả entity trong hệ thống. Sử dụng <strong>UUID v7</strong> làm khóa chính.
+                Tự động audit <strong>createdAt, updatedAt, createdBy, updatedBy</strong>.
+            </div>
+            <div class="comp-props">
+                <strong>Các trường:</strong><br>
+                <code>
+                    <span class="prop">id</span>: <span class="type">UUID</span> &bull;
+                    <span class="prop">createdAt</span>: <span class="type">LocalDateTime</span> &bull;
+                    <span class="prop">updatedAt</span>: <span class="type">LocalDateTime</span> &bull;
+                    <span class="prop">createdBy</span>: <span class="type">UUID</span> &bull;
+                    <span class="prop">updatedBy</span>: <span class="type">UUID</span> &bull;
+                    <span class="prop">version</span>: <span class="type">Long</span> (Optimistic Locking) &bull;
+                    <span class="prop">isActive</span>: <span class="type">Boolean</span> (default: true) &bull;
+                    <span class="prop">isDeleted</span>: <span class="type">Boolean</span> (default: false)
+                </code>
+            </div>
+        </div>
+
+        <div class="component-card">
+            <div class="comp-header">
+                <span class="comp-name">📄 BaseEntityWithName</span>
+                <span class="comp-badge entity">Base</span>
+            </div>
+            <div class="comp-desc">
+                Mở rộng BaseEntity, thêm các trường name, code, description, slug.
+                Dùng cho các entity cần tên hiển thị.
+            </div>
+            <div class="comp-props">
+                <strong>Các trường thêm:</strong><br>
+                <code>
+                    <span class="prop">name</span>: <span class="type">String</span> (nullable: false) &bull;
+                    <span class="prop">code</span>: <span class="type">String</span> &bull;
+                    <span class="prop">description</span>: <span class="type">String</span> (TEXT) &bull;
+                    <span class="prop">slug</span>: <span class="type">String</span> (unique)
+                </code>
+            </div>
+        </div>
+
+        <div class="component-card">
+            <div class="comp-header">
+                <span class="comp-name">📄 BaseEntityWithSort</span>
+                <span class="comp-badge entity">Base</span>
+            </div>
+            <div class="comp-desc">
+                Mở rộng BaseEntityWithName, thêm trường sortOrder và isFeatured.
+                Dùng cho các entity cần sắp xếp hoặc đánh dấu nổi bật.
+            </div>
+            <div class="comp-props">
+                <strong>Các trường thêm:</strong><br>
+                <code>
+                    <span class="prop">sortOrder</span>: <span class="type">Integer</span> (default: 0) &bull;
+                    <span class="prop">isFeatured</span>: <span class="type">Boolean</span> (default: false)
+                </code>
+            </div>
+        </div>
+
+        <div style="margin-top:12px;">
+            <strong>📝 Code BaseEntity mẫu:</strong>
+            <div class="code-block">
+                <span class="annotation">@Getter</span><br>
+                <span class="annotation">@Setter</span><br>
+                <span class="annotation">@MappedSuperclass</span><br>
+                <span class="annotation">@EntityListeners</span>(AuditingEntityListener.<span class="keyword">class</span>)<br>
+                <span class="keyword">public abstract class</span> <span class="func">BaseEntity</span> <span class="func">{</span><br>
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="annotation">@Id</span><br>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="annotation">@GeneratedValue</span>(strategy = GenerationType.<span class="variable">UUID</span>)<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="annotation">@Column</span>(columnDefinition = <span class="string">"UUID DEFAULT gen_random_uuid()"</span>)<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">private</span> UUID <span class="variable">id</span>;<br>
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="annotation">@CreatedDate</span><br>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">private</span> LocalDateTime <span class="variable">createdAt</span>;<br>
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="annotation">@LastModifiedDate</span><br>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">private</span> LocalDateTime <span class="variable">updatedAt</span>;<br>
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="annotation">@CreatedBy</span><br>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">private</span> UUID <span class="variable">createdBy</span>;<br>
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="annotation">@LastModifiedBy</span><br>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">private</span> UUID <span class="variable">updatedBy</span>;<br>
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="annotation">@Version</span><br>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">private</span> Long <span class="variable">version</span> = <span class="number">0L</span>;<br>
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="annotation">@Column</span>(name = <span class="string">"is_active"</span>)<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">private</span> Boolean <span class="variable">isActive</span> = <span class="keyword">true</span>;<br>
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="annotation">@Column</span>(name = <span class="string">"is_deleted"</span>)<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">private</span> Boolean <span class="variable">isDeleted</span> = <span class="keyword">false</span>;<br>
+                <span class="func">}</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- 5. ENUMS -->
+    <!-- ============================================================ -->
+    <section class="section" id="enums">
+        <h2 class="section-title"><span class="icon">🔖</span> 5. Enums</h2>
+
+        <div class="component-card">
+            <div class="comp-header">
+                <span class="comp-name">👤 RoleEnum</span>
+                <span class="comp-badge">Enum</span>
+            </div>
+            <div class="comp-props">
+                <code>
+                    <span class="prop">ROLE_SYSTEM_ADMIN</span> &bull; Quản trị viên hệ thống<br>
+                    <span class="prop">ROLE_CLAN_LEADER</span> &bull; Trưởng họ<br>
+                    <span class="prop">ROLE_CLAN_ADMIN</span> &bull; Ban đại diện<br>
+                    <span class="prop">ROLE_CLAN_MEMBER</span> &bull; Thành viên<br>
+                    <span class="prop">ROLE_VIEWER</span> &bull; Người xem
+                </code>
+            </div>
+        </div>
+
+        <div class="component-card">
+            <div class="comp-header">
+                <span class="comp-name">🔑 PrivilegeEnum</span>
+                <span class="comp-badge">Enum</span>
+            </div>
+            <div class="comp-desc">
+                Quyền chi tiết cho từng module. Mỗi role được gán tập hợp các privilege.
+            </div>
+            <div class="comp-props">
+                <strong>Profile:</strong> PROFILE_VIEW, PROFILE_CREATE, PROFILE_EDIT, PROFILE_DELETE<br>
+                <strong>Tree:</strong> TREE_VIEW, TREE_EDIT, TREE_EXPORT<br>
+                <strong>Event:</strong> EVENT_VIEW, EVENT_CREATE, EVENT_EDIT, EVENT_DELETE<br>
+                <strong>Post:</strong> POST_VIEW, POST_CREATE, POST_EDIT, POST_DELETE<br>
+                <strong>Gallery:</strong> GALLERY_VIEW, GALLERY_CREATE, GALLERY_EDIT, GALLERY_DELETE, GALLERY_UPLOAD<br>
+                <strong>Fund:</strong> FUND_VIEW, FUND_MANAGE, FUND_TRANSACTION, FUND_REPORT<br>
+                <strong>File:</strong> FILE_UPLOAD_PUBLIC, FILE_UPLOAD_PRIVATE, FILE_DELETE<br>
+                <strong>User:</strong> USER_VIEW, USER_CREATE, USER_EDIT, USER_DELETE, USER_ROLE
+            </div>
+        </div>
+
+        <div class="component-card">
+            <div class="comp-header">
+                <span class="comp-name">📁 FileVisibility</span>
+                <span class="comp-badge">Enum</span>
+            </div>
+            <div class="comp-props">
+                <code>
+                    <span class="prop">PUBLIC</span> &bull; Công khai (không cần đăng nhập)<br>
+                    <span class="prop">PROTECTED</span> &bull; Có quyền xem (cần đăng nhập + có quyền)<br>
+                    <span class="prop">PRIVATE</span> &bull; Riêng tư (chỉ owner hoặc admin)
+                </code>
+            </div>
+        </div>
+
+        <div class="component-card">
+            <div class="comp-header">
+                <span class="comp-name">📊 StatusEnum</span>
+                <span class="comp-badge">Enum</span>
+            </div>
+            <div class="comp-props">
+                <code>
+                    <span class="prop">ACTIVE</span> &bull; Hoạt động &nbsp;
+                    <span class="prop">INACTIVE</span> &bull; Không hoạt động &nbsp;
+                    <span class="prop">PENDING</span> &bull; Chờ duyệt &nbsp;
+                    <span class="prop">APPROVED</span> &bull; Đã duyệt &nbsp;
+                    <span class="prop">REJECTED</span> &bull; Từ chối &nbsp;
+                    <span class="prop">DRAFT</span> &bull; Nháp &nbsp;
+                    <span class="prop">PUBLISHED</span> &bull; Đã xuất bản &nbsp;
+                    <span class="prop">ARCHIVED</span> &bull; Đã lưu trữ
+                </code>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- 6. DTOs -->
+    <!-- ============================================================ -->
+    <section class="section" id="dto">
+        <h2 class="section-title"><span class="icon">📦</span> 6. DTOs</h2>
+
+        <div class="component-card">
+            <div class="comp-header">
+                <span class="comp-name">📤 ApiResponse&lt;T&gt;</span>
+                <span class="comp-badge dto">DTO</span>
+            </div>
+            <div class="comp-desc">
+                Response chuẩn cho tất cả API. Bao gồm success, message, data, errorCode, timestamp.
+            </div>
+            <div class="comp-props">
+                <code>
+                    <span class="prop">success</span>: <span class="type">boolean</span> &bull;
+                    <span class="prop">message</span>: <span class="type">String</span> &bull;
+                    <span class="prop">data</span>: <span class="type">T</span> &bull;
+                    <span class="prop">errorCode</span>: <span class="type">String</span> &bull;
+                    <span class="prop">timestamp</span>: <span class="type">LocalDateTime</span>
+                </code>
+            </div>
+        </div>
+
+        <div class="component-card">
+            <div class="comp-header">
+                <span class="comp-name">📄 PagingRequest</span>
+                <span class="comp-badge dto">DTO</span>
+            </div>
+            <div class="comp-desc">
+                Request phân trang với validation. Dùng cho tất cả API list/paging.
+            </div>
+            <div class="comp-props">
+                <code>
+                    <span class="prop">pageIndex</span>: <span class="type">Integer</span> (>=1) &bull;
+                    <span class="prop">pageSize</span>: <span class="type">Integer</span> (>=1) &bull;
+                    <span class="prop">keyword</span>: <span class="type">String</span> &bull;
+                    <span class="prop">sortField</span>: <span class="type">String</span> &bull;
+                    <span class="prop">sortDirection</span>: <span class="type">Sort.Direction</span>
+                </code>
+            </div>
+        </div>
+
+        <div class="component-card">
+            <div class="comp-header">
+                <span class="comp-name">📄 PagingResponse&lt;T&gt;</span>
+                <span class="comp-badge dto">DTO</span>
+            </div>
+            <div class="comp-desc">
+                Response phân trang với metadata.
+            </div>
+            <div class="comp-props">
+                <code>
+                    <span class="prop">content</span>: <span class="type">List&lt;T&gt;</span> &bull;
+                    <span class="prop">pageIndex</span>: <span class="type">int</span> &bull;
+                    <span class="prop">pageSize</span>: <span class="type">int</span> &bull;
+                    <span class="prop">totalElements</span>: <span class="type">long</span> &bull;
+                    <span class="prop">totalPages</span>: <span class="type">int</span> &bull;
+                    <span class="prop">first</span>: <span class="type">boolean</span> &bull;
+                    <span class="prop">last</span>: <span class="type">boolean</span>
+                </code>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- 7. AUTH -->
+    <!-- ============================================================ -->
+    <section class="section" id="auth">
+        <h2 class="section-title"><span class="icon">🔐</span> 7. Auth (Đăng nhập & Quên mật khẩu)</h2>
+
+        <div class="note">
+            <strong>🔑 Lưu ý:</strong>
+            <ul style="margin-left:20px; margin-top:6px;">
+                <li>Tài khoản được <strong>cấp bởi admin</strong> — không có API đăng ký công khai</li>
+                <li><strong>Quên mật khẩu:</strong> Gửi email reset password với token JWT (thời hạn 15 phút)</li>
+                <li>Token reset password được lưu trong database và invalidate sau khi sử dụng</li>
+            </ul>
+        </div>
+
+        <div class="component-card">
+            <div class="comp-header">
+                <span class="comp-name">👤 User Entity</span>
+                <span class="comp-badge entity">Entity</span>
+            </div>
+            <div class="comp-desc">
+                User entity implements <strong>UserDetails</strong> của Spring Security.
+                Liên kết với Profile qua profileId.
+            </div>
+            <div class="comp-props">
+                <strong>Các trường chính:</strong><br>
+                <code>
+                    <span class="prop">username</span>: <span class="type">String</span> (unique) &bull;
+                    <span class="prop">email</span>: <span class="type">String</span> (unique) &bull;
+                    <span class="prop">phoneNumber</span>: <span class="type">String</span> (unique) &bull;
+                    <span class="prop">password</span>: <span class="type">String</span> (encoded) &bull;
+                    <span class="prop">fullName</span>: <span class="type">String</span> &bull;
+                    <span class="prop">role</span>: <span class="type">RoleEnum</span> &bull;
+                    <span class="prop">isEnabled</span>: <span class="type">Boolean</span> &bull;
+                    <span class="prop">isLocked</span>: <span class="type">Boolean</span> &bull;
+                    <span class="prop">profileId</span>: <span class="type">UUID</span> &bull;
+                    <span class="prop">refreshToken</span>: <span class="type">String</span> &bull;
+                    <span class="prop">refreshTokenExpiry</span>: <span class="type">LocalDateTime</span>
+                </code>
+            </div>
+        </div>
+
+        <div class="component-card">
+            <div class="comp-header">
+                <span class="comp-name">📤 Auth DTOs</span>
+                <span class="comp-badge dto">DTO</span>
+            </div>
+            <div class="comp-props">
+                <strong>LoginRequest:</strong><br>
+                <code>
+                    <span class="prop">username</span>: <span class="type">String</span> &bull;
+                    <span class="prop">password</span>: <span class="type">String</span>
+                </code>
+                <br><br>
+                <strong>LoginResponse:</strong><br>
+                <code>
+                    <span class="prop">userId</span>: <span class="type">UUID</span> &bull;
+                    <span class="prop">username</span>: <span class="type">String</span> &bull;
+                    <span class="prop">fullName</span>: <span class="type">String</span> &bull;
+                    <span class="prop">role</span>: <span class="type">String</span> &bull;
+                    <span class="prop">accessToken</span>: <span class="type">String</span> &bull;
+                    <span class="prop">refreshToken</span>: <span class="type">String</span> &bull;
+                    <span class="prop">expiresIn</span>: <span class="type">Long</span>
+                </code>
+                <br><br>
+                <strong>ForgotPasswordRequest:</strong><br>
+                <code>
+                    <span class="prop">email</span>: <span class="type">String</span> (validation: email)
+                </code>
+                <br><br>
+                <strong>ResetPasswordRequest:</strong><br>
+                <code>
+                    <span class="prop">token</span>: <span class="type">String</span> &bull;
+                    <span class="prop">newPassword</span>: <span class="type">String</span> (min 6 chars)
+                </code>
+            </div>
+        </div>
+
+        <div style="margin-top:12px;">
+            <strong>📝 API Auth:</strong>
+            <table class="api-table">
+                <thead>
+                    <tr>
+                        <th>Method</th>
+                        <th>Endpoint</th>
+                        <th>Mô tả</th>
+                        <th>Quyền</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="method post">POST</span></td>
+                        <td class="endpoint">/api/auth/login</td>
+                        <td class="desc">Đăng nhập</td>
+                        <td>Public</td>
+                    </tr>
+                    <tr>
+                        <td><span class="method post">POST</span></td>
+                        <td class="endpoint">/api/auth/refresh</td>
+                        <td class="desc">Refresh token</td>
+                        <td>Public</td>
+                    </tr>
+                    <tr>
+                        <td><span class="method post">POST</span></td>
+                        <td class="endpoint">/api/auth/forgot-password</td>
+                        <td class="desc">Gửi email reset password</td>
+                        <td>Public</td>
+                    </tr>
+                    <tr>
+                        <td><span class="method post">POST</span></td>
+                        <td class="endpoint">/api/auth/reset-password</td>
+                        <td class="desc">Đặt lại mật khẩu</td>
+                        <td>Public (có token)</td>
+                    </tr>
+                    <tr>
+                        <td><span class="method post">POST</span></td>
+                        <td class="endpoint">/api/auth/logout</td>
+                        <td class="desc">Đăng xuất</td>
+                        <td>Authenticated</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- 8. PROFILE -->
+    <!-- ============================================================ -->
+    <section class="section" id="profile">
+        <h2 class="section-title"><span class="icon">👤</span> 8. Profile (Thành viên dòng họ)</h2>
+
+        <div class="component-card">
+            <div class="comp-header">
+                <span class="comp-name">👤 Profile Entity</span>
+                <span class="comp-badge entity">Entity</span>
+            </div>
+            <div class="comp-desc">
+                Thông tin thành viên dòng họ. Liên kết với User qua userId.
+                Hỗ trợ quan hệ cha-con, vợ-chồng.
+            </div>
+            <div class="comp-props">
+                <strong>Các trường chính:</strong><br>
+                <code>
+                    <span class="prop">fullName</span>: <span class="type">String</span> (nullable: false) &bull;
+                    <span class="prop">gender</span>: <span class="type">String</span> (M/F) &bull;
+                    <span class="prop">birthDate</span>: <span class="type">LocalDate</span> &bull;
+                    <span class="prop">deathDate</span>: <span class="type">LocalDate</span> &bull;
+                    <span class="prop">generation</span>: <span class="type">Integer</span> &bull;
+                    <span class="prop">familyId</span>: <span class="type">UUID</span> &bull;
+                    <span class="prop">branchCode</span>: <span class="type">String</span> &bull;
+                    <span class="prop">occupation</span>: <span class="type">String</span> &bull;
+                    <span class="prop">biography</span>: <span class="type">String</span> (TEXT) &bull;
+                    <span class="prop">achievements</span>: <span class="type">String</span> (TEXT) &bull;
+                    <span class="prop">parentId</span>: <span class="type">UUID</span> &bull;
+                    <span class="prop">spouseId</span>: <span class="type">UUID</span> &bull;
+                    <span class="prop">userId</span>: <span class="type">UUID</span> &bull;
+                    <span class="prop">avatarUrl</span>: <span class="type">String</span>
+                </code>
+            </div>
+        </div>
+
+        <div style="margin-top:12px;">
+            <strong>📝 API Profile:</strong>
+            <table class="api-table">
+                <thead>
+                    <tr>
+                        <th>Method</th>
+                        <th>Endpoint</th>
+                        <th>Mô tả</th>
+                        <th>Quyền</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="method get">GET</span></td>
+                        <td class="endpoint">/api/profiles</td>
+                        <td class="desc">Danh sách thành viên</td>
+                        <td>PROFILE_VIEW</td>
+                    </tr>
+                    <tr>
+                        <td><span class="method post">POST</span></td>
+                        <td class="endpoint">/api/profiles/page</td>
+                        <td class="desc">Phân trang thành viên</td>
+                        <td>PROFILE_VIEW</td>
+                    </tr>
+                    <tr>
+                        <td><span class="method get">GET</span></td>
+                        <td class="endpoint">/api/profiles/{id}</td>
+                        <td class="desc">Chi tiết thành viên</td>
+                        <td>PROFILE_VIEW</td>
+                    </tr>
+                    <tr>
+                        <td><span class="method post">POST</span></td>
+                        <td class="endpoint">/api/profiles</td>
+                        <td class="desc">Tạo thành viên</td>
+                        <td>PROFILE_CREATE</td>
+                    </tr>
+                    <tr>
+                        <td><span class="method put">PUT</span></td>
+                        <td class="endpoint">/api/profiles/{id}</td>
+                        <td class="desc">Cập nhật thành viên</td>
+                        <td>PROFILE_EDIT</td>
+                    </tr>
+                    <tr>
+                        <td><span class="method delete">DELETE</span></td>
+                        <td class="endpoint">/api/profiles/{id}</td>
+                        <td class="desc">Xóa thành viên (soft delete)</td>
+                        <td>PROFILE_DELETE</td>
+                    </tr>
+                    <tr>
+                        <td><span class="method get">GET</span></td>
+                        <td class="endpoint">/api/profiles/search</td>
+                        <td class="desc">Tìm kiếm thành viên</td>
+                        <td>PROFILE_VIEW</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- 9. FAMILY TREE -->
+    <!-- ============================================================ -->
+    <section class="section" id="family-tree">
+        <h2 class="section-title"><span class="icon">🌳</span> 9. Gia phả</h2>
+
+        <div class="component-card">
+            <div class="comp-header">
+                <span class="comp-name">🌳 FamilyTree Entity</span>
+                <span class="comp-badge entity">Entity</span>
+            </div>
+            <div class="comp-desc">
+                Lưu trữ cấu trúc cây gia phả. Mỗi node là một Profile với quan hệ parent-child.
+            </div>
+            <div class="comp-props">
+                <code>
+                    <span class="prop">profileId</span>: <span class="type">UUID</span> &bull;
+                    <span class="prop">parentId</span>: <span class="type">UUID</span> &bull;
+                    <span class="prop">spouseId</span>: <span class="type">UUID</span> &bull;
+                    <span class="prop">generation</span>: <span class="type">Integer</span> &bull;
+                    <span class="prop">branchCode</span>: <span class="type">String</span> &bull;
+                    <span class="prop">sortOrder</span>: <span class="type">Integer</span>
+                </code>
+            </div>
+        </div>
+
+        <div style="margin-top:12px;">
+            <strong>📝 API Family Tree:</strong>
+            <table class="api-table">
+                <thead>
+                    <tr>
+                        <th>Method</th>
+                        <th>Endpoint</th>
+                        <th>Mô tả</th>
+                        <th>Quyền</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="method get">GET</span></td>
+                        <td class="endpoint">/api/tree</td>
+                        <td class="desc">Lấy toàn bộ cây gia phả</td>
+                        <td>TREE_VIEW</td>
+                    </tr>
+                    <tr>
+                        <td><span class="method get">GET</span></td>
+                        <td class="endpoint">/api/tree/{profileId}</td>
+                        <td class="desc">Lấy nhánh con của thành viên</td>
+                        <td>TREE_VIEW</td>
+                    </tr>
+                    <tr>
+                        <td><span class="method get">GET</span></td>
+                        <td class="endpoint">/api/tree/ancestors/{profileId}</td>
+                        <td class="desc">Lấy tổ tiên của thành viên</td>
+                        <td>TREE_VIEW</td>
+                    </tr>
+                    <tr>
+                        <td><span class="method put">PUT</span></td>
+                        <td class="endpoint">/api/tree/relationship</td>
+                        <td class="desc">Cập nhật quan hệ</td>
+                        <td>TREE_EDIT</td>
+                    </tr>
+                    <tr>
+                        <td><span class="method get">GET</span></td>
+                        <td class="endpoint">/api/tree/export</td>
+                        <td class="desc">Xuất cây gia phả (JSON/PDF)</td>
+                        <td>TREE_EXPORT</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- 10. EVENT -->
+    <!-- ============================================================ -->
+    <section class="section" id="event">
+        <h2 class="section-title"><span class="icon">📅</span> 10. Sự kiện</h2>
+
+        <div class="component-card">
+            <div class="comp-header">
+                <span class="comp-name">📅 Event Entity</span>
+                <span class="comp-badge entity">Entity</span>
+            </div>
+            <div class="comp-desc">
+                Quản lý sự kiện dòng họ: giỗ tổ, họp họ, hoạt động cộng đồng.
+                Hỗ trợ lặp lại hàng năm.
+            </div>
+            <div class="comp-props">
+                <strong>Các trường chính:</strong><br>
+                <code>
+                    <span class="prop">title</span>: <span class="type">String</span> (nullable: false) &bull;
+                    <span class="prop">description</span>: <span class="type">String</span> (TEXT) &bull;
+                    <span class="prop">eventDate</span>: <span class="type">LocalDateTime</span> &bull;
+                    <span class="prop">endDate</span>: <span class="type">LocalDateTime</span> &bull;
+                    <span class="prop">location</span>: <span class="type">String</span> &bull;
+                    <span class="prop">isAnnual</span>: <span class="type">Boolean</span> &bull;
+                    <span class="prop">status</span>: <span class="type">StatusEnum</span> &bull;
+                    <span class="prop">createdBy</span>: <span class="type">UUID</span>
+                </code>
+            </div>
+        </div>
+
+        <div style="margin-top:12px;">
+            <strong>📝 API Event:</strong>
+            <table class="api-table">
+                <thead>
+                    <tr>
+                        <th>Method</th>
+                        <th>Endpoint</th>
+                        <th>Mô tả</th>
+                        <th>Quyền</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="method get">GET</span></td>
+                        <td class="endpoint">/api/events</td>
+                        <td class="desc">Danh sách sự kiện</td>
+                        <td>EVENT_VIEW</td>
+                    </tr>
+                    <tr>
+                        <td><span class="method get">GET</span></td>
+                        <td class="endpoint">/api/events/upcoming</td>
+                        <td class="desc">Sự kiện sắp tới</td>
+                        <td>EVENT_VIEW</td>
+                    </tr>
+                    <tr>
+                        <td><span class="method get">GET</span></td>
+                        <td class="endpoint">/api/events/{id}</td>
+                        <td class="desc">Chi tiết sự kiện</td>
+                        <td>EVENT_VIEW</td>
+                    </tr>
+                    <tr>
+                        <td><span class="method post">POST</span></td>
+                        <td class="endpoint">/api/events</td>
+                        <td class="desc">Tạo sự kiện</td>
+                        <td>EVENT_CREATE</td>
+                    </tr>
+                    <tr>
+                        <td><span class="method put">PUT</span></td>
+                        <td class="endpoint">/api/events/{id}</td>
+                        <td class="desc">Cập nhật sự kiện</td>
+                        <td>EVENT_EDIT</td>
+                    </tr>
+                    <tr>
+                        <td><span class="method delete">DELETE</span></td>
+                        <td class="endpoint">/api/events/{id}</td>
+                        <td class="desc">Xóa sự kiện</td>
+                        <td>EVENT_DELETE</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- 11. POST -->
+    <!-- ============================================================ -->
+    <section class="section" id="post">
+        <h2 class="section-title"><span class="icon">📰</span> 11. Tin tức</h2>
+
+        <div class="component-card">
+            <div class="comp-header">
+                <span class="comp-name">📰 Post Entity</span>
+                <span class="comp-badge entity">Entity</span>
+            </div>
+            <div class="comp-desc">
+                Quản lý tin tức, thông báo, bài viết dòng họ. Hỗ trợ featured, draft/publish.
+            </div>
+            <div class="comp-props">
+                <strong>Các trường chính:</strong><br>
+                <code>
+                    <span class="prop">title</span>: <span class="type">String</span> (nullable: false) &bull;
+                    <span class="prop">slug</span>: <span class="type">String</span> (unique) &bull;
+                    <span class="prop">summary</span>: <span class="type">String</span> &bull;
+                    <span class="prop">content</span>: <span class="type">String</span> (TEXT) &bull;
+                    <span class="prop">featuredImage</span>: <span class="type">String</span> &bull;
+                    <span class="prop">isFeatured</span>: <span class="type">Boolean</span> &bull;
+                    <span class="prop">views</span>: <span class="type">Integer</span> &bull;
+                    <span class="prop">status</span>: <span class="type">StatusEnum</span> &bull;
+                    <span class="prop">authorId</span>: <span class="type">UUID</span> &bull;
+                    <span class="prop">category</span>: <span class="type">String</span>
+                </code>
+            </div>
+        </div>
+
+        <div style="margin-top:12px;">
+            <strong>📝 API Post:</strong>
+            <table class="api-table">
+                <thead>
+                    <tr>
+                        <th>Method</th>
+                        <th>Endpoint</th>
+                        <th>Mô tả</th>
+                        <th>Quyền</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="method get">GET</span></td>
+                        <td class="endpoint">/api/posts</td>
+                        <td class="desc">Danh sách bài viết</td>
+                        <td>POST_VIEW</td>
+                    </tr>
+                    <tr>
+                        <td><span class="method get">GET</span></td>
+                        <td class="endpoint">/api/posts/featured</td>
+                        <td class="desc">Bài viết nổi bật</td>
+                        <td>POST_VIEW</td>
+                    </tr>
+                    <tr>
+                        <td><span class="method get">GET</span></td>
+                        <td class="endpoint">/api/posts/{slug}</td>
+                        <td class="desc">Chi tiết bài viết</td>
+                        <td>POST_VIEW</td>
+                    </tr>
+                    <tr>
+                        <td><span class="method post">POST</span></td>
+                        <td class="endpoint">/api/posts</td>
+                        <td class="desc">Tạo bài viết</td>
+                        <td>POST_CREATE</td>
+                    </tr>
+                    <tr>
+                        <td><span class="method put">PUT</span></td>
+                        <td class="endpoint">/api/posts/{id}</td>
+                        <td class="desc">Cập nhật bài viết</td>
+                        <td>POST_EDIT</td>
+                    </tr>
+                    <tr>
+                        <td><span class="method delete">DELETE</span></td>
+                        <td class="endpoint">/api/posts/{id}</td>
+                        <td class="desc">Xóa bài viết</td>
+                        <td>POST_DELETE</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- 12. GALLERY -->
+    <!-- ============================================================ -->
+    <section class="section" id="gallery">
+        <h2 class="section-title"><span class="icon">🖼️</span> 12. Thư viện ảnh</h2>
+
+        <div class="component-card">
+            <div class="comp-header">
+                <span class="comp-name">🖼️ Gallery Entity</span>
+                <span class="comp-badge entity">Entity</span>
+            </div>
+            <div class="comp-desc">
+                Album ảnh/video. Mỗi album chứa nhiều Media files.
+                Hỗ trợ public/private visibility.
+            </div>
+            <div class="comp-props">
+                <strong>Các trường chính:</strong><br>
+                <code>
+                    <span class="prop">name</span>: <span class="type">String</span> (nullable: false) &bull;
+                    <span class="prop">description</span>: <span class="type">String</span> &bull;
+                    <span class="prop">coverImage</span>: <span class="type">String</span> &bull;
+                    <span class="prop">visibility</span>: <span class="type">FileVisibility</span> &bull;
+                    <span class="prop">eventId</span>: <span class="type">UUID</span> &bull;
+                    <span class="prop">sortOrder</span>: <span class="type">Integer</span>
+                </code>
+            </div>
+        </div>
+
+        <div class="component-card">
+            <div class="comp-header">
+                <span class="comp-name">📁 Media Entity</span>
+                <span class="comp-badge entity">Entity</span>
+            </div>
+            <div class="comp-desc">
+                File trong album. Lưu thông tin file, các phiên bản (large/medium/small).
+            </div>
+            <div class="comp-props">
+                <strong>Các trường chính:</strong><br>
+                <code>
+                    <span class="prop">galleryId</span>: <span class="type">UUID</span> &bull;
+                    <span class="prop">fileName</span>: <span class="type">String</span> &bull;
+                    <span class="prop">filePath</span>: <span class="type">String</span> &bull;
+                    <span class="prop">fileType</span>: <span class="type">String</span> &bull;
+                    <span class="prop">fileSize</span>: <span class="type">Long</span> &bull;
+                    <span class="prop">visibility</span>: <span class="type">FileVisibility</span> &bull;
+                    <span class="prop">largeUrl</span>: <span class="type">String</span> &bull;
+                    <span class="prop">mediumUrl</span>: <span class="type">String</span> &bull;
+                    <span class="prop">smallUrl</span>: <span class="type">String</span> &bull;
+                    <span class="prop">sortOrder</span>: <span class="type">Integer</span>
+                </code>
+            </div>
+        </div>
+
+        <div style="margin-top:12px;">
+            <strong>📝 API Gallery:</strong>
+            <table class="api-table">
+                <thead>
+                    <tr>
+                        <th>Method</th>
+                        <th>Endpoint</th>
+                        <th>Mô tả</th>
+                        <th>Quyền</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="method get">GET</span></td>
+                        <td class="endpoint">/api/galleries</td>
+                        <td class="desc">Danh sách album</td>
+                        <td>GALLERY_VIEW</td>
+                    </tr>
+                    <tr>
+                        <td><span class="method get">GET</span></td>
+                        <td class="endpoint">/api/galleries/{id}</td>
+                        <td class="desc">Chi tiết album</td>
+                        <td>GALLERY_VIEW</td>
+                    </tr>
+                    <tr>
+                        <td><span class="method get">GET</span></td>
+                        <td class="endpoint">/api/galleries/{id}/media</td>
+                        <td class="desc">Danh sách ảnh trong album</td>
+                        <td>GALLERY_VIEW</td>
+                    </tr>
+                    <tr>
+                        <td><span class="method post">POST</span></td>
+                        <td class="endpoint">/api/galleries</td>
+                        <td class="desc">Tạo album</td>
+                        <td>GALLERY_CREATE</td>
+                    </tr>
+                    <tr>
+                        <td><span class="method post">POST</span></td>
+                        <td class="endpoint">/api/galleries/{id}/upload</td>
+                        <td class="desc">Upload ảnh vào album</td>
+                        <td>GALLERY_UPLOAD</td>
+                    </tr>
+                    <tr>
+                        <td><span class="method delete">DELETE</span></td>
+                        <td class="endpoint">/api/media/{id}</td>
+                        <td class="desc">Xóa ảnh</td>
+                        <td>GALLERY_DELETE</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- 13. FUND -->
+    <!-- ============================================================ -->
+    <section class="section" id="fund">
+        <h2 class="section-title"><span class="icon">💰</span> 13. Quỹ</h2>
+
+        <div class="component-card">
+            <div class="comp-header">
+                <span class="comp-name">💰 Fund Entity</span>
+                <span class="comp-badge entity">Entity</span>
+            </div>
+            <div class="comp-desc">
+                Quản lý quỹ dòng họ. Mỗi quỹ có số dư hiện tại và danh sách giao dịch.
+            </div>
+            <div class="comp-props">
+                <strong>Các trường chính:</strong><br>
+                <code>
+                    <span class="prop">name</span>: <span class="type">String</span> (nullable: false) &bull;
+                    <span class="prop">description</span>: <span class="type">String</span> &bull;
+                    <span class="prop">currentBalance</span>: <span class="type">BigDecimal</span> &bull;
+                    <span class="prop">initialBalance</span>: <span class="type">BigDecimal</span> &bull;
+                    <span class="prop">status</span>: <span class="type">StatusEnum</span> &bull;
+                    <span class="prop">createdBy</span>: <span class="type">UUID</span>
+                </code>
+            </div>
+        </div>
+
+        <div class="component-card">
+            <div class="comp-header">
+                <span class="comp-name">💰 Transaction Entity</span>
+                <span class="comp-badge entity">Entity</span>
+            </div>
+            <div class="comp-desc">
+                Giao dịch thu/chi của quỹ. Hỗ trợ attachment (hóa đơn).
+            </div>
+            <div class="comp-props">
+                <strong>Các trường chính:</strong><br>
+                <code>
+                    <span class="prop">fundId</span>: <span class="type">UUID</span> &bull;
+                    <span class="prop">profileId</span>: <span class="type">UUID</span> (người đóng góp) &bull;
+                    <span class="prop">amount</span>: <span class="type">BigDecimal</span> &bull;
+                    <span class="prop">type</span>: <span class="type">String</span> (IN/OUT) &bull;
+                    <span class="prop">note</span>: <span class="type">String</span> &bull;
+                    <span class="prop">transactionDate</span>: <span class="type">LocalDateTime</span> &bull;
+                    <span class="prop">attachment</span>: <span class="type">String</span> &bull;
+                    <span class="prop">approvedBy</span>: <span class="type">UUID</span> &bull;
+                    <span class="prop">status</span>: <span class="type">StatusEnum</span>
+                </code>
+            </div>
+        </div>
+
+        <div style="margin-top:12px;">
+            <strong>📝 API Fund:</strong>
+            <table class="api-table">
+                <thead>
+                    <tr>
+                        <th>Method</th>
+                        <th>Endpoint</th>
+                        <th>Mô tả</th>
+                        <th>Quyền</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="method get">GET</span></td>
+                        <td class="endpoint">/api/funds</td>
+                        <td class="desc">Danh sách quỹ</td>
+                        <td>FUND_VIEW</td>
+                    </tr>
+                    <tr>
+                        <td><span class="method get">GET</span></td>
+                        <td class="endpoint">/api/funds/{id}</td>
+                        <td class="desc">Chi tiết quỹ</td>
+                        <td>FUND_VIEW</td>
+                    </tr>
+                    <tr>
+                        <td><span class="method get">GET</span></td>
+                        <td class="endpoint">/api/funds/{id}/transactions</td>
+                        <td class="desc">Danh sách giao dịch</td>
+                        <td>FUND_VIEW</td>
+                    </tr>
+                    <tr>
+                        <td><span class="method post">POST</span></td>
+                        <td class="endpoint">/api/funds</td>
+                        <td class="desc">Tạo quỹ</td>
+                        <td>FUND_MANAGE</td>
+                    </tr>
+                    <tr>
+                        <td><span class="method post">POST</span></td>
+                        <td class="endpoint">/api/transactions</td>
+                        <td class="desc">Tạo giao dịch</td>
+                        <td>FUND_TRANSACTION</td>
+                    </tr>
+                    <tr>
+                        <td><span class="method get">GET</span></td>
+                        <td class="endpoint">/api/funds/report</td>
+                        <td class="desc">Báo cáo quỹ</td>
+                        <td>FUND_REPORT</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- 14. FILE MANAGEMENT -->
+    <!-- ============================================================ -->
+    <section class="section" id="file">
+        <h2 class="section-title"><span class="icon">📁</span> 14. File Management</h2>
+
+        <div class="note">
+            <strong>📁 File storage:</strong>
+            <ul style="margin-left:20px; margin-top:6px;">
+                <li><strong>PUBLIC:</strong> /uploads/public/ — ai cũng xem được (avatar, ảnh công khai)</li>
+                <li><strong>PRIVATE:</strong> /uploads/private/ — cần đăng nhập + quyền mới xem được</li>
+                <li>Ảnh upload tự động tạo <strong>3 phiên bản</strong>: large (1920x1080), medium (1024x768), small (480x320)</li>
+                <li>File không phải ảnh được <strong>nén LZ4</strong> để tiết kiệm dung lượng</li>
+            </ul>
+        </div>
+
+        <div class="component-card">
+            <div class="comp-header">
+                <span class="comp-name">📁 FileDescription Entity</span>
+                <span class="comp-badge entity">Entity</span>
+            </div>
+            <div class="comp-desc">
+                Lưu thông tin file upload. Phân loại public/private.
+            </div>
+            <div class="comp-props">
+                <strong>Các trường chính:</strong><br>
+                <code>
+                    <span class="prop">fileName</span>: <span class="type">String</span> &bull;
+                    <span class="prop">filePath</span>: <span class="type">String</span> &bull;
+                    <span class="prop">fileSize</span>: <span class="type">Long</span> &bull;
+                    <span class="prop">fileType</span>: <span class="type">String</span> &bull;
+                    <span class="prop">visibility</span>: <span class="type">FileVisibility</span> &bull;
+                    <span class="prop">largeUrl</span>: <span class="type">String</span> &bull;
+                    <span class="prop">mediumUrl</span>: <span class="type">String</span> &bull;
+                    <span class="prop">smallUrl</span>: <span class="type">String</span> &bull;
+                    <span class="prop">uploadedBy</span>: <span class="type">UUID</span> &bull;
+                    <span class="prop">entityType</span>: <span class="type">String</span> &bull;
+                    <span class="prop">entityId</span>: <span class="type">UUID</span>
+                </code>
+            </div>
+        </div>
+
+        <div style="margin-top:12px;">
+            <strong>📝 API File:</strong>
+            <table class="api-table">
+                <thead>
+                    <tr>
+                        <th>Method</th>
+                        <th>Endpoint</th>
+                        <th>Mô tả</th>
+                        <th>Quyền</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="method post">POST</span></td>
+                        <td class="endpoint">/api/files/upload</td>
+                        <td class="desc">Upload file (public)</td>
+                        <td>FILE_UPLOAD_PUBLIC</td>
+                    </tr>
+                    <tr>
+                        <td><span class="method post">POST</span></td>
+                        <td class="endpoint">/api/files/upload/private</td>
+                        <td class="desc">Upload file (private)</td>
+                        <td>FILE_UPLOAD_PRIVATE</td>
+                    </tr>
+                    <tr>
+                        <td><span class="method get">GET</span></td>
+                        <td class="endpoint">/api/files/{id}</td>
+                        <td class="desc">Download file</td>
+                        <td>Public/Protected/Private</td>
+                    </tr>
+                    <tr>
+                        <td><span class="method get">GET</span></td>
+                        <td class="endpoint">/api/files/public/{id}</td>
+                        <td class="desc">Download file public</td>
+                        <td>Public</td>
+                    </tr>
+                    <tr>
+                        <td><span class="method delete">DELETE</span></td>
+                        <td class="endpoint">/api/files/{id}</td>
+                        <td class="desc">Xóa file</td>
+                        <td>FILE_DELETE</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- 15. SECURITY - PHÂN QUYỀN -->
+    <!-- ============================================================ -->
+    <section class="section" id="security">
+        <h2 class="section-title"><span class="icon">🛡️</span> 15. Phân quyền chi tiết</h2>
+
+        <h3 style="margin:16px 0 8px; font-size:16px;">15.1. Phân quyền theo Role</h3>
+        <div class="perm-grid">
+            <div class="perm-item">
+                <div class="perm-name">👑 SYSTEM_ADMIN</div>
+                <div class="perm-desc">Toàn quyền trên hệ thống. Quản lý user, role, tất cả dữ liệu.</div>
+            </div>
+            <div class="perm-item">
+                <div class="perm-name">🏛️ CLAN_LEADER</div>
+                <div class="perm-desc">Trưởng họ. Quyền cao nhất trong dòng họ. Duyệt quỹ, quản lý thành viên.</div>
+            </div>
+            <div class="perm-item">
+                <div class="perm-name">📋 CLAN_ADMIN</div>
+                <div class="perm-desc">Ban đại diện. Quản lý sự kiện, tin tức, thư viện ảnh.</div>
+            </div>
+            <div class="perm-item">
+                <div class="perm-name">👤 CLAN_MEMBER</div>
+                <div class="perm-desc">Thành viên. Xem thông tin, tham gia sự kiện, đóng góp quỹ.</div>
+            </div>
+            <div class="perm-item">
+                <div class="perm-name">👀 VIEWER</div>
+                <div class="perm-desc">Người xem. Chỉ xem được nội dung công khai.</div>
+            </div>
+        </div>
+
+        <h3 style="margin:16px 0 8px; font-size:16px;">15.2. Phân quyền API (Method Security)</h3>
+        <div class="code-block">
+            <span class="annotation">@PreAuthorize</span>(<span class="string">"hasAuthority('PROFILE_VIEW')"</span>)<br>
+            <span class="annotation">@GetMapping</span>(<span class="string">"/{id}"</span>)<br>
+            <span class="keyword">public</span> ResponseEntity&lt;ApiResponse&lt;Profile&gt;&gt; <span class="func">getById</span>(<span class="annotation">@PathVariable</span> UUID id) <span class="func">{</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// ...</span><br>
+            <span class="func">}</span>
+        </div>
+
+        <h3 style="margin:16px 0 8px; font-size:16px;">15.3. Phân quyền dữ liệu (Data Scope)</h3>
+        <div class="code-block">
+            <span class="comment">// Filter dữ liệu theo quyền của user</span><br>
+            <span class="keyword">public</span> Specification&lt;Profile&gt; <span class="func">buildDataScope</span>(User user) <span class="func">{</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">switch</span> (user.<span class="func">getRole</span>()) <span class="func">{</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">case</span> ROLE_SYSTEM_ADMIN:<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Xem tất cả</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">break</span>;<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">case</span> ROLE_CLAN_LEADER:<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">case</span> ROLE_CLAN_ADMIN:<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Xem tất cả thành viên trong họ</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">break</span>;<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">case</span> ROLE_CLAN_MEMBER:<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">case</span> ROLE_VIEWER:<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Chỉ xem công khai</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">break</span>;<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="func">}</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> <span class="variable">specification</span>;<br>
+            <span class="func">}</span>
+        </div>
+
+        <h3 style="margin:16px 0 8px; font-size:16px;">15.4. File Access Control</h3>
+        <div class="code-block">
+            <span class="comment">// Kiểm tra quyền truy cập file</span><br>
+            <span class="keyword">public boolean</span> <span class="func">canAccessFile</span>(FileDescription file, User user) <span class="func">{</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">switch</span> (file.<span class="func">getVisibility</span>()) <span class="func">{</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">case</span> PUBLIC:<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return true</span>;<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">case</span> PROTECTED:<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> user != <span class="keyword">null</span> &amp;&amp; <span class="func">hasPrivilege</span>(user, <span class="string">"FILE_VIEW_PROTECTED"</span>);<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">case</span> PRIVATE:<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> user != <span class="keyword">null</span> &amp;&amp; (<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;user.<span class="func">getId</span>().<span class="func">equals</span>(file.<span class="func">getUploadedBy</span>()) ||<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="func">hasPrivilege</span>(user, <span class="string">"FILE_VIEW_PRIVATE"</span>)<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;);<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">default</span>:<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return false</span>;<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="func">}</span><br>
+            <span class="func">}</span>
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- 16. API LIST -->
+    <!-- ============================================================ -->
+    <section class="section" id="api">
+        <h2 class="section-title"><span class="icon">📋</span> 16. Tổng hợp API</h2>
+
+        <table class="api-table">
+            <thead>
+                <tr>
+                    <th>Module</th>
+                    <th>Method</th>
+                    <th>Endpoint</th>
+                    <th>Mô tả</th>
+                    <th>Quyền</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Auth -->
+                <tr>
+                    <td><strong>Auth</strong></td>
+                    <td><span class="method post">POST</span></td>
+                    <td class="endpoint">/api/auth/login</td>
+                    <td class="desc">Đăng nhập</td>
+                    <td>Public</td>
+                </tr>
+                <tr>
+                    <td><strong>Auth</strong></td>
+                    <td><span class="method post">POST</span></td>
+                    <td class="endpoint">/api/auth/refresh</td>
+                    <td class="desc">Refresh token</td>
+                    <td>Public</td>
+                </tr>
+                <tr>
+                    <td><strong>Auth</strong></td>
+                    <td><span class="method post">POST</span></td>
+                    <td class="endpoint">/api/auth/forgot-password</td>
+                    <td class="desc">Quên mật khẩu</td>
+                    <td>Public</td>
+                </tr>
+                <tr>
+                    <td><strong>Auth</strong></td>
+                    <td><span class="method post">POST</span></td>
+                    <td class="endpoint">/api/auth/reset-password</td>
+                    <td class="desc">Đặt lại mật khẩu</td>
+                    <td>Public (token)</td>
+                </tr>
+                <tr>
+                    <td><strong>Auth</strong></td>
+                    <td><span class="method post">POST</span></td>
+                    <td class="endpoint">/api/auth/logout</td>
+                    <td class="desc">Đăng xuất</td>
+                    <td>Authenticated</td>
+                </tr>
+                <!-- Profile -->
+                <tr>
+                    <td><strong>Profile</strong></td>
+                    <td><span class="method get">GET</span></td>
+                    <td class="endpoint">/api/profiles</td>
+                    <td class="desc">Danh sách thành viên</td>
+                    <td>PROFILE_VIEW</td>
+                </tr>
+                <tr>
+                    <td><strong>Profile</strong></td>
+                    <td><span class="method post">POST</span></td>
+                    <td class="endpoint">/api/profiles/page</td>
+                    <td class="desc">Phân trang thành viên</td>
+                    <td>PROFILE_VIEW</td>
+                </tr>
+                <tr>
+                    <td><strong>Profile</strong></td>
+                    <td><span class="method get">GET</span></td>
+                    <td class="endpoint">/api/profiles/{id}</td>
+                    <td class="desc">Chi tiết thành viên</td>
+                    <td>PROFILE_VIEW</td>
+                </tr>
+                <tr>
+                    <td><strong>Profile</strong></td>
+                    <td><span class="method post">POST</span></td>
+                    <td class="endpoint">/api/profiles</td>
+                    <td class="desc">Tạo thành viên</td>
+                    <td>PROFILE_CREATE</td>
+                </tr>
+                <tr>
+                    <td><strong>Profile</strong></td>
+                    <td><span class="method put">PUT</span></td>
+                    <td class="endpoint">/api/profiles/{id}</td>
+                    <td class="desc">Cập nhật thành viên</td>
+                    <td>PROFILE_EDIT</td>
+                </tr>
+                <tr>
+                    <td><strong>Profile</strong></td>
+                    <td><span class="method delete">DELETE</span></td>
+                    <td class="endpoint">/api/profiles/{id}</td>
+                    <td class="desc">Xóa thành viên</td>
+                    <td>PROFILE_DELETE</td>
+                </tr>
+                <!-- Tree -->
+                <tr>
+                    <td><strong>Tree</strong></td>
+                    <td><span class="method get">GET</span></td>
+                    <td class="endpoint">/api/tree</td>
+                    <td class="desc">Toàn bộ cây gia phả</td>
+                    <td>TREE_VIEW</td>
+                </tr>
+                <tr>
+                    <td><strong>Tree</strong></td>
+                    <td><span class="method get">GET</span></td>
+                    <td class="endpoint">/api/tree/{profileId}</td>
+                    <td class="desc">Nhánh con</td>
+                    <td>TREE_VIEW</td>
+                </tr>
+                <tr>
+                    <td><strong>Tree</strong></td>
+                    <td><span class="method put">PUT</span></td>
+                    <td class="endpoint">/api/tree/relationship</td>
+                    <td class="desc">Cập nhật quan hệ</td>
+                    <td>TREE_EDIT</td>
+                </tr>
+                <!-- Event -->
+                <tr>
+                    <td><strong>Event</strong></td>
+                    <td><span class="method get">GET</span></td>
+                    <td class="endpoint">/api/events</td>
+                    <td class="desc">Danh sách sự kiện</td>
+                    <td>EVENT_VIEW</td>
+                </tr>
+                <tr>
+                    <td><strong>Event</strong></td>
+                    <td><span class="method get">GET</span></td>
+                    <td class="endpoint">/api/events/upcoming</td>
+                    <td class="desc">Sự kiện sắp tới</td>
+                    <td>EVENT_VIEW</td>
+                </tr>
+                <tr>
+                    <td><strong>Event</strong></td>
+                    <td><span class="method post">POST</span></td>
+                    <td class="endpoint">/api/events</td>
+                    <td class="desc">Tạo sự kiện</td>
+                    <td>EVENT_CREATE</td>
+                </tr>
+                <!-- Post -->
+                <tr>
+                    <td><strong>Post</strong></td>
+                    <td><span class="method get">GET</span></td>
+                    <td class="endpoint">/api/posts</td>
+                    <td class="desc">Danh sách bài viết</td>
+                    <td>POST_VIEW</td>
+                </tr>
+                <tr>
+                    <td><strong>Post</strong></td>
+                    <td><span class="method get">GET</span></td>
+                    <td class="endpoint">/api/posts/featured</td>
+                    <td class="desc">Bài viết nổi bật</td>
+                    <td>POST_VIEW</td>
+                </tr>
+                <tr>
+                    <td><strong>Post</strong></td>
+                    <td><span class="method get">GET</span></td>
+                    <td class="endpoint">/api/posts/{slug}</td>
+                    <td class="desc">Chi tiết bài viết</td>
+                    <td>POST_VIEW</td>
+                </tr>
+                <!-- Gallery -->
+                <tr>
+                    <td><strong>Gallery</strong></td>
+                    <td><span class="method get">GET</span></td>
+                    <td class="endpoint">/api/galleries</td>
+                    <td class="desc">Danh sách album</td>
+                    <td>GALLERY_VIEW</td>
+                </tr>
+                <tr>
+                    <td><strong>Gallery</strong></td>
+                    <td><span class="method post">POST</span></td>
+                    <td class="endpoint">/api/galleries/{id}/upload</td>
+                    <td class="desc">Upload ảnh</td>
+                    <td>GALLERY_UPLOAD</td>
+                </tr>
+                <!-- Fund -->
+                <tr>
+                    <td><strong>Fund</strong></td>
+                    <td><span class="method get">GET</span></td>
+                    <td class="endpoint">/api/funds</td>
+                    <td class="desc">Danh sách quỹ</td>
+                    <td>FUND_VIEW</td>
+                </tr>
+                <tr>
+                    <td><strong>Fund</strong></td>
+                    <td><span class="method post">POST</span></td>
+                    <td class="endpoint">/api/transactions</td>
+                    <td class="desc">Tạo giao dịch</td>
+                    <td>FUND_TRANSACTION</td>
+                </tr>
+                <!-- File -->
+                <tr>
+                    <td><strong>File</strong></td>
+                    <td><span class="method post">POST</span></td>
+                    <td class="endpoint">/api/files/upload</td>
+                    <td class="desc">Upload file</td>
+                    <td>FILE_UPLOAD_PUBLIC</td>
+                </tr>
+                <tr>
+                    <td><strong>File</strong></td>
+                    <td><span class="method get">GET</span></td>
+                    <td class="endpoint">/api/files/{id}</td>
+                    <td class="desc">Download file</td>
+                    <td>Public/Protected</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- 17. ROADMAP -->
+    <!-- ============================================================ -->
+    <section class="section" id="roadmap">
+        <h2 class="section-title"><span class="icon">🗓️</span> 17. Lộ trình phát triển (10 tuần)</h2>
+
+        <div class="roadmap">
+            <div class="roadmap-item">
+                <div class="week">Tuần 1</div>
+                <div class="task">Setup & Base</div>
+                <div class="detail">Tạo project, cấu hình database, Flyway, BaseEntity, Common</div>
+            </div>
+            <div class="roadmap-item">
+                <div class="week">Tuần 2</div>
+                <div class="task">Security & Auth</div>
+                <div class="detail">JWT, Spring Security, Login, Forgot/Reset password</div>
+            </div>
+            <div class="roadmap-item">
+                <div class="week">Tuần 3</div>
+                <div class="task">User & Profile</div>
+                <div class="detail">Quản lý user (admin), Profile CRUD, validation</div>
+            </div>
+            <div class="roadmap-item">
+                <div class="week">Tuần 4</div>
+                <div class="task">Family Tree</div>
+                <div class="detail">Xây dựng cấu trúc cây, API tree, export</div>
+            </div>
+            <div class="roadmap-item">
+                <div class="week">Tuần 5</div>
+                <div class="task">Event & Post</div>
+                <div class="detail">CRUD sự kiện, tin tức, featured, paging</div>
+            </div>
+            <div class="roadmap-item">
+                <div class="week">Tuần 6</div>
+                <div class="task">Gallery & File</div>
+                <div class="detail">Upload ảnh, 3 phiên bản, public/private, LZ4 compression</div>
+            </div>
+            <div class="roadmap-item">
+                <div class="week">Tuần 7</div>
+                <div class="task">Fund</div>
+                <div class="detail">Quản lý quỹ, giao dịch, báo cáo</div>
+            </div>
+            <div class="roadmap-item">
+                <div class="week">Tuần 8</div>
+                <div class="task">Phân quyền</div>
+                <div class="detail">Role, Privilege, Data Scope, File Access Control</div>
+            </div>
+            <div class="roadmap-item">
+                <div class="week">Tuần 9</div>
+                <div class="task">Testing & Optimize</div>
+                <div class="detail">Unit test, Integration test, Cache, Performance</div>
+            </div>
+            <div class="roadmap-item">
+                <div class="week">Tuần 10</div>
+                <div class="task">Deploy & Docs</div>
+                <div class="detail">Swagger, Deploy, Nginx, Environment config</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- FOOTER -->
+    <!-- ============================================================ -->
+    <footer style="margin-top:48px; padding-top:24px; border-top:2px solid #e5e7eb; text-align:center; color:#6b7280; font-size:14px;">
+        <p>
+            <strong>⚙️ Kế hoạch triển khai Backend - Website Dòng Họ</strong>
+            &bull; Spring Boot 3.2 + Spring Security 6
+        </p>
+        <p style="margin-top:4px;">
+            Phiên bản 2.0 &bull; Cập nhật 2026
+        </p>
+    </footer>
+
+</div>
+</body>
+</html>

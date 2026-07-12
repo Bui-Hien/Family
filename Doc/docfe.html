@@ -1,0 +1,1698 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kế hoạch triển khai Frontend - Website Dòng Họ</title>
+    <style>
+        /* ===== RESET & BASE ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f0f2f5;
+            color: #1a1a2e;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        /* ===== CONTAINER ===== */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+            padding: 40px 48px;
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            border-bottom: 3px solid #2563eb;
+            padding-bottom: 20px;
+            margin-bottom: 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1a1a2e;
+            letter-spacing: -0.5px;
+        }
+
+        .header .badge {
+            background: #2563eb;
+            color: #fff;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .header .meta {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        /* ===== SECTION ===== */
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title .icon {
+            font-size: 22px;
+        }
+
+        /* ===== TABLE OF CONTENTS ===== */
+        .toc {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px 24px;
+            margin-bottom: 32px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .toc h3 {
+            font-size: 15px;
+            font-weight: 600;
+            color: #4b5563;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .toc-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 6px 16px;
+        }
+
+        .toc a {
+            color: #2563eb;
+            text-decoration: none;
+            font-size: 14px;
+            padding: 2px 0;
+            display: block;
+            transition: color 0.2s;
+        }
+
+        .toc a:hover {
+            color: #1d4ed8;
+            text-decoration: underline;
+        }
+
+        /* ===== TECH STACK TABLE ===== */
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 12px;
+            margin: 12px 0;
+        }
+
+        .tech-item {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #e5e7eb;
+            font-size: 14px;
+        }
+
+        .tech-item .name {
+            font-weight: 600;
+            color: #1a1a2e;
+        }
+
+        .tech-item .version {
+            background: #e5e7eb;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #4b5563;
+            font-family: 'Courier New', monospace;
+        }
+
+        /* ===== FOLDER STRUCTURE ===== */
+        .folder-tree {
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            background: #0f172a;
+            color: #e2e8f0;
+            border-radius: 12px;
+            padding: 20px 24px;
+            overflow-x: auto;
+            line-height: 1.8;
+        }
+
+        .folder-tree .highlight {
+            color: #60a5fa;
+        }
+
+        .folder-tree .folder {
+            color: #fbbf24;
+        }
+
+        .folder-tree .file {
+            color: #a5b4fc;
+        }
+
+        .folder-tree .comment {
+            color: #6b7280;
+            font-style: italic;
+        }
+
+        /* ===== COMPONENT CARD ===== */
+        .component-card {
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 20px 24px;
+            margin-bottom: 20px;
+            background: #ffffff;
+            transition: box-shadow 0.2s;
+        }
+
+        .component-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+        }
+
+        .component-card .comp-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .component-card .comp-name {
+            font-size: 17px;
+            font-weight: 700;
+            color: #1a1a2e;
+        }
+
+        .component-card .comp-badge {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            padding: 3px 12px;
+            border-radius: 12px;
+        }
+
+        .comp-badge.form {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .comp-badge.table {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .comp-badge.popup {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .comp-badge.file {
+            background: #fce4ec;
+            color: #b71c1c;
+        }
+
+        .comp-badge.display {
+            background: #e0e7ff;
+            color: #3730a3;
+        }
+
+        .comp-badge.layout {
+            background: #f3e8ff;
+            color: #5b21b6;
+        }
+
+        .component-card .comp-desc {
+            color: #4b5563;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+        .component-card .comp-props {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 12px 16px;
+            font-size: 13px;
+            overflow-x: auto;
+        }
+
+        .component-card .comp-props code {
+            font-family: 'Courier New', monospace;
+            color: #1e293b;
+        }
+
+        .component-card .comp-props .prop {
+            color: #2563eb;
+        }
+
+        .component-card .comp-props .type {
+            color: #7c3aed;
+        }
+
+        /* ===== CODE BLOCK ===== */
+        .code-block {
+            background: #0f172a;
+            color: #e2e8f0;
+            border-radius: 10px;
+            padding: 16px 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            overflow-x: auto;
+            line-height: 1.8;
+            margin: 8px 0;
+        }
+
+        .code-block .keyword {
+            color: #f472b6;
+        }
+
+        .code-block .string {
+            color: #a3e635;
+        }
+
+        .code-block .comment {
+            color: #6b7280;
+            font-style: italic;
+        }
+
+        .code-block .func {
+            color: #60a5fa;
+        }
+
+        .code-block .variable {
+            color: #fbbf24;
+        }
+
+        /* ===== STORE CARD ===== */
+        .store-card {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 12px;
+        }
+
+        .store-card .store-name {
+            font-weight: 700;
+            color: #065f46;
+            font-size: 15px;
+        }
+
+        .store-card .store-desc {
+            color: #4b5563;
+            font-size: 14px;
+            margin-top: 4px;
+        }
+
+        /* ===== ROADMAP ===== */
+        .roadmap {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 16px;
+            margin: 12px 0;
+        }
+
+        .roadmap-item {
+            background: #f8fafc;
+            border-radius: 10px;
+            padding: 16px 20px;
+            border-left: 4px solid #2563eb;
+        }
+
+        .roadmap-item .week {
+            font-size: 12px;
+            font-weight: 700;
+            color: #2563eb;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .roadmap-item .task {
+            font-weight: 600;
+            color: #1a1a2e;
+            margin-top: 4px;
+            font-size: 14px;
+        }
+
+        .roadmap-item .detail {
+            color: #6b7280;
+            font-size: 13px;
+            margin-top: 4px;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px 16px;
+            }
+
+            .header h1 {
+                font-size: 22px;
+            }
+
+            .tech-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .toc-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .roadmap {
+                grid-template-columns: 1fr;
+            }
+
+            .folder-tree {
+                font-size: 11px;
+                padding: 12px 16px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .toc-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .component-card .comp-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+
+        /* ===== PRINT ===== */
+        @media print {
+            body {
+                background: #fff;
+                padding: 0;
+            }
+
+            .container {
+                box-shadow: none;
+                padding: 20px;
+            }
+
+            .toc a {
+                color: #1a1a2e;
+                text-decoration: none;
+            }
+
+            .folder-tree {
+                background: #f1f5f9;
+                color: #1a1a2e;
+            }
+
+            .folder-tree .highlight {
+                color: #2563eb;
+            }
+
+            .folder-tree .folder {
+                color: #b45309;
+            }
+
+            .folder-tree .file {
+                color: #6d28d9;
+            }
+
+            .code-block {
+                background: #f1f5f9;
+                color: #1a1a2e;
+            }
+
+            .code-block .keyword {
+                color: #d97706;
+            }
+
+            .code-block .string {
+                color: #16a34a;
+            }
+
+            .code-block .comment {
+                color: #6b7280;
+            }
+
+            .code-block .func {
+                color: #2563eb;
+            }
+
+            .code-block .variable {
+                color: #b45309;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <!-- ============================================================ -->
+        <!-- HEADER -->
+        <!-- ============================================================ -->
+        <header class="header">
+            <div>
+                <h1>🏛️ Kế hoạch triển khai Frontend</h1>
+                <p style="color:#4b5563; font-size:15px; margin-top:4px;">
+                    Website Dòng Họ &bull; React + Vite + MUI v6 + Zustand
+                </p>
+            </div>
+            <div style="text-align:right;">
+                <span class="badge">v2.0</span>
+                <div class="meta">Cập nhật: 2026</div>
+            </div>
+        </header>
+
+        <!-- ============================================================ -->
+        <!-- MỤC LỤC -->
+        <!-- ============================================================ -->
+        <div class="toc">
+            <h3>📑 Mục lục</h3>
+            <div class="toc-grid">
+                <a href="#tech-stack">1. Công nghệ sử dụng</a>
+                <a href="#folder-structure">2. Cấu trúc thư mục</a>
+                <a href="#form-components">3. Form Components</a>
+                <a href="#table-components">4. Table Components</a>
+                <a href="#popup-components">5. Popup Components</a>
+                <a href="#file-components">6. File Components</a>
+                <a href="#display-components">7. Display Components</a>
+                <a href="#layout-components">8. Layout Components</a>
+                <a href="#store-pattern">9. Store Pattern (Zustand)</a>
+                <a href="#service-pattern">10. Service Pattern</a>
+                <a href="#hooks">11. Custom Hooks</a>
+                <a href="#utils">12. Utilities</a>
+                <a href="#roadmap">13. Lộ trình phát triển</a>
+            </div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- 1. TECH STACK -->
+        <!-- ============================================================ -->
+        <section class="section" id="tech-stack">
+            <h2 class="section-title"><span class="icon">⚡</span> 1. Công nghệ sử dụng</h2>
+            <p style="color:#4b5563; margin-bottom:12px;">
+                Các thư viện và công nghệ được chọn với phiên bản mới nhất ổn định (2026):
+            </p>
+            <div class="tech-grid">
+                <div class="tech-item"><span class="name">React</span><span class="version">18.3.1</span></div>
+                <div class="tech-item"><span class="name">Vite</span><span class="version">5.4.8</span></div>
+                <div class="tech-item"><span class="name">Material-UI (MUI)</span><span class="version">6.4.0</span></div>
+                <div class="tech-item"><span class="name">Zustand</span><span class="version">5.0.1</span></div>
+                <div class="tech-item"><span class="name">Formik</span><span class="version">2.4.6</span></div>
+                <div class="tech-item"><span class="name">Yup</span><span class="version">1.4.0</span></div>
+                <div class="tech-item"><span class="name">React Router DOM</span><span class="version">6.26.1</span></div>
+                <div class="tech-item"><span class="name">Axios</span><span class="version">1.7.7</span></div>
+                <div class="tech-item"><span class="name">MUI X Date Pickers</span><span class="version">7.23.0</span></div>
+                <div class="tech-item"><span class="name">Material-React-Table</span><span class="version">2.0.0</span></div>
+                <div class="tech-item"><span class="name">React Dropzone</span><span class="version">14.3.5</span></div>
+                <div class="tech-item"><span class="name">D3</span><span class="version">7.9.0</span></div>
+                <div class="tech-item"><span class="name">React Hook Form</span><span class="version">7.52.2</span></div>
+                <div class="tech-item"><span class="name">i18next</span><span class="version">23.14.0</span></div>
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- 2. FOLDER STRUCTURE -->
+        <!-- ============================================================ -->
+        <section class="section" id="folder-structure">
+            <h2 class="section-title"><span class="icon">📁</span> 2. Cấu trúc thư mục</h2>
+            <div class="folder-tree">
+                <span class="folder">frontend/</span><br>
+                │<br>
+                ├── <span class="folder">public/</span><br>
+                │&nbsp;&nbsp;&nbsp;├── favicon.ico<br>
+                │&nbsp;&nbsp;&nbsp;├── logo.png<br>
+                │&nbsp;&nbsp;&nbsp;└── default-avatar.png<br>
+                │<br>
+                ├── <span class="folder">src/</span><br>
+                │&nbsp;&nbsp;&nbsp;├── <span class="folder highlight">app/</span> &nbsp;<span class="comment">// Cấu hình ứng dụng</span><br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── App.jsx<br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── AppRoutes.jsx<br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── config.js<br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── theme.js<br>
+                │&nbsp;&nbsp;&nbsp;│<br>
+                │&nbsp;&nbsp;&nbsp;├── <span class="folder highlight">common/</span> &nbsp;<span class="comment">// Components dùng chung</span><br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── <span class="folder">components/</span><br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── <span class="folder">form/</span> &nbsp;<span class="comment">// Form components</span><br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── CommonTextField.jsx<br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── CommonSelectInput.jsx<br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── CommonCheckBox.jsx<br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── CommonRadioGroup.jsx<br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── CommonNumberInput.jsx<br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── CommonCurrencyInput.jsx<br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── CommonInputSearch.jsx<br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── CommonDateTimePicker.jsx<br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── CommonAutocomplete.jsx<br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── CommonPagingAutocomplete.jsx<br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── CommonCKEditor.jsx<br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── CommonPasswordInput.jsx<br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── RequiredLabel.jsx<br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── ErrorIcon.jsx<br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── FormikFocusError.jsx<br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│<br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── <span class="folder">table/</span> &nbsp;<span class="comment">// Table components</span><br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── CommonTable.jsx<br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── StickyTable.jsx<br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── StickyTableWithToggle.jsx<br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── DataTable.jsx<br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── TablePagination.jsx<br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│<br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── <span class="folder">popup/</span> &nbsp;<span class="comment">// Popup components</span><br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── CommonPopup.jsx<br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── CommonPopupForm.jsx<br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── CommonConfirmDialog.jsx<br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│<br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── <span class="folder">file/</span> &nbsp;<span class="comment">// File components</span><br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── CommonImageUpload.jsx<br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── CommonFileUpload.jsx<br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── CommonDragDropFile.jsx<br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── CommonFilePreview.jsx<br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── CommonImageGallery.jsx<br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│<br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── <span class="folder">layout/</span> &nbsp;<span class="comment">// Layout components</span><br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── CommonHeader.jsx<br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── CommonFooter.jsx<br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── CommonSidebar.jsx<br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── CommonBreadcrumb.jsx<br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│<br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── <span class="folder">display/</span> &nbsp;<span class="comment">// Display components</span><br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── CommonAvatar.jsx<br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── CommonBadge.jsx<br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── CommonChip.jsx<br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── CommonLoading.jsx<br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│<br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── <span class="folder">navigation/</span> &nbsp;<span class="comment">// Navigation</span><br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── CommonTabs.jsx<br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── CommonTabPanel.jsx<br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── CommonAccordion.jsx<br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│<br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── <span class="folder">hooks/</span><br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── useAuth.js<br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── useDebounce.js<br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── useMediaQuery.js<br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── usePrivilege.js<br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│<br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── <span class="folder">constants/</span><br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── LocalConst.js<br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── LocalConstants.js<br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│<br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── <span class="folder">utils/</span><br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── formatters.js<br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── validators.js<br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── helpers.js<br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── validationSchemas.js<br>
+                │&nbsp;&nbsp;&nbsp;│<br>
+                │&nbsp;&nbsp;&nbsp;├── <span class="folder highlight">modules/</span> &nbsp;<span class="comment">// Feature modules</span><br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── <span class="folder">auth/</span><br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── pages/<br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── components/<br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── stores/<br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── services/<br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;│<br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── <span class="folder">dashboard/</span><br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── <span class="folder">members/</span><br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── <span class="folder">family-tree/</span><br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── <span class="folder">events/</span><br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── <span class="folder">posts/</span><br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── <span class="folder">gallery/</span><br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── <span class="folder">funds/</span><br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── <span class="folder">admin/</span><br>
+                │&nbsp;&nbsp;&nbsp;│<br>
+                │&nbsp;&nbsp;&nbsp;├── <span class="folder highlight">stores/</span> &nbsp;<span class="comment">// Root stores</span><br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── index.js<br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── uiStore.js<br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── rootStore.js<br>
+                │&nbsp;&nbsp;&nbsp;│<br>
+                │&nbsp;&nbsp;&nbsp;├── <span class="folder highlight">services/</span> &nbsp;<span class="comment">// API services</span><br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── api.js<br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── index.js<br>
+                │&nbsp;&nbsp;&nbsp;│<br>
+                │&nbsp;&nbsp;&nbsp;├── <span class="folder highlight">layout/</span> &nbsp;<span class="comment">// Layout wrappers</span><br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── MainLayout.jsx<br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── AuthLayout.jsx<br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── AdminLayout.jsx<br>
+                │&nbsp;&nbsp;&nbsp;│<br>
+                │&nbsp;&nbsp;&nbsp;├── <span class="folder highlight">styles/</span><br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── globals.css<br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── variables.css<br>
+                │&nbsp;&nbsp;&nbsp;│<br>
+                │&nbsp;&nbsp;&nbsp;├── <span class="folder highlight">translations/</span> &nbsp;<span class="comment">// i18n</span><br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── vi.json<br>
+                │&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── en.json<br>
+                │&nbsp;&nbsp;&nbsp;│<br>
+                │&nbsp;&nbsp;&nbsp;├── main.jsx<br>
+                │&nbsp;&nbsp;&nbsp;└── vite-env.d.ts<br>
+                │<br>
+                ├── .env.development<br>
+                ├── .env.production<br>
+                ├── package.json<br>
+                ├── vite.config.js<br>
+                └── index.html
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- 3. FORM COMPONENTS -->
+        <!-- ============================================================ -->
+        <section class="section" id="form-components">
+            <h2 class="section-title"><span class="icon">📝</span> 3. Form Components</h2>
+            <p style="color:#4b5563; margin-bottom:16px;">
+                Tất cả form components đều tích hợp với <strong>Formik</strong> và <strong>FastField</strong> để tối ưu hiệu năng.
+            </p>
+
+            <!-- CommonTextField -->
+            <div class="component-card">
+                <div class="comp-header">
+                    <span class="comp-name">📄 CommonTextField</span>
+                    <span class="comp-badge form">Form</span>
+                </div>
+                <div class="comp-desc">
+                    Input cơ bản với hỗ trợ debounce, auto capitalize, auto replace text.
+                    Tích hợp FastField để tối ưu re-render.
+                </div>
+                <div class="comp-props">
+                    <strong>Props:</strong><br>
+                    <code>
+                        <span class="prop">name</span>: <span class="type">string</span> <span style="color:#ef4444;">*</span> &bull;
+                        <span class="prop">label</span>: <span class="type">string</span> &bull;
+                        <span class="prop">required</span>: <span class="type">boolean</span> &bull;
+                        <span class="prop">disabled</span>: <span class="type">boolean</span> &bull;
+                        <span class="prop">readOnly</span>: <span class="type">boolean</span> &bull;
+                        <span class="prop">fullWidth</span>: <span class="type">boolean</span> (default: true) &bull;
+                        <span class="prop">size</span>: <span class="type">'small' | 'medium'</span> (default: 'small') &bull;
+                        <span class="prop">debounceTime</span>: <span class="type">number</span> (default: 300) &bull;
+                        <span class="prop">autoCapitalize</span>: <span class="type">boolean</span> &bull;
+                        <span class="prop">autoReplaceText</span>: <span class="type">boolean</span> &bull;
+                        <span class="prop">isTextArea</span>: <span class="type">boolean</span> &bull;
+                        <span class="prop">rows</span>: <span class="type">number</span> (default: 1)
+                    </code>
+                </div>
+            </div>
+
+            <!-- CommonSelectInput -->
+            <div class="component-card">
+                <div class="comp-header">
+                    <span class="comp-name">📄 CommonSelectInput</span>
+                    <span class="comp-badge form">Form</span>
+                </div>
+                <div class="comp-desc">
+                    Select với Autocomplete từ MUI. Hỗ trợ search/filter, disable clear, custom display.
+                </div>
+                <div class="comp-props">
+                    <strong>Props:</strong><br>
+                    <code>
+                        <span class="prop">name</span>: <span class="type">string</span> <span style="color:#ef4444;">*</span> &bull;
+                        <span class="prop">options</span>: <span class="type">Array</span> <span style="color:#ef4444;">*</span> &bull;
+                        <span class="prop">keyValue</span>: <span class="type">string</span> (default: 'value') &bull;
+                        <span class="prop">displayValue</span>: <span class="type">string</span> (default: 'name') &bull;
+                        <span class="prop">noNullOption</span>: <span class="type">boolean</span> &bull;
+                        <span class="prop">multiple</span>: <span class="type">boolean</span>
+                    </code>
+                </div>
+            </div>
+
+            <!-- CommonCheckBox -->
+            <div class="component-card">
+                <div class="comp-header">
+                    <span class="comp-name">✅ CommonCheckBox</span>
+                    <span class="comp-badge form">Form</span>
+                </div>
+                <div class="comp-desc">
+                    Checkbox hỗ trợ giá trị null, align trái/phải, custom size và màu sắc.
+                </div>
+                <div class="comp-props">
+                    <strong>Props:</strong><br>
+                    <code>
+                        <span class="prop">name</span>: <span class="type">string</span> <span style="color:#ef4444;">*</span> &bull;
+                        <span class="prop">label</span>: <span class="type">string</span> &bull;
+                        <span class="prop">value</span>: <span class="type">any</span> (default: true) &bull;
+                        <span class="prop">isNoneValue</span>: <span class="type">boolean</span> &bull;
+                        <span class="prop">align</span>: <span class="type">'left' | 'right'</span> (default: 'right') &bull;
+                        <span class="prop">size</span>: <span class="type">'small' | 'medium'</span>
+                    </code>
+                </div>
+            </div>
+
+            <!-- CommonDateTimePicker -->
+            <div class="component-card">
+                <div class="comp-header">
+                    <span class="comp-name">📅 CommonDateTimePicker</span>
+                    <span class="comp-badge form">Form</span>
+                </div>
+                <div class="comp-desc">
+                    Date/Time Picker từ MUI X Date Pickers. Hỗ trợ Date, Time, DateTime, disable past/future.
+                </div>
+                <div class="comp-props">
+                    <strong>Props:</strong><br>
+                    <code>
+                        <span class="prop">name</span>: <span class="type">string</span> <span style="color:#ef4444;">*</span> &bull;
+                        <span class="prop">format</span>: <span class="type">string</span> (default: 'dd/MM/yyyy') &bull;
+                        <span class="prop">isDateTimePicker</span>: <span class="type">boolean</span> &bull;
+                        <span class="prop">isTimePicker</span>: <span class="type">boolean</span> &bull;
+                        <span class="prop">disablePast</span>: <span class="type">boolean</span> &bull;
+                        <span class="prop">disableFuture</span>: <span class="type">boolean</span> &bull;
+                        <span class="prop">minDate</span>: <span class="type">Date</span> &bull;
+                        <span class="prop">maxDate</span>: <span class="type">Date</span>
+                    </code>
+                </div>
+            </div>
+
+            <!-- CommonPagingAutocomplete -->
+            <div class="component-card">
+                <div class="comp-header">
+                    <span class="comp-name">🔍 CommonPagingAutocomplete</span>
+                    <span class="comp-badge form">Form</span>
+                </div>
+                <div class="comp-desc">
+                    Autocomplete phân trang với infinite scroll, search debounce, hỗ trợ multiple, select all.
+                </div>
+                <div class="comp-props">
+                    <strong>Props:</strong><br>
+                    <code>
+                        <span class="prop">name</span>: <span class="type">string</span> <span style="color:#ef4444;">*</span> &bull;
+                        <span class="prop">api</span>: <span class="type">function</span> <span style="color:#ef4444;">*</span> &bull;
+                        <span class="prop">searchObject</span>: <span class="type">object</span> &bull;
+                        <span class="prop">displayLabel</span>: <span class="type">string</span> (default: 'name') &bull;
+                        <span class="prop">displayValue</span>: <span class="type">string</span> (default: 'id') &bull;
+                        <span class="prop">multiple</span>: <span class="type">boolean</span> &bull;
+                        <span class="prop">enableSelectAll</span>: <span class="type">boolean</span> &bull;
+                        <span class="prop">keepOpenOnSelection</span>: <span class="type">boolean</span>
+                    </code>
+                </div>
+            </div>
+
+            <!-- CommonPasswordInput -->
+            <div class="component-card">
+                <div class="comp-header">
+                    <span class="comp-name">🔒 CommonPasswordInput</span>
+                    <span class="comp-badge form">Form</span>
+                </div>
+                <div class="comp-desc">
+                    Password input với toggle show/hide password, tích hợp Formik.
+                </div>
+                <div class="comp-props">
+                    <strong>Props:</strong><br>
+                    <code>
+                        <span class="prop">name</span>: <span class="type">string</span> <span style="color:#ef4444;">*</span> &bull;
+                        <span class="prop">label</span>: <span class="type">string</span> &bull;
+                        <span class="prop">required</span>: <span class="type">boolean</span> &bull;
+                        <span class="prop">description</span>: <span class="type">string</span>
+                    </code>
+                </div>
+            </div>
+
+            <!-- RequiredLabel -->
+            <div class="component-card">
+                <div class="comp-header">
+                    <span class="comp-name">⭐ RequiredLabel</span>
+                    <span class="comp-badge form">Form</span>
+                </div>
+                <div class="comp-desc">
+                    Helper component hiển thị label với dấu * khi required.
+                </div>
+                <div class="comp-props">
+                    <strong>Props:</strong><br>
+                    <code>
+                        <span class="prop">label</span>: <span class="type">string</span> <span style="color:#ef4444;">*</span> &bull;
+                        <span class="prop">required</span>: <span class="type">boolean</span>
+                    </code>
+                </div>
+            </div>
+
+            <!-- ErrorIcon -->
+            <div class="component-card">
+                <div class="comp-header">
+                    <span class="comp-name">❌ ErrorIcon</span>
+                    <span class="comp-badge form">Form</span>
+                </div>
+                <div class="comp-desc">
+                    Hiển thị icon error với tooltip helper text, dùng khi fullWidth=false.
+                </div>
+                <div class="comp-props">
+                    <strong>Props:</strong><br>
+                    <code>
+                        <span class="prop">helperText</span>: <span class="type">string</span> <span style="color:#ef4444;">*</span>
+                    </code>
+                </div>
+            </div>
+
+            <!-- FormikFocusError -->
+            <div class="component-card">
+                <div class="comp-header">
+                    <span class="comp-name">🎯 FormikFocusError</span>
+                    <span class="comp-badge form">Form</span>
+                </div>
+                <div class="comp-desc">
+                    Tự động focus vào field có lỗi khi submit form. Kết hợp với toast warning.
+                </div>
+                <div class="comp-props">
+                    <strong>Props:</strong><br>
+                    <code>
+                        <span class="prop">formId</span>: <span class="type">string</span> &bull;
+                        <span class="prop">showOther</span>: <span class="type">boolean</span> &bull;
+                        <span class="prop">setShowOther</span>: <span class="type">function</span> &bull;
+                        <span class="prop">errorsItem</span>: <span class="type">object</span>
+                    </code>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- 4. TABLE COMPONENTS -->
+        <!-- ============================================================ -->
+        <section class="section" id="table-components">
+            <h2 class="section-title"><span class="icon">📊</span> 4. Table Components</h2>
+
+            <!-- CommonTable -->
+            <div class="component-card">
+                <div class="comp-header">
+                    <span class="comp-name">📊 CommonTable</span>
+                    <span class="comp-badge table">Table</span>
+                </div>
+                <div class="comp-desc">
+                    Table đa năng với Material-React-Table. Hỗ trợ column toggle (lưu localStorage), drag & drop columns, selection, pagination, skeleton loading.
+                </div>
+                <div class="comp-props">
+                    <strong>Props:</strong><br>
+                    <code>
+                        <span class="prop">data</span>: <span class="type">Array</span> <span style="color:#ef4444;">*</span> &bull;
+                        <span class="prop">columns</span>: <span class="type">Array</span> <span style="color:#ef4444;">*</span> &bull;
+                        <span class="prop">loading</span>: <span class="type">boolean</span> &bull;
+                        <span class="prop">totalElements</span>: <span class="type">number</span> &bull;
+                        <span class="prop">page</span>: <span class="type">number</span> &bull;
+                        <span class="prop">pageSize</span>: <span class="type">number</span> &bull;
+                        <span class="prop">onPageChange</span>: <span class="type">function</span> &bull;
+                        <span class="prop">onPageSizeChange</span>: <span class="type">function</span> &bull;
+                        <span class="prop">selection</span>: <span class="type">boolean</span> &bull;
+                        <span class="prop">selectedItems</span>: <span class="type">Array</span> &bull;
+                        <span class="prop">onSelectChange</span>: <span class="type">function</span> &bull;
+                        <span class="prop">showOrdinalNumbers</span>: <span class="type">boolean</span> &bull;
+                        <span class="prop">tableId</span>: <span class="type">string</span> &bull;
+                        <span class="prop">maxHeight</span>: <span class="type">string</span>
+                    </code>
+                </div>
+            </div>
+
+            <!-- StickyTable -->
+            <div class="component-card">
+                <div class="comp-header">
+                    <span class="comp-name">📌 StickyTable</span>
+                    <span class="comp-badge table">Table</span>
+                </div>
+                <div class="comp-desc">
+                    Table đơn giản với CSS sticky header, custom scrollbar, alternating rows.
+                </div>
+                <div class="comp-props">
+                    <strong>Props:</strong><br>
+                    <code>
+                        <span class="prop">data</span>: <span class="type">Array</span> <span style="color:#ef4444;">*</span> &bull;
+                        <span class="prop">columns</span>: <span class="type">Array</span> <span style="color:#ef4444;">*</span> &bull;
+                        <span class="prop">maxHeight</span>: <span class="type">string</span> (default: '70vh') &bull;
+                        <span class="prop">emptyMessage</span>: <span class="type">string</span> &bull;
+                        <span class="prop">showAlternatingRows</span>: <span class="type">boolean</span> &bull;
+                        <span class="prop">getRowStyle</span>: <span class="type">function</span>
+                    </code>
+                </div>
+            </div>
+
+            <!-- StickyTableWithToggle -->
+            <div class="component-card">
+                <div class="comp-header">
+                    <span class="comp-name">🔀 StickyTableWithToggle</span>
+                    <span class="comp-badge table">Table</span>
+                </div>
+                <div class="comp-desc">
+                    StickyTable với column toggle menu (ẩn/hiện cột, drag & drop, reset).
+                </div>
+                <div class="comp-props">
+                    <strong>Props:</strong><br>
+                    <code>
+                        <span class="prop">data</span>: <span class="type">Array</span> <span style="color:#ef4444;">*</span> &bull;
+                        <span class="prop">columns</span>: <span class="type">Array</span> <span style="color:#ef4444;">*</span> &bull;
+                        <span class="prop">tableId</span>: <span class="type">string</span> &bull;
+                        <span class="prop">viewTableAction</span>: <span class="type">boolean</span> (default: true)
+                    </code>
+                </div>
+            </div>
+
+            <!-- DataTable -->
+            <div class="component-card">
+                <div class="comp-header">
+                    <span class="comp-name">📋 DataTable</span>
+                    <span class="comp-badge table">Table</span>
+                </div>
+                <div class="comp-desc">
+                    Table custom (không dùng thư viện). Hỗ trợ selection (single/multi), row click, custom row style, final row.
+                </div>
+                <div class="comp-props">
+                    <strong>Props:</strong><br>
+                    <code>
+                        <span class="prop">data</span>: <span class="type">Array</span> <span style="color:#ef4444;">*</span> &bull;
+                        <span class="prop">columns</span>: <span class="type">Array</span> <span style="color:#ef4444;">*</span> &bull;
+                        <span class="prop">selectType</span>: <span class="type">'single' | 'multi'</span> &bull;
+                        <span class="prop">showOrdinalNumbers</span>: <span class="type">boolean</span> &bull;
+                        <span class="prop">onRowClick</span>: <span class="type">function</span> &bull;
+                        <span class="prop">handleChangeSelectedRows</span>: <span class="type">function</span> &bull;
+                        <span class="prop">finalRow</span>: <span class="type">ReactNode</span> &bull;
+                        <span class="prop">getRowStyle</span>: <span class="type">function</span> &bull;
+                        <span class="prop">maxHeight</span>: <span class="type">string</span>
+                    </code>
+                </div>
+            </div>
+
+            <!-- TablePagination -->
+            <div class="component-card">
+                <div class="comp-header">
+                    <span class="comp-name">📄 TablePagination</span>
+                    <span class="comp-badge table">Table</span>
+                </div>
+                <div class="comp-desc">
+                    Component phân trang với MUI Pagination, hỗ trợ responsive, popup trên mobile.
+                </div>
+                <div class="comp-props">
+                    <strong>Props:</strong><br>
+                    <code>
+                        <span class="prop">pageIndex</span>: <span class="type">number</span> <span style="color:#ef4444;">*</span> &bull;
+                        <span class="prop">pageSize</span>: <span class="type">number</span> <span style="color:#ef4444;">*</span> &bull;
+                        <span class="prop">totalPages</span>: <span class="type">number</span> <span style="color:#ef4444;">*</span> &bull;
+                        <span class="prop">totalElements</span>: <span class="type">number</span> &bull;
+                        <span class="prop">setPageIndex</span>: <span class="type">function</span> &bull;
+                        <span class="prop">setPageSize</span>: <span class="type">function</span> &bull;
+                        <span class="prop">pageSizeOption</span>: <span class="type">Array</span> (default: [5, 10, 25, 50])
+                    </code>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- 5. POPUP COMPONENTS -->
+        <!-- ============================================================ -->
+        <section class="section" id="popup-components">
+            <h2 class="section-title"><span class="icon">🪟</span> 5. Popup Components</h2>
+
+            <!-- CommonPopup -->
+            <div class="component-card">
+                <div class="comp-header">
+                    <span class="comp-name">🪟 CommonPopup</span>
+                    <span class="comp-badge popup">Popup</span>
+                </div>
+                <div class="comp-desc">
+                    Popup cơ bản với Dialog từ MUI, hỗ trợ kéo thả (react-draggable).
+                </div>
+                <div class="comp-props">
+                    <strong>Props:</strong><br>
+                    <code>
+                        <span class="prop">open</span>: <span class="type">boolean</span> <span style="color:#ef4444;">*</span> &bull;
+                        <span class="prop">handleClose</span>: <span class="type">function</span> <span style="color:#ef4444;">*</span> &bull;
+                        <span class="prop">title</span>: <span class="type">string</span> &bull;
+                        <span class="prop">size</span>: <span class="type">'xs' | 'sm' | 'md' | 'lg' | 'xl'</span> (default: 'md') &bull;
+                        <span class="prop">action</span>: <span class="type">ReactNode</span>
+                    </code>
+                </div>
+            </div>
+
+            <!-- CommonPopupForm -->
+            <div class="component-card">
+                <div class="comp-header">
+                    <span class="comp-name">📝 CommonPopupForm</span>
+                    <span class="comp-badge popup">Popup</span>
+                </div>
+                <div class="comp-desc">
+                    Popup tích hợp Formik. Tự động focus vào field lỗi, hỗ trợ draggable, scroll body/paper.
+                </div>
+                <div class="comp-props">
+                    <strong>Props:</strong><br>
+                    <code>
+                        <span class="prop">open</span>: <span class="type">boolean</span> <span style="color:#ef4444;">*</span> &bull;
+                        <span class="prop">handleClose</span>: <span class="type">function</span> <span style="color:#ef4444;">*</span> &bull;
+                        <span class="prop">title</span>: <span class="type">string</span> &bull;
+                        <span class="prop">formik</span>: <span class="type">object</span> <span style="color:#ef4444;">*</span> &bull;
+                        <span class="prop">action</span>: <span class="type">function | ReactNode</span> &bull;
+                        <span class="prop">hideFooter</span>: <span class="type">boolean</span> &bull;
+                        <span class="prop">hideSubmit</span>: <span class="type">boolean</span> &bull;
+                        <span class="prop">textSubmit</span>: <span class="type">string</span> &bull;
+                        <span class="prop">formId</span>: <span class="type">string</span>
+                    </code>
+                </div>
+                <div style="margin-top:10px; background:#f0fdf4; border-radius:8px; padding:12px 16px;">
+                    <strong>💡 Sử dụng:</strong>
+                    <div class="code-block" style="background:#1e293b; color:#e2e8f0; margin-top:6px;">
+                        <span class="comment">// Truyền formik object với enableReinitialize</span><br>
+                        <span class="variable">formik</span> = <span class="func">{{</span><br>
+                        &nbsp;&nbsp;<span class="variable">enableReinitialize</span>: <span class="keyword">true</span>,<br>
+                        &nbsp;&nbsp;<span class="variable">initialValues</span>: <span class="variable">selectedItem</span> || <span class="variable">defaultValues</span>,<br>
+                        &nbsp;&nbsp;<span class="variable">onSubmit</span>: <span class="variable">handleSubmit</span>,<br>
+                        &nbsp;&nbsp;<span class="variable">validationSchema</span>: <span class="variable">validationSchema</span><br>
+                        <span class="func">}}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CommonConfirmDialog -->
+            <div class="component-card">
+                <div class="comp-header">
+                    <span class="comp-name">⚠️ CommonConfirmDialog</span>
+                    <span class="comp-badge popup">Popup</span>
+                </div>
+                <div class="comp-desc">
+                    Dialog xác nhận với 2 nút (Xác nhận / Hủy). Hỗ trợ Promise và non-Promise.
+                </div>
+                <div class="comp-props">
+                    <strong>Props:</strong><br>
+                    <code>
+                        <span class="prop">open</span>: <span class="type">boolean</span> <span style="color:#ef4444;">*</span> &bull;
+                        <span class="prop">onClose</span>: <span class="type">function</span> <span style="color:#ef4444;">*</span> &bull;
+                        <span class="prop">title</span>: <span class="type">string</span> (default: 'Xác nhận') &bull;
+                        <span class="prop">text</span>: <span class="type">string</span> <span style="color:#ef4444;">*</span> &bull;
+                        <span class="prop">textConfirm</span>: <span class="type">string</span> (default: 'Xác nhận') &bull;
+                        <span class="prop">textClose</span>: <span class="type">string</span> (default: 'Hủy') &bull;
+                        <span class="prop">onConfirm</span>: <span class="type">function</span> &bull;
+                        <span class="prop">isNotAPromise</span>: <span class="type">boolean</span> &bull;
+                        <span class="prop">maxWidth</span>: <span class="type">string</span>
+                    </code>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- 6. FILE COMPONENTS -->
+        <!-- ============================================================ -->
+        <section class="section" id="file-components">
+            <h2 class="section-title"><span class="icon">📎</span> 6. File Components</h2>
+
+            <!-- CommonImageUpload -->
+            <div class="component-card">
+                <div class="comp-header">
+                    <span class="comp-name">🖼️ CommonImageUpload</span>
+                    <span class="comp-badge file">File</span>
+                </div>
+                <div class="comp-desc">
+                    Upload ảnh đơn với preview avatar, hỗ trợ crop, validate kích thước.
+                </div>
+                <div class="comp-props">
+                    <strong>Props:</strong><br>
+                    <code>
+                        <span class="prop">name</span>: <span class="type">string</span> <span style="color:#ef4444;">*</span> &bull;
+                        <span class="prop">imagePath</span>: <span class="type">string</span> &bull;
+                        <span class="prop">onChange</span>: <span class="type">function</span> &bull;
+                        <span class="prop">wrapperAvatarStyle</span>: <span class="type">object</span> &bull;
+                        <span class="prop">disabled</span>: <span class="type">boolean</span>
+                    </code>
+                </div>
+            </div>
+
+            <!-- CommonFileUpload -->
+            <div class="component-card">
+                <div class="comp-header">
+                    <span class="comp-name">📁 CommonFileUpload</span>
+                    <span class="comp-badge file">File</span>
+                </div>
+                <div class="comp-desc">
+                    Upload nhiều file với react-dropzone. Hỗ trợ preview, download, delete, nén ảnh tự động.
+                </div>
+                <div class="comp-props">
+                    <strong>Props:</strong><br>
+                    <code>
+                        <span class="prop">name</span>: <span class="type">string</span> <span style="color:#ef4444;">*</span> &bull;
+                        <span class="prop">acceptedFiles</span>: <span class="type">Array</span> (default: ['image/*', 'application/pdf']) &bull;
+                        <span class="prop">maxFileSize</span>: <span class="type">number</span> (default: 5242880) &bull;
+                        <span class="prop">filesLimit</span>: <span class="type">number</span> (default: 10) &bull;
+                        <span class="prop">showPreview</span>: <span class="type">boolean</span> &bull;
+                        <span class="prop">showDownload</span>: <span class="type">boolean</span> &bull;
+                        <span class="prop">showDelete</span>: <span class="type">boolean</span> &bull;
+                        <span class="prop">showUpload</span>: <span class="type">boolean</span> &bull;
+                        <span class="prop">disabled</span>: <span class="type">boolean</span>
+                    </code>
+                </div>
+                <div style="margin-top:10px; background:#f0fdf4; border-radius:8px; padding:12px 16px;">
+                    <strong>💡 Tính năng nén ảnh:</strong>
+                    <div class="code-block" style="background:#1e293b; color:#e2e8f0; margin-top:6px;">
+                        <span class="comment">// config_resizeImg</span><br>
+                        <span class="func">const</span> <span class="variable">config_resizeImg</span> = <span class="func">{</span><br>
+                        &nbsp;&nbsp;<span class="variable">maxSizeMB</span>: <span class="string">1</span>,<br>
+                        &nbsp;&nbsp;<span class="variable">maxWidthOrHeight</span>: <span class="string">1920</span>,<br>
+                        &nbsp;&nbsp;<span class="variable">useWebWorker</span>: <span class="keyword">true</span>,<br>
+                        &nbsp;&nbsp;<span class="variable">initialQuality</span>: <span class="string">0.6</span><br>
+                        <span class="func">}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CommonDragDropFile -->
+            <div class="component-card">
+                <div class="comp-header">
+                    <span class="comp-name">📎 CommonDragDropFile</span>
+                    <span class="comp-badge file">File</span>
+                </div>
+                <div class="comp-desc">
+                    Drag & drop file đơn. Hiển thị preview, hỗ trợ download, delete.
+                </div>
+                <div class="comp-props">
+                    <strong>Props:</strong><br>
+                    <code>
+                        <span class="prop">fileProp</span>: <span class="type">object</span> &bull;
+                        <span class="prop">onFileUploaded</span>: <span class="type">function</span> &bull;
+                        <span class="prop">onFileRemoved</span>: <span class="type">function</span> &bull;
+                        <span class="prop">maxFileSize</span>: <span class="type">number</span> &bull;
+                        <span class="prop">readOnly</span>: <span class="type">boolean</span>
+                    </code>
+                </div>
+            </div>
+
+            <!-- CommonFilePreview -->
+            <div class="component-card">
+                <div class="comp-header">
+                    <span class="comp-name">👁️ CommonFilePreview</span>
+                    <span class="comp-badge file">File</span>
+                </div>
+                <div class="comp-desc">
+                    Preview file với Lightbox cho ảnh, Popup cho PDF, download.
+                </div>
+                <div class="comp-props">
+                    <strong>Props:</strong><br>
+                    <code>
+                        <span class="prop">file</span>: <span class="type">object</span> <span style="color:#ef4444;">*</span> &bull;
+                        <span class="prop">previewUrl</span>: <span class="type">string</span> &bull;
+                        <span class="prop">showDownload</span>: <span class="type">boolean</span> &bull;
+                        <span class="prop">showDelete</span>: <span class="type">boolean</span> &bull;
+                        <span class="prop">onDelete</span>: <span class="type">function</span> &bull;
+                        <span class="prop">onDownload</span>: <span class="type">function</span>
+                    </code>
+                </div>
+            </div>
+
+            <!-- CommonImageGallery -->
+            <div class="component-card">
+                <div class="comp-header">
+                    <span class="comp-name">🖼️ CommonImageGallery</span>
+                    <span class="comp-badge file">File</span>
+                </div>
+                <div class="comp-desc">
+                    Hiển thị gallery ảnh với LightGallery (lightgallery.js). Hỗ trợ zoom, fullscreen, rotate.
+                </div>
+                <div class="comp-props">
+                    <strong>Props:</strong><br>
+                    <code>
+                        <span class="prop">images</span>: <span class="type">Array</span> <span style="color:#ef4444;">*</span> &bull;
+                        <span class="prop">onRemoveImage</span>: <span class="type">function</span> &bull;
+                        <span class="prop">disabled</span>: <span class="type">boolean</span> &bull;
+                        <span class="prop">rawItems</span>: <span class="type">Array</span>
+                    </code>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- 7. DISPLAY COMPONENTS -->
+        <!-- ============================================================ -->
+        <section class="section" id="display-components">
+            <h2 class="section-title"><span class="icon">🎨</span> 7. Display Components</h2>
+
+            <!-- CommonAvatar -->
+            <div class="component-card">
+                <div class="comp-header">
+                    <span class="comp-name">👤 CommonAvatar</span>
+                    <span class="comp-badge display">Display</span>
+                </div>
+                <div class="comp-desc">
+                    Avatar hiển thị ảnh đại diện, hỗ trợ fallback text (lấy chữ cái đầu).
+                </div>
+                <div class="comp-props">
+                    <strong>Props:</strong><br>
+                    <code>
+                        <span class="prop">name</span>: <span class="type">string</span> &bull;
+                        <span class="prop">imgPath</span>: <span class="type">string</span> &bull;
+                        <span class="prop">isFile</span>: <span class="type">boolean</span> &bull;
+                        <span class="prop">style</span>: <span class="type">object</span> &bull;
+                        <span class="prop">className</span>: <span class="type">string</span> &bull;
+                        <span class="prop">includeName</span>: <span class="type">boolean</span>
+                    </code>
+                </div>
+            </div>
+
+            <!-- CommonBadge -->
+            <div class="component-card">
+                <div class="comp-header">
+                    <span class="comp-name">🏷️ CommonBadge</span>
+                    <span class="comp-badge display">Display</span>
+                </div>
+                <div class="comp-desc">
+                    Badge hiển thị trạng thái với màu sắc và icon tùy chỉnh.
+                </div>
+                <div class="comp-props">
+                    <strong>Props:</strong><br>
+                    <code>
+                        <span class="prop">status</span>: <span class="type">string</span> <span style="color:#ef4444;">*</span> &bull;
+                        <span class="prop">color</span>: <span class="type">string</span> &bull;
+                        <span class="prop">icon</span>: <span class="type">ReactNode</span> &bull;
+                        <span class="prop">size</span>: <span class="type">'small' | 'medium'</span>
+                    </code>
+                </div>
+            </div>
+
+            <!-- CommonChip -->
+            <div class="component-card">
+                <div class="comp-header">
+                    <span class="comp-name">🏷️ CommonChip</span>
+                    <span class="comp-badge display">Display</span>
+                </div>
+                <div class="comp-desc">
+                    Chip hiển thị label với màu sắc, hỗ trợ delete, click.
+                </div>
+                <div class="comp-props">
+                    <strong>Props:</strong><br>
+                    <code>
+                        <span class="prop">label</span>: <span class="type">string</span> <span style="color:#ef4444;">*</span> &bull;
+                        <span class="prop">color</span>: <span class="type">string</span> &bull;
+                        <span class="prop">onDelete</span>: <span class="type">function</span> &bull;
+                        <span class="prop">onClick</span>: <span class="type">function</span> &bull;
+                        <span class="prop">size</span>: <span class="type">'small' | 'medium'</span>
+                    </code>
+                </div>
+            </div>
+
+            <!-- CommonLoading -->
+            <div class="component-card">
+                <div class="comp-header">
+                    <span class="comp-name">⏳ CommonLoading</span>
+                    <span class="comp-badge display">Display</span>
+                </div>
+                <div class="comp-desc">
+                    Loading spinner với overlay hoặc skeleton.
+                </div>
+                <div class="comp-props">
+                    <strong>Props:</strong><br>
+                    <code>
+                        <span class="prop">loading</span>: <span class="type">boolean</span> <span style="color:#ef4444;">*</span> &bull;
+                        <span class="prop">type</span>: <span class="type">'spinner' | 'skeleton'</span> (default: 'spinner') &bull;
+                        <span class="prop">overlay</span>: <span class="type">boolean</span> &bull;
+                        <span class="prop">rows</span>: <span class="type">number</span> (skeleton rows)
+                    </code>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- 8. LAYOUT COMPONENTS -->
+        <!-- ============================================================ -->
+        <section class="section" id="layout-components">
+            <h2 class="section-title"><span class="icon">🏗️</span> 8. Layout Components</h2>
+
+            <!-- CommonHeader -->
+            <div class="component-card">
+                <div class="comp-header">
+                    <span class="comp-name">📌 CommonHeader</span>
+                    <span class="comp-badge layout">Layout</span>
+                </div>
+                <div class="comp-desc">
+                    Header với AppBar, navigation menu, user menu, theme toggle, responsive.
+                </div>
+                <div class="comp-props">
+                    <strong>Props:</strong><br>
+                    <code>
+                        <span class="prop">onToggleSidebar</span>: <span class="type">function</span> &bull;
+                        <span class="prop">onLogout</span>: <span class="type">function</span> &bull;
+                        <span class="prop">user</span>: <span class="type">object</span> &bull;
+                        <span class="prop">isAuthenticated</span>: <span class="type">boolean</span>
+                    </code>
+                </div>
+            </div>
+
+            <!-- CommonSidebar -->
+            <div class="component-card">
+                <div class="comp-header">
+                    <span class="comp-name">📂 CommonSidebar</span>
+                    <span class="comp-badge layout">Layout</span>
+                </div>
+                <div class="comp-desc">
+                    Sidebar navigation với drawer, menu items, nested menu, active state.
+                </div>
+                <div class="comp-props">
+                    <strong>Props:</strong><br>
+                    <code>
+                        <span class="prop">open</span>: <span class="type">boolean</span> <span style="color:#ef4444;">*</span> &bull;
+                        <span class="prop">onClose</span>: <span class="type">function</span> &bull;
+                        <span class="prop">items</span>: <span class="type">Array</span> <span style="color:#ef4444;">*</span> &bull;
+                        <span class="prop">variant</span>: <span class="type">'permanent' | 'temporary'</span>
+                    </code>
+                </div>
+            </div>
+
+            <!-- CommonBreadcrumb -->
+            <div class="component-card">
+                <div class="comp-header">
+                    <span class="comp-name">🍞 CommonBreadcrumb</span>
+                    <span class="comp-badge layout">Layout</span>
+                </div>
+                <div class="comp-desc">
+                    Breadcrumb hiển thị đường dẫn, hỗ trợ navigate back/forward, refresh.
+                </div>
+                <div class="comp-props">
+                    <strong>Props:</strong><br>
+                    <code>
+                        <span class="prop">routeSegments</span>: <span class="type">Array</span> &bull;
+                        <span class="prop">onRefresh</span>: <span class="type">function</span>
+                    </code>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- 9. STORE PATTERN (ZUSTAND) -->
+        <!-- ============================================================ -->
+        <section class="section" id="store-pattern">
+            <h2 class="section-title"><span class="icon">🗄️</span> 9. Store Pattern (Zustand)</h2>
+
+            <div class="store-card">
+                <div class="store-name">📦 uiStore.js</div>
+                <div class="store-desc">Quản lý UI state: loading, toast, modal, sidebar, theme</div>
+            </div>
+            <div class="store-card">
+                <div class="store-name">📦 authStore.js</div>
+                <div class="store-desc">Quản lý xác thực: user, token, login, logout, register</div>
+            </div>
+            <div class="store-card">
+                <div class="store-name">📦 memberStore.js</div>
+                <div class="store-desc">Quản lý thành viên: list, detail, CRUD, pagination, filter</div>
+            </div>
+            <div class="store-card">
+                <div class="store-name">📦 treeStore.js</div>
+                <div class="store-desc">Quản lý cây gia phả: treeData, selectedMember, view mode</div>
+            </div>
+            <div class="store-card">
+                <div class="store-name">📦 eventStore.js</div>
+                <div class="store-desc">Quản lý sự kiện: list, detail, upcoming, CRUD</div>
+            </div>
+            <div class="store-card">
+                <div class="store-name">📦 postStore.js</div>
+                <div class="store-desc">Quản lý tin tức: list, detail, featured, CRUD</div>
+            </div>
+            <div class="store-card">
+                <div class="store-name">📦 galleryStore.js</div>
+                <div class="store-desc">Quản lý thư viện ảnh: albums, images, upload, delete</div>
+            </div>
+            <div class="store-card">
+                <div class="store-name">📦 fundStore.js</div>
+                <div class="store-desc">Quản lý quỹ: funds, transactions, balance</div>
+            </div>
+
+            <div style="margin-top:16px;">
+                <strong>📝 Cấu trúc store mẫu:</strong>
+                <div class="code-block">
+                    <span class="comment">// stores/memberStore.js</span><br>
+                    <span class="keyword">import</span> <span class="func">{ create }</span> <span class="keyword">from</span> <span class="string">'zustand'</span>;<br>
+                    <span class="keyword">import</span> <span class="func">{ persist }</span> <span class="keyword">from</span> <span class="string">'zustand/middleware'</span>;<br>
+                    <br>
+                    <span class="func">const</span> <span class="variable">useMemberStore</span> = <span class="func">create</span>(<br>
+                    &nbsp;&nbsp;<span class="func">(</span><span class="variable">set</span>, <span class="variable">get</span><span class="func">)</span> <span class="keyword">=></span> <span class="func">({</span><br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// ===== STATE =====</span><br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">members</span>: [],<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">selectedMember</span>: <span class="keyword">null</span>,<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">totalElements</span>: <span class="number">0</span>,<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">loading</span>: <span class="keyword">false</span>,<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">error</span>: <span class="keyword">null</span>,<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">filters</span>: <span class="func">{</span><br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">pageIndex</span>: <span class="number">1</span>,<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">pageSize</span>: <span class="number">10</span>,<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">keyword</span>: <span class="string">''</span>,<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">generation</span>: <span class="string">''</span>,<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="func">}</span>,<br>
+                    <br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// ===== ACTIONS =====</span><br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">fetchMembers</span>: <span class="keyword">async</span> (<span class="variable">params</span> = <span class="func">{}</span>) <span class="keyword">=></span> <span class="func">{</span><br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">set</span>(<span class="func">{</span> <span class="variable">loading</span>: <span class="keyword">true</span>, <span class="variable">error</span>: <span class="keyword">null</span> <span class="func">}</span>);<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span> <span class="func">{</span><br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">const</span> <span class="variable">response</span> = <span class="keyword">await</span> <span class="variable">memberService</span>.<span class="func">paging</span>(<span class="func">{</span> ...<span class="variable">get</span>().<span class="variable">filters</span>, ...<span class="variable">params</span> <span class="func">}</span>);<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">set</span>(<span class="func">{</span><br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">members</span>: <span class="variable">response</span>.<span class="variable">data</span>.<span class="variable">content</span>,<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">totalElements</span>: <span class="variable">response</span>.<span class="variable">data</span>.<span class="variable">totalElements</span>,<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">loading</span>: <span class="keyword">false</span>,<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="func">}</span>);<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="func">}</span> <span class="keyword">catch</span> (<span class="variable">error</span>) <span class="func">{</span><br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">set</span>(<span class="func">{</span> <span class="variable">loading</span>: <span class="keyword">false</span>, <span class="variable">error</span>: <span class="variable">error</span>.<span class="variable">message</span> <span class="func">}</span>);<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="func">}</span><br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="func">}</span>,<br>
+                    <br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">setFilters</span>: (<span class="variable">filters</span>) <span class="keyword">=></span> <span class="func">{</span><br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">set</span>(<span class="func">(</span><span class="variable">state</span><span class="func">)</span> <span class="keyword">=></span> <span class="func">({</span><br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">filters</span>: <span class="func">{</span> ...<span class="variable">state</span>.<span class="variable">filters</span>, ...<span class="variable">filters</span>, <span class="variable">pageIndex</span>: <span class="number">1</span> <span class="func">}</span><br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="func">}</span>));<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">get</span>().<span class="func">fetchMembers</span>();<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="func">}</span>,<br>
+                    <br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// ... các actions khác</span><br>
+                    &nbsp;&nbsp;<span class="func">}</span><br>
+                    <span class="func">)</span>;<br>
+                    <br>
+                    <span class="keyword">export</span> <span class="keyword">default</span> <span class="variable">useMemberStore</span>;
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- 10. SERVICE PATTERN -->
+        <!-- ============================================================ -->
+        <section class="section" id="service-pattern">
+            <h2 class="section-title"><span class="icon">🌐</span> 10. Service Pattern</h2>
+
+            <div style="margin-bottom:12px;">
+                <strong>📝 Cấu trúc service mẫu:</strong>
+                <div class="code-block">
+                    <span class="comment">// modules/members/services/memberService.js</span><br>
+                    <span class="keyword">import</span> <span class="variable">api</span> <span class="keyword">from</span> <span class="string">'../../../services/api'</span>;<br>
+                    <br>
+                    <span class="keyword">const</span> <span class="variable">API_PATH</span> = <span class="variable">import</span>.<span class="variable">meta</span>.<span class="variable">env</span>.<span class="variable">VITE_API_URL</span> + <span class="string">'/api/profiles'</span>;<br>
+                    <br>
+                    <span class="keyword">export</span> <span class="keyword">const</span> <span class="variable">pagingMembers</span> = (<span class="variable">dto</span>) <span class="keyword">=></span> <span class="func">{</span><br>
+                    &nbsp;&nbsp;<span class="keyword">return</span> <span class="variable">api</span>.<span class="func">post</span>(<span class="string">`<span class="variable">${API_PATH}</span>/page`</span>, <span class="variable">dto</span>);<br>
+                    <span class="func">}</span>;<br>
+                    <br>
+                    <span class="keyword">export</span> <span class="keyword">const</span> <span class="variable">getMemberById</span> = (<span class="variable">id</span>) <span class="keyword">=></span> <span class="func">{</span><br>
+                    &nbsp;&nbsp;<span class="keyword">return</span> <span class="variable">api</span>.<span class="func">get</span>(<span class="string">`<span class="variable">${API_PATH}</span>/<span class="variable">${id}</span>`</span>);<br>
+                    <span class="func">}</span>;<br>
+                    <br>
+                    <span class="keyword">export</span> <span class="keyword">const</span> <span class="variable">saveMember</span> = (<span class="variable">dto</span>) <span class="keyword">=></span> <span class="func">{</span><br>
+                    &nbsp;&nbsp;<span class="keyword">return</span> <span class="variable">api</span>.<span class="func">post</span>(<span class="string">`<span class="variable">${API_PATH}</span>/save`</span>, <span class="variable">dto</span>);<br>
+                    <span class="func">}</span>;<br>
+                    <br>
+                    <span class="keyword">export</span> <span class="keyword">const</span> <span class="variable">deleteMember</span> = (<span class="variable">id</span>) <span class="keyword">=></span> <span class="func">{</span><br>
+                    &nbsp;&nbsp;<span class="keyword">return</span> <span class="variable">api</span>.<span class="func">delete</span>(<span class="string">`<span class="variable">${API_PATH}</span>/<span class="variable">${id}</span>`</span>);<br>
+                    <span class="func">}</span>;<br>
+                    <br>
+                    <span class="keyword">export</span> <span class="keyword">const</span> <span class="variable">deleteMultipleMembers</span> = (<span class="variable">ids</span>) <span class="keyword">=></span> <span class="func">{</span><br>
+                    &nbsp;&nbsp;<span class="keyword">return</span> <span class="variable">api</span>.<span class="func">post</span>(<span class="string">`<span class="variable">${API_PATH}</span>/deleteMultiple`</span>, <span class="variable">ids</span>);<br>
+                    <span class="func">}</span>;
+                </div>
+            </div>
+
+            <div>
+                <strong>📝 API Interceptor (services/api.js):</strong>
+                <div class="code-block">
+                    <span class="keyword">import</span> <span class="variable">axios</span> <span class="keyword">from</span> <span class="string">'axios'</span>;<br>
+                    <br>
+                    <span class="keyword">const</span> <span class="variable">api</span> = <span class="variable">axios</span>.<span class="func">create</span>(<span class="func">{</span><br>
+                    &nbsp;&nbsp;<span class="variable">baseURL</span>: <span class="variable">import</span>.<span class="variable">meta</span>.<span class="variable">env</span>.<span class="variable">VITE_API_URL</span>,<br>
+                    &nbsp;&nbsp;<span class="variable">timeout</span>: <span class="number">30000</span>,<br>
+                    <span class="func">}</span>);<br>
+                    <br>
+                    <span class="comment">// Request interceptor - gắn JWT token</span><br>
+                    <span class="variable">api</span>.<span class="variable">interceptors</span>.<span class="variable">request</span>.<span class="func">use</span>(<br>
+                    &nbsp;&nbsp;(<span class="variable">config</span>) <span class="keyword">=></span> <span class="func">{</span><br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">const</span> <span class="variable">token</span> = <span class="variable">localStorage</span>.<span class="func">getItem</span>(<span class="string">'accessToken'</span>);<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (<span class="variable">token</span>) <span class="func">{</span><br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="variable">config</span>.<span class="variable">headers</span>.<span class="variable">Authorization</span> = <span class="string">`Bearer <span class="variable">${token}</span>`</span>;<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="func">}</span><br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> <span class="variable">config</span>;<br>
+                    &nbsp;&nbsp;<span class="func">}</span>,<br>
+                    &nbsp;&nbsp;(<span class="variable">error</span>) <span class="keyword">=></span> <span class="variable">Promise</span>.<span class="func">reject</span>(<span class="variable">error</span>)<br>
+                    <span class="func">}</span>);<br>
+                    <br>
+                    <span class="comment">// Response interceptor - refresh token</span><br>
+                    <span class="variable">api</span>.<span class="variable">interceptors</span>.<span class="variable">response</span>.<span class="func">use</span>(<br>
+                    &nbsp;&nbsp;(<span class="variable">response</span>) <span class="keyword">=></span> <span class="variable">response</span>,<br>
+                    &nbsp;&nbsp;<span class="keyword">async</span> (<span class="variable">error</span>) <span class="keyword">=></span> <span class="func">{</span><br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (<span class="variable">error</span>.<span class="variable">response</span>?.<span class="variable">status</span> === <span class="number">401</span>) <span class="func">{</span><br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Handle token refresh</span><br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="func">}</span><br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> <span class="variable">Promise</span>.<span class="func">reject</span>(<span class="variable">error</span>);<br>
+                    &nbsp;&nbsp;<span class="func">}</span><br>
+                    <span class="func">)</span>;<br>
+                    <br>
+                    <span class="keyword">export</span> <span class="keyword">default</span> <span class="variable">api</span>;
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- 11. CUSTOM HOOKS -->
+        <!-- ============================================================ -->
+        <section class="section" id="hooks">
+            <h2 class="section-title"><span class="icon">🎣</span> 11. Custom Hooks</h2>
+
+            <div class="component-card">
+                <div class="comp-header">
+                    <span class="comp-name">🔐 useAuth</span>
+                </div>
+                <div class="comp-desc">Hook truy cập auth state và actions từ authStore</div>
+            </div>
+
+            <div class="component-card">
+                <div class="comp-header">
+                    <span class="comp-name">⏳ useDebounce</span>
+                </div>
+                <div class="comp-desc">Hook debounce cho search input</div>
+                <div class="comp-props">
+                    <strong>Props:</strong><br>
+                    <code>
+                        <span class="prop">value</span>: <span class="type">any</span> <span style="color:#ef4444;">*</span> &bull;
+                        <span class="prop">delay</span>: <span class="type">number</span> (default: 500)
+                    </code>
+                </div>
+            </div>
+
+            <div class="component-card">
+                <div class="comp-header">
+                    <span class="comp-name">📱 useMediaQuery</span>
+                </div>
+                <div class="comp-desc">Hook responsive cho breakpoints MUI</div>
+                <div class="comp-props">
+                    <strong>Props:</strong><br>
+                    <code>
+                        <span class="prop">query</span>: <span class="type">string</span> (default: 'down', 'sm')
+                    </code>
+                </div>
+            </div>
+
+            <div class="component-card">
+                <div class="comp-header">
+                    <span class="comp-name">🔑 usePrivilege</span>
+                </div>
+                <div class="comp-desc">Hook kiểm tra quyền của user</div>
+                <div class="comp-props">
+                    <strong>Props:</strong><br>
+                    <code>
+                        <span class="prop">privilege</span>: <span class="type">string</span> <span style="color:#ef4444;">*</span>
+                    </code>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- 12. UTILITIES -->
+        <!-- ============================================================ -->
+        <section class="section" id="utils">
+            <h2 class="section-title"><span class="icon">🔧</span> 12. Utilities</h2>
+
+            <div class="component-card">
+                <div class="comp-header">
+                    <span class="comp-name">📅 formatters.js</span>
+                </div>
+                <div class="comp-desc">Hàm format date, time, currency, number, phone</div>
+            </div>
+
+            <div class="component-card">
+                <div class="comp-header">
+                    <span class="comp-name">✅ validators.js</span>
+                </div>
+                <div class="comp-desc">Hàm validation: phone, email, required, min/max</div>
+            </div>
+
+            <div class="component-card">
+                <div class="comp-header">
+                    <span class="comp-name">🛠️ helpers.js</span>
+                </div>
+                <div class="comp-desc">Hàm helper: getDate, formatMoney, checkPhoneNumber, getFormData</div>
+            </div>
+
+            <div class="component-card">
+                <div class="comp-header">
+                    <span class="comp-name">📋 validationSchemas.js</span>
+                </div>
+                <div class="comp-desc">Yup validation schemas tái sử dụng</div>
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- 13. ROADMAP -->
+        <!-- ============================================================ -->
+        <section class="section" id="roadmap">
+            <h2 class="section-title"><span class="icon">🗓️</span> 13. Lộ trình phát triển (12 tuần)</h2>
+
+            <div class="roadmap">
+                <div class="roadmap-item">
+                    <div class="week">Tuần 1-2</div>
+                    <div class="task">Setup & Auth</div>
+                    <div class="detail">Tạo project, cấu hình theme, routing, API, Login/Register</div>
+                </div>
+                <div class="roadmap-item">
+                    <div class="week">Tuần 3-4</div>
+                    <div class="task">Core Features</div>
+                    <div class="detail">Members CRUD, Family Tree (D3.js), File upload</div>
+                </div>
+                <div class="roadmap-item">
+                    <div class="week">Tuần 5-6</div>
+                    <div class="task">Content Modules</div>
+                    <div class="detail">Events, Posts, Gallery với LightGallery</div>
+                </div>
+                <div class="roadmap-item">
+                    <div class="week">Tuần 7-8</div>
+                    <div class="task">Funds & Dashboard</div>
+                    <div class="detail">Quỹ dòng họ, Transactions, Dashboard stats</div>
+                </div>
+                <div class="roadmap-item">
+                    <div class="week">Tuần 9-10</div>
+                    <div class="task">Admin & Optimization</div>
+                    <div class="detail">Admin dashboard, User manager, Performance optimization</div>
+                </div>
+                <div class="roadmap-item">
+                    <div class="week">Tuần 11-12</div>
+                    <div class="task">Testing & Deploy</div>
+                    <div class="detail">E2E test, Build production, Deploy, Nginx config</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- FOOTER -->
+        <!-- ============================================================ -->
+        <footer style="margin-top:48px; padding-top:24px; border-top:2px solid #e5e7eb; text-align:center; color:#6b7280; font-size:14px;">
+            <p>
+                <strong>🏛️ Kế hoạch triển khai Frontend - Website Dòng Họ</strong>
+                &bull; React + Vite + MUI v6 + Zustand
+            </p>
+            <p style="margin-top:4px;">
+                Phiên bản 2.0 &bull; Cập nhật 2026
+            </p>
+        </footer>
+
+    </div>
+</body>
+</html>
