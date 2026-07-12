@@ -10,7 +10,7 @@ const postService = {
     return response.data;
   },
   getById: async (id) => {
-    const response = await api.get(`/posts/${id}`);
+    const response = await api.get(`/posts/id/${id}`);
     return response.data;
   },
   create: async (data) => {
