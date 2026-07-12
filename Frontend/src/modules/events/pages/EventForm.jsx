@@ -56,8 +56,8 @@ const EventForm = () => {
   });
 
   return (
-    <Dialog open={openCreateEditPopup} onClose={handleClose} maxWidth="sm" fullWidth>
-      <FormikProvider value={formik}>
+    <FormikProvider value={formik}>
+      <Dialog open={openCreateEditPopup} onClose={handleClose} maxWidth="sm" fullWidth>
         <DialogTitle sx={{ fontWeight: 700 }}>
           {selectedRow?.id ? 'Sửa thông tin sự kiện' : 'Thêm sự kiện mới'}
         </DialogTitle>
@@ -149,8 +149,8 @@ const EventForm = () => {
             {formik.isSubmitting ? 'Đang lưu...' : 'Lưu sự kiện'}
           </Button>
         </DialogActions>
-      </FormikProvider>
-    </Dialog>
+      </Dialog>
+    </FormikProvider>
   );
 };
 

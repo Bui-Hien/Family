@@ -56,8 +56,8 @@ const PostForm = () => {
   });
 
   return (
-    <Dialog open={openCreateEditPopup} onClose={handleClose} maxWidth="md" fullWidth>
-      <FormikProvider value={formik}>
+    <FormikProvider value={formik}>
+      <Dialog open={openCreateEditPopup} onClose={handleClose} maxWidth="md" fullWidth>
         <DialogTitle sx={{ fontWeight: 700 }}>
           {selectedRow?.id ? 'Chỉnh sửa bài viết' : 'Đăng bài viết mới'}
         </DialogTitle>
@@ -150,8 +150,8 @@ const PostForm = () => {
             {formik.isSubmitting ? 'Đang lưu...' : 'Lưu bài viết'}
           </Button>
         </DialogActions>
-      </FormikProvider>
-    </Dialog>
+      </Dialog>
+    </FormikProvider>
   );
 };
 
