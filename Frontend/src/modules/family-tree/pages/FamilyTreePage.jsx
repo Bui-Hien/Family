@@ -37,29 +37,31 @@ const FamilyTreePage = () => {
           const deltaY = posChange.position.y - draggedNode.position.y;
           
           if (deltaY !== 0) {
-            const targetY = draggedNode.position.y;
+            const draggedGeneration = draggedNode.data?.member?.generation;
             
-            // Generate position adjustments for all other nodes on the same vertical level
-            const rowChanges = nds
-              .filter((n) => n.id !== draggedNode.id && Math.abs(n.position.y - targetY) < 1)
-              .map((n) => ({
-                id: n.id,
-                type: 'position',
-                position: {
-                  x: n.position.x, // Keep horizontal position
-                  y: n.position.y + deltaY, // Shift vertically with the dragged node
-                },
-              }));
-            
-            // Merge original changes and row synchronized changes
-            const allChanges = [...changes];
-            rowChanges.forEach((rowChange) => {
-              if (!allChanges.some((c) => c.id === rowChange.id)) {
-                allChanges.push(rowChange);
-              }
-            });
-            
-            return applyNodeChanges(allChanges, nds);
+            // Only group by generation to shift the row vertically, avoiding collision with other rows
+            if (draggedGeneration !== undefined) {
+              const rowChanges = nds
+                .filter((n) => n.id !== draggedNode.id && n.data?.member?.generation === draggedGeneration)
+                .map((n) => ({
+                  id: n.id,
+                  type: 'position',
+                  position: {
+                    x: n.position.x, // Keep horizontal position
+                    y: n.position.y + deltaY, // Shift vertically with the dragged node
+                  },
+                }));
+              
+              // Merge original changes and row synchronized changes
+              const allChanges = [...changes];
+              rowChanges.forEach((rowChange) => {
+                if (!allChanges.some((c) => c.id === rowChange.id)) {
+                  allChanges.push(rowChange);
+                }
+              });
+              
+              return applyNodeChanges(allChanges, nds);
+            }
           }
         }
       }
