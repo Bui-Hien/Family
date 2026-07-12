@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Stack, Tooltip, IconButton, FormControl, Select, MenuItem } from '@mui/material';
-import { Delete as DeleteIcon, Edit as EditIcon } from '@mui/icons-material';
+import { Delete as DeleteIcon, Edit as EditIcon, History as HistoryIcon } from '@mui/icons-material';
 import { useAdminStore } from '@/modules/admin/store/useAdminStore';
 import CommonTable from '@/common/components/table/CommonTable';
 import { UserRole } from '@/common/constants';
+import CommonAuditLogPopup from '@/common/components/popup/CommonAuditLogPopup';
 
 const AdminList = () => {
   const {
@@ -18,6 +19,9 @@ const AdminList = () => {
     changeRole,
     pagingUser,
   } = useAdminStore();
+
+  const [historyOpen, setHistoryOpen] = useState(false);
+  const [selectedEntity, setSelectedEntity] = useState({ id: null, name: '' });
 
   const columns = [
     {
@@ -72,6 +76,18 @@ const AdminList = () => {
       header: 'Thao tác',
       Cell: ({ row }) => (
         <Stack direction="row" spacing={1}>
+          <Tooltip title="Lịch sử thay đổi tài khoản">
+            <IconButton
+              size="small"
+              onClick={() => {
+                setSelectedEntity({ id: row.original.id, name: row.original.username });
+                setHistoryOpen(true);
+              }}
+              color="info"
+            >
+              <HistoryIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
           <Tooltip title="Chỉnh sửa thông tin tài khoản">
             <IconButton size="small" onClick={() => handleOpenCreateEdit(row.original)} color="primary">
               <EditIcon fontSize="small" />
@@ -88,25 +104,34 @@ const AdminList = () => {
   ];
 
   return (
-    <CommonTable
-      data={dataList}
-      columns={columns}
-      loading={loading}
-      totalElements={totalElements}
-      pageIndex={searchObject.pageIndex - 1}
-      pageSize={searchObject.pageSize}
-      manualPagination
-      rowCount={totalElements}
-      onPaginationChange={(updater) => {
-        const nextState = typeof updater === 'function'
-          ? updater({ pageIndex: searchObject.pageIndex - 1, pageSize: searchObject.pageSize })
-          : updater;
-        setSearchObject({
-          pageIndex: nextState.pageIndex + 1,
-          pageSize: nextState.pageSize,
-        });
-      }}
-    />
+    <>
+      <CommonTable
+        data={dataList}
+        columns={columns}
+        loading={loading}
+        totalElements={totalElements}
+        pageIndex={searchObject.pageIndex - 1}
+        pageSize={searchObject.pageSize}
+        manualPagination
+        rowCount={totalElements}
+        onPaginationChange={(updater) => {
+          const nextState = typeof updater === 'function'
+            ? updater({ pageIndex: searchObject.pageIndex - 1, pageSize: searchObject.pageSize })
+            : updater;
+          setSearchObject({
+            pageIndex: nextState.pageIndex + 1,
+            pageSize: nextState.pageSize,
+          });
+        }}
+      />
+      <CommonAuditLogPopup
+        open={historyOpen}
+        handleClose={() => setHistoryOpen(false)}
+        entityName="User"
+        entityId={selectedEntity.id}
+        entityDisplayName={selectedEntity.name}
+      />
+    </>
   );
 };
 

@@ -17,5 +17,7 @@ public class AuditLogResponse {
 
     private UUID createdBy;
 
+    private String createdByName;
+
     private Object data;
 }

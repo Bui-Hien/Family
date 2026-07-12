@@ -1,9 +1,13 @@
 package com.family.modules.auditlog.service.impl;
 
+import com.family.modules.auditlog.dto.AuditLogResponse;
 import com.family.modules.auditlog.entity.AuditLog;
 import com.family.modules.auditlog.repository.AuditLogRepository;
 import com.family.modules.auditlog.service.AuditLogService;
+import com.family.modules.user.repository.UserRepository;
 import com.family.security.SecurityUtils;
+import com.family.common.dto.PagingRequest;
+import org.springframework.data.domain.Page;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.Id;
@@ -27,6 +31,7 @@ public class AuditLogServiceImpl implements AuditLogService {
     private final ObjectMapper objectMapper;
     private final Javers javers;
     private final AuditLogRepository auditLogRepository;
+    private final UserRepository userRepository;
 
     @Async
     @Override
@@ -84,6 +89,49 @@ public class AuditLogServiceImpl implements AuditLogService {
         } catch (JsonProcessingException e) {
             throw new RuntimeException("Failed to clone object for Audit Log", e);
         }
+    }
+
+    @Override
+    public List<AuditLogResponse> getLogsByEntity(String entityName, UUID entityId) {
+        List<AuditLog> logs = auditLogRepository.findByEntityNameAndEntityIdOrderByCreatedAtDesc(entityName, entityId);
+        return logs.stream().map(log -> {
+            AuditLogResponse resp = new AuditLogResponse();
+            resp.setId(log.getId());
+            resp.setEntityId(log.getEntityId());
+            resp.setEntityName(log.getEntityName());
+            resp.setCreatedAt(log.getCreatedAt());
+            resp.setCreatedBy(log.getCreatedBy());
+            resp.setData(log.getData());
+            if (log.getCreatedBy() != null) {
+                userRepository.findById(log.getCreatedBy())
+                    .ifPresent(u -> resp.setCreatedByName(u.getFullName() != null ? u.getFullName() : u.getUsername()));
+            }
+            return resp;
+        }).toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<AuditLogResponse> getLogsByEntityPaged(String entityName, UUID entityId, PagingRequest request) {
+        if (request.getSortField() == null || request.getSortField().trim().isEmpty()) {
+            request.setSortField("createdAt");
+            request.setSortDirection("DESC");
+        }
+        Page<AuditLog> page = auditLogRepository.findByEntityNameAndEntityId(entityName, entityId, request.toPageable());
+        return page.map(log -> {
+            AuditLogResponse resp = new AuditLogResponse();
+            resp.setId(log.getId());
+            resp.setEntityId(log.getEntityId());
+            resp.setEntityName(log.getEntityName());
+            resp.setCreatedAt(log.getCreatedAt());
+            resp.setCreatedBy(log.getCreatedBy());
+            resp.setData(log.getData());
+            if (log.getCreatedBy() != null) {
+                userRepository.findById(log.getCreatedBy())
+                    .ifPresent(u -> resp.setCreatedByName(u.getFullName() != null ? u.getFullName() : u.getUsername()));
+            }
+            return resp;
+        });
     }
 
     private UUID extractId(Object entity) {

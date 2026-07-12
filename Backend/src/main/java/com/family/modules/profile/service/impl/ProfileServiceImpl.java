@@ -7,6 +7,7 @@ import com.family.modules.profile.entity.Profile;
 import com.family.modules.profile.repository.ProfileRepository;
 import com.family.modules.profile.service.ProfileService;
 import jakarta.persistence.criteria.Predicate;
+import com.family.modules.auditlog.service.AuditLogService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.domain.Specification;
@@ -22,6 +23,7 @@ import java.util.UUID;
 public class ProfileServiceImpl implements ProfileService {
 
     private final ProfileRepository profileRepository;
+    private final AuditLogService auditLogService;
 
     @Override
     @Transactional(readOnly = true)
@@ -61,23 +63,30 @@ public class ProfileServiceImpl implements ProfileService {
     public Profile create(ProfileRequest request) {
         Profile profile = new Profile();
         copyProperties(request, profile);
-        return profileRepository.save(profile);
+        profile = profileRepository.save(profile);
+        auditLogService.logChange(null, profile);
+        return profile;
     }
 
     @Override
     @Transactional
     public Profile update(UUID id, ProfileRequest request) {
         Profile profile = getById(id);
+        Profile profileOld = auditLogService.cloneObject(profile, Profile.class);
         copyProperties(request, profile);
-        return profileRepository.save(profile);
+        profile = profileRepository.save(profile);
+        auditLogService.logChange(profileOld, profile);
+        return profile;
     }
 
     @Override
     @Transactional
     public void delete(UUID id) {
         Profile profile = getById(id);
+        Profile profileOld = auditLogService.cloneObject(profile, Profile.class);
         profile.setDeleted(true);
-        profileRepository.save(profile);
+        profile = profileRepository.save(profile);
+        auditLogService.logChange(profileOld, profile);
     }
 
     @Override
