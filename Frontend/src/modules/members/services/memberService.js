@@ -17,6 +17,13 @@ const memberService = {
     return response.data;
   },
 
+  getLookup: async (currentId) => {
+    const response = await api.get('/profiles/lookup', {
+      params: { currentId }
+    });
+    return response.data;
+  },
+
   getById: async (id) => {
     const response = await api.get(`/profiles/${id}`);
     return response.data;

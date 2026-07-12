@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
+import com.family.modules.profile.dto.ProfileLookup;
+
 @RestController
 @RequestMapping("/api/profiles")
 @RequiredArgsConstructor
@@ -32,6 +34,12 @@ public class ProfileController {
                 .map(ProfileResponse::fromEntity)
                 .toList();
         return ResponseEntity.ok(ApiResponse.success(profiles));
+    }
+
+    @GetMapping("/lookup")
+    @PreAuthorize("hasAuthority('PROFILE_VIEW')")
+    public ResponseEntity<ApiResponse<List<ProfileLookup>>> getLookup(@RequestParam(required = false) UUID currentId) {
+        return ResponseEntity.ok(ApiResponse.success(profileService.getLookup(currentId)));
     }
 
     @PostMapping("/page")

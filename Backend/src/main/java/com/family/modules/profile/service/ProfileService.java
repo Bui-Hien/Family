@@ -3,6 +3,7 @@ package com.family.modules.profile.service;
 import com.family.common.dto.PagingRequest;
 import com.family.modules.profile.dto.ProfileRequest;
 import com.family.modules.profile.entity.Profile;
+import com.family.modules.profile.dto.ProfileLookup;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.UUID;
 public interface ProfileService {
     Profile getById(UUID id);
     List<Profile> getAll();
+    List<ProfileLookup> getLookup(UUID currentId);
     Page<Profile> getPaged(PagingRequest request);
     Profile create(ProfileRequest request);
     Profile update(UUID id, ProfileRequest request);

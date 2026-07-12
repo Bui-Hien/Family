@@ -65,12 +65,10 @@ export const useMemberStore = create((set, get) => ({
   fetchInitialData: async () => {
     set({ loading: true });
     try {
-      const [listRes] = await Promise.all([
-        memberService.getAll().catch(() => ({ success: false, data: [] })),
-        get().pagingMember(true),
-      ]);
-      if (listRes.success) {
-        set({ membersList: listRes.data || [] });
+      const res = await memberService.getAll();
+      if (res.success) {
+        set({ membersList: res.data || [] });
+        await get().pagingMember(true);
       }
     } catch (error) {
       console.error(error);
@@ -130,9 +128,9 @@ export const useMemberStore = create((set, get) => ({
     }
   },
 
-  fetchMembersList: async () => {
+  fetchMembersList: async (currentId) => {
     try {
-      const res = await memberService.getAll();
+      const res = await memberService.getLookup(currentId);
       if (res.success) {
         set({ membersList: res.data || [] });
       }

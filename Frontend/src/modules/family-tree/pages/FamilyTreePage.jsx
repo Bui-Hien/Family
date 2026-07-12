@@ -158,11 +158,27 @@ const FamilyTreePage = () => {
   }, [fetchMembersList, handleOpenCreateEdit]);
 
   const handleAddChildClick = useCallback((member) => {
-    fetchMembersList().catch(() => {});
+    fetchMembersList(member.id).catch(() => {});
+    
+    let fatherId = '';
+    let motherId = '';
+
+    if (member.gender === 'M') {
+      fatherId = member.id;
+      if (member.spouse) {
+        motherId = member.spouse.id;
+      }
+    } else if (member.gender === 'F') {
+      motherId = member.id;
+      if (member.spouse) {
+        fatherId = member.spouse.id;
+      }
+    }
+
     const defaultValues = {
       generation: (member.generation || 1) + 1,
-      fatherId: member.gender === 'M' ? member.id : '',
-      motherId: member.gender === 'F' ? member.id : '',
+      fatherId,
+      motherId,
     };
     handleOpenCreateEdit(null, defaultValues);
   }, [fetchMembersList, handleOpenCreateEdit]);

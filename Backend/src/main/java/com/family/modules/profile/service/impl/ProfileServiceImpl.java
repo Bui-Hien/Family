@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import com.family.modules.profile.dto.ProfileLookup;
+
 @Service
 @RequiredArgsConstructor
 public class ProfileServiceImpl implements ProfileService {
@@ -37,6 +39,15 @@ public class ProfileServiceImpl implements ProfileService {
     @Transactional(readOnly = true)
     public List<Profile> getAll() {
         return profileRepository.findByDeletedFalse();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ProfileLookup> getLookup(UUID currentId) {
+        if (currentId != null) {
+            return profileRepository.findLookupByMemberAndSpouse(currentId);
+        }
+        return profileRepository.findProjectedByDeletedFalse();
     }
 
     @Override
