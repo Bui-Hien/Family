@@ -56,13 +56,13 @@ const PostForm = () => {
 
   return (
     <Dialog open={openCreateEditPopup} onClose={handleClose} maxWidth="md" fullWidth>
-      <DialogTitle sx={{ fontWeight: 700 }}>
-        {selectedRow?.id ? 'Chỉnh sửa bài viết' : 'Đăng bài viết mới'}
-      </DialogTitle>
       <FormikProvider value={formik}>
-        <form onSubmit={formik.handleSubmit}>
-          <DialogContent>
-            <Stack spacing={3} sx={{ mt: 1 }}>
+        <DialogTitle sx={{ fontWeight: 700 }}>
+          {selectedRow?.id ? 'Chỉnh sửa bài viết' : 'Đăng bài viết mới'}
+        </DialogTitle>
+        <DialogContent dividers>
+          <Box sx={{ mt: 1 }}>
+            <Stack spacing={3}>
               <TextField
                 fullWidth
                 size="small"
@@ -136,12 +136,19 @@ const PostForm = () => {
                 label="Nội dung chi tiết bài viết"
               />
             </Stack>
-          </DialogContent>
-          <DialogActions sx={{ px: 3, pb: 2 }}>
-            <Button onClick={handleClose} color="inherit">Hủy</Button>
-            <Button type="submit" variant="contained" color="primary">Lưu bài viết</Button>
-          </DialogActions>
-        </form>
+          </Box>
+        </DialogContent>
+        <DialogActions sx={{ px: 3, pb: 2 }}>
+          <Button onClick={handleClose} color="inherit" disabled={formik.isSubmitting}>Hủy</Button>
+          <Button 
+            onClick={formik.handleSubmit} 
+            variant="contained" 
+            color="primary" 
+            disabled={formik.isSubmitting}
+          >
+            {formik.isSubmitting ? 'Đang lưu...' : 'Lưu bài viết'}
+          </Button>
+        </DialogActions>
       </FormikProvider>
     </Dialog>
   );

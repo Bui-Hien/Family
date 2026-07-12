@@ -60,9 +60,9 @@ const EventForm = () => {
         <DialogTitle sx={{ fontWeight: 700 }}>
           {selectedRow?.id ? 'Sửa thông tin sự kiện' : 'Thêm sự kiện mới'}
         </DialogTitle>
-        <form onSubmit={formik.handleSubmit}>
-          <DialogContent>
-            <Stack spacing={3} sx={{ mt: 1 }}>
+        <DialogContent dividers>
+          <Box sx={{ mt: 1 }}>
+            <Stack spacing={3}>
               <TextField
                 fullWidth
                 size="small"
@@ -135,12 +135,19 @@ const EventForm = () => {
                 helperText={formik.touched.description && formik.errors.description}
               />
             </Stack>
-          </DialogContent>
-          <DialogActions sx={{ px: 3, pb: 2 }}>
-            <Button onClick={handleClose} color="inherit">Hủy</Button>
-            <Button type="submit" variant="contained" color="primary">Lưu sự kiện</Button>
-          </DialogActions>
-        </form>
+          </Box>
+        </DialogContent>
+        <DialogActions sx={{ px: 3, pb: 2 }}>
+          <Button onClick={handleClose} color="inherit" disabled={formik.isSubmitting}>Hủy</Button>
+          <Button 
+            onClick={formik.handleSubmit} 
+            variant="contained" 
+            color="primary"
+            disabled={formik.isSubmitting}
+          >
+            {formik.isSubmitting ? 'Đang lưu...' : 'Lưu sự kiện'}
+          </Button>
+        </DialogActions>
       </FormikProvider>
     </Dialog>
   );
