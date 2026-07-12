@@ -4,7 +4,8 @@ import ReactFlow, {
   Background, 
   MiniMap, 
   useNodesState, 
-  useEdgesState 
+  useEdgesState,
+  applyNodeChanges
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { Box, Typography, Button, Paper } from '@mui/material';
@@ -22,8 +23,29 @@ const FamilyTreePage = () => {
   const navigate = useNavigate();
   const { treeData, loading, fetchTree, exportTree, resetStore } = useTreeStore();
   
-  const [nodes, setNodes, onNodesChange] = useNodesState([]);
+  const [nodes, setNodes] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+
+  const onNodesChangeCustom = useCallback((changes) => {
+    setNodes((nds) => {
+      const updatedChanges = changes.map((change) => {
+        if (change.type === 'position' && change.position) {
+          const originalNode = nds.find((n) => n.id === change.id);
+          if (originalNode) {
+            return {
+              ...change,
+              position: {
+                x: change.position.x,
+                y: originalNode.position.y, // Lock vertical movement, only allow horizontal panning
+              },
+            };
+          }
+        }
+        return change;
+      });
+      return applyNodeChanges(updatedChanges, nds);
+    });
+  }, [setNodes]);
 
   useEffect(() => {
     fetchTree();
@@ -173,7 +195,7 @@ const FamilyTreePage = () => {
           <ReactFlow
             nodes={nodes}
             edges={edges}
-            onNodesChange={onNodesChange}
+            onNodesChange={onNodesChangeCustom}
             onEdgesChange={onEdgesChange}
             nodeTypes={nodeTypes}
             fitView
