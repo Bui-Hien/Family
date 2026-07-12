@@ -51,6 +51,13 @@ public class PostController {
         return ResponseEntity.ok(ApiResponse.success(featured));
     }
 
+    @GetMapping("/id/{id}")
+    @PreAuthorize("hasAuthority('POST_VIEW')")
+    public ResponseEntity<ApiResponse<PostResponse>> getById(@PathVariable UUID id) {
+        Post post = postService.getById(id);
+        return ResponseEntity.ok(ApiResponse.success(PostResponse.fromEntity(post)));
+    }
+
     @GetMapping("/{slug}")
     @PreAuthorize("hasAuthority('POST_VIEW')")
     public ResponseEntity<ApiResponse<PostResponse>> getBySlug(@PathVariable String slug) {
