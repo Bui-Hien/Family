@@ -4,6 +4,7 @@ import com.family.common.dto.ApiResponse;
 import com.family.common.dto.PagingRequest;
 import com.family.common.dto.PagingResponse;
 import com.family.modules.event.dto.EventRequest;
+import com.family.modules.event.dto.EventResponse;
 import com.family.modules.event.entity.Event;
 import com.family.modules.event.service.EventService;
 import jakarta.validation.Valid;
@@ -26,40 +27,50 @@ public class EventController {
 
     @GetMapping
     @PreAuthorize("hasAuthority('EVENT_VIEW')")
-    public ResponseEntity<ApiResponse<List<Event>>> getAll() {
-        return ResponseEntity.ok(ApiResponse.success(eventService.getAll()));
+    public ResponseEntity<ApiResponse<List<EventResponse>>> getAll() {
+        List<EventResponse> events = eventService.getAll().stream()
+                .map(EventResponse::fromEntity)
+                .toList();
+        return ResponseEntity.ok(ApiResponse.success(events));
     }
 
     @PostMapping("/page")
     @PreAuthorize("hasAuthority('EVENT_VIEW')")
-    public ResponseEntity<ApiResponse<PagingResponse<Event>>> getPaged(@Valid @RequestBody PagingRequest request) {
+    public ResponseEntity<ApiResponse<PagingResponse<EventResponse>>> getPaged(@Valid @RequestBody PagingRequest request) {
         Page<Event> page = eventService.getPaged(request);
-        return ResponseEntity.ok(ApiResponse.success(PagingResponse.fromPage(page)));
+        Page<EventResponse> dtoPage = page.map(EventResponse::fromEntity);
+        return ResponseEntity.ok(ApiResponse.success(PagingResponse.fromPage(dtoPage)));
     }
 
     @GetMapping("/upcoming")
     @PreAuthorize("hasAuthority('EVENT_VIEW')")
-    public ResponseEntity<ApiResponse<List<Event>>> getUpcomingEvents() {
-        return ResponseEntity.ok(ApiResponse.success(familyTreeEventsFallback()));
+    public ResponseEntity<ApiResponse<List<EventResponse>>> getUpcomingEvents() {
+        List<EventResponse> events = familyTreeEventsFallback().stream()
+                .map(EventResponse::fromEntity)
+                .toList();
+        return ResponseEntity.ok(ApiResponse.success(events));
     }
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('EVENT_VIEW')")
-    public ResponseEntity<ApiResponse<Event>> getById(@PathVariable UUID id) {
-        return ResponseEntity.ok(ApiResponse.success(eventService.getById(id)));
+    public ResponseEntity<ApiResponse<EventResponse>> getById(@PathVariable UUID id) {
+        Event event = eventService.getById(id);
+        return ResponseEntity.ok(ApiResponse.success(EventResponse.fromEntity(event)));
     }
 
     @PostMapping
     @PreAuthorize("hasAuthority('EVENT_CREATE')")
-    public ResponseEntity<ApiResponse<Event>> create(@Valid @RequestBody EventRequest request) {
+    public ResponseEntity<ApiResponse<EventResponse>> create(@Valid @RequestBody EventRequest request) {
+        Event event = eventService.create(request);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.success("Event created successfully", eventService.create(request)));
+                .body(ApiResponse.success("Event created successfully", EventResponse.fromEntity(event)));
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('EVENT_EDIT')")
-    public ResponseEntity<ApiResponse<Event>> update(@PathVariable UUID id, @Valid @RequestBody EventRequest request) {
-        return ResponseEntity.ok(ApiResponse.success("Event updated successfully", eventService.update(id, request)));
+    public ResponseEntity<ApiResponse<EventResponse>> update(@PathVariable UUID id, @Valid @RequestBody EventRequest request) {
+        Event event = eventService.update(id, request);
+        return ResponseEntity.ok(ApiResponse.success("Event updated successfully", EventResponse.fromEntity(event)));
     }
 
     @DeleteMapping("/{id}")

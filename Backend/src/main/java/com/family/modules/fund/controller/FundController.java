@@ -2,6 +2,8 @@ package com.family.modules.fund.controller;
 
 import com.family.common.dto.ApiResponse;
 import com.family.common.enums.StatusEnum;
+import com.family.modules.fund.dto.FundResponse;
+import com.family.modules.fund.dto.TransactionResponse;
 import com.family.modules.fund.entity.Fund;
 import com.family.modules.fund.entity.Transaction;
 import com.family.modules.fund.service.FundService;
@@ -26,33 +28,42 @@ public class FundController {
 
     @GetMapping("/funds")
     @PreAuthorize("hasAuthority('FUND_VIEW')")
-    public ResponseEntity<ApiResponse<List<Fund>>> getAll() {
-        return ResponseEntity.ok(ApiResponse.success(fundService.getAll()));
+    public ResponseEntity<ApiResponse<List<FundResponse>>> getAll() {
+        List<FundResponse> funds = fundService.getAll().stream()
+                .map(FundResponse::fromEntity)
+                .toList();
+        return ResponseEntity.ok(ApiResponse.success(funds));
     }
 
     @GetMapping("/funds/{id}")
     @PreAuthorize("hasAuthority('FUND_VIEW')")
-    public ResponseEntity<ApiResponse<Fund>> getById(@PathVariable UUID id) {
-        return ResponseEntity.ok(ApiResponse.success(fundService.getById(id)));
+    public ResponseEntity<ApiResponse<FundResponse>> getById(@PathVariable UUID id) {
+        Fund fund = fundService.getById(id);
+        return ResponseEntity.ok(ApiResponse.success(FundResponse.fromEntity(fund)));
     }
 
     @GetMapping("/funds/{id}/transactions")
     @PreAuthorize("hasAuthority('FUND_VIEW')")
-    public ResponseEntity<ApiResponse<List<Transaction>>> getTransactions(@PathVariable UUID id) {
-        return ResponseEntity.ok(ApiResponse.success(fundService.getTransactionsByFundId(id)));
+    public ResponseEntity<ApiResponse<List<TransactionResponse>>> getTransactions(@PathVariable UUID id) {
+        List<TransactionResponse> transactions = fundService.getTransactionsByFundId(id).stream()
+                .map(TransactionResponse::fromEntity)
+                .toList();
+        return ResponseEntity.ok(ApiResponse.success(transactions));
     }
 
     @PostMapping("/funds")
     @PreAuthorize("hasAuthority('FUND_MANAGE')")
-    public ResponseEntity<ApiResponse<Fund>> createFund(@Valid @RequestBody Fund fund) {
+    public ResponseEntity<ApiResponse<FundResponse>> createFund(@Valid @RequestBody Fund fund) {
+        Fund created = fundService.create(fund);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.success("Fund created successfully", fundService.create(fund)));
+                .body(ApiResponse.success("Fund created successfully", FundResponse.fromEntity(created)));
     }
 
     @PutMapping("/funds/{id}")
     @PreAuthorize("hasAuthority('FUND_MANAGE')")
-    public ResponseEntity<ApiResponse<Fund>> updateFund(@PathVariable UUID id, @Valid @RequestBody Fund fund) {
-        return ResponseEntity.ok(ApiResponse.success("Fund updated successfully", fundService.update(id, fund)));
+    public ResponseEntity<ApiResponse<FundResponse>> updateFund(@PathVariable UUID id, @Valid @RequestBody Fund fund) {
+        Fund updated = fundService.update(id, fund);
+        return ResponseEntity.ok(ApiResponse.success("Fund updated successfully", FundResponse.fromEntity(updated)));
     }
 
     @DeleteMapping("/funds/{id}")
@@ -64,19 +75,21 @@ public class FundController {
 
     @PostMapping("/transactions")
     @PreAuthorize("hasAuthority('FUND_TRANSACTION')")
-    public ResponseEntity<ApiResponse<Transaction>> createTransaction(@Valid @RequestBody Transaction transaction) {
+    public ResponseEntity<ApiResponse<TransactionResponse>> createTransaction(@Valid @RequestBody Transaction transaction) {
+        Transaction created = fundService.createTransaction(transaction);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.success("Transaction submitted successfully for review", fundService.createTransaction(transaction)));
+                .body(ApiResponse.success("Transaction submitted successfully for review", TransactionResponse.fromEntity(created)));
     }
 
     @PutMapping("/transactions/{id}/approve")
     @PreAuthorize("hasAuthority('FUND_MANAGE')")
-    public ResponseEntity<ApiResponse<Transaction>> approveTransaction(
+    public ResponseEntity<ApiResponse<TransactionResponse>> approveTransaction(
             @PathVariable UUID id,
             @RequestParam StatusEnum status
     ) {
         UUID approverId = SecurityUtils.getCurrentUserId().orElse(null);
-        return ResponseEntity.ok(ApiResponse.success("Transaction processed successfully", fundService.approveTransaction(id, approverId, status)));
+        Transaction approved = fundService.approveTransaction(id, approverId, status);
+        return ResponseEntity.ok(ApiResponse.success("Transaction processed successfully", TransactionResponse.fromEntity(approved)));
     }
 
     @GetMapping("/funds/report")

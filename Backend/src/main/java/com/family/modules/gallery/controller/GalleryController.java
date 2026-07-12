@@ -1,6 +1,8 @@
 package com.family.modules.gallery.controller;
 
 import com.family.common.dto.ApiResponse;
+import com.family.modules.gallery.dto.GalleryResponse;
+import com.family.modules.gallery.dto.MediaResponse;
 import com.family.modules.gallery.entity.Gallery;
 import com.family.modules.gallery.entity.Media;
 import com.family.modules.gallery.service.GalleryService;
@@ -25,36 +27,45 @@ public class GalleryController {
 
     @GetMapping("/galleries")
     @PreAuthorize("hasAuthority('GALLERY_VIEW')")
-    public ResponseEntity<ApiResponse<List<Gallery>>> getAll() {
-        return ResponseEntity.ok(ApiResponse.success(galleryService.getAll()));
+    public ResponseEntity<ApiResponse<List<GalleryResponse>>> getAll() {
+        List<GalleryResponse> galleries = galleryService.getAll().stream()
+                .map(GalleryResponse::fromEntity)
+                .toList();
+        return ResponseEntity.ok(ApiResponse.success(galleries));
     }
 
     @GetMapping("/galleries/{id}")
     @PreAuthorize("hasAuthority('GALLERY_VIEW')")
-    public ResponseEntity<ApiResponse<Gallery>> getById(@PathVariable UUID id) {
-        return ResponseEntity.ok(ApiResponse.success(galleryService.getById(id)));
+    public ResponseEntity<ApiResponse<GalleryResponse>> getById(@PathVariable UUID id) {
+        Gallery gallery = galleryService.getById(id);
+        return ResponseEntity.ok(ApiResponse.success(GalleryResponse.fromEntity(gallery)));
     }
 
     @GetMapping("/galleries/{id}/media")
     @PreAuthorize("hasAuthority('GALLERY_VIEW')")
-    public ResponseEntity<ApiResponse<List<Media>>> getMedia(@PathVariable UUID id) {
-        return ResponseEntity.ok(ApiResponse.success(galleryService.getMediaByGalleryId(id)));
+    public ResponseEntity<ApiResponse<List<MediaResponse>>> getMedia(@PathVariable UUID id) {
+        List<MediaResponse> mediaList = galleryService.getMediaByGalleryId(id).stream()
+                .map(MediaResponse::fromEntity)
+                .toList();
+        return ResponseEntity.ok(ApiResponse.success(mediaList));
     }
 
     @PostMapping("/galleries")
     @PreAuthorize("hasAuthority('GALLERY_CREATE')")
-    public ResponseEntity<ApiResponse<Gallery>> create(@Valid @RequestBody Gallery gallery) {
+    public ResponseEntity<ApiResponse<GalleryResponse>> create(@Valid @RequestBody Gallery gallery) {
+        Gallery created = galleryService.create(gallery);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.success("Gallery created successfully", galleryService.create(gallery)));
+                .body(ApiResponse.success("Gallery created successfully", GalleryResponse.fromEntity(created)));
     }
 
     @PostMapping(value = "/galleries/{id}/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasAuthority('GALLERY_UPLOAD')")
-    public ResponseEntity<ApiResponse<Media>> uploadMedia(
+    public ResponseEntity<ApiResponse<MediaResponse>> uploadMedia(
             @PathVariable UUID id,
             @RequestParam("file") MultipartFile file
     ) {
-        return ResponseEntity.ok(ApiResponse.success("Media uploaded successfully", galleryService.uploadMedia(id, file)));
+        Media uploaded = galleryService.uploadMedia(id, file);
+        return ResponseEntity.ok(ApiResponse.success("Media uploaded successfully", MediaResponse.fromEntity(uploaded)));
     }
 
     @DeleteMapping("/media/{id}")

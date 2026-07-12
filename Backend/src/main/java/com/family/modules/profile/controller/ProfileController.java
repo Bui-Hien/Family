@@ -4,6 +4,7 @@ import com.family.common.dto.ApiResponse;
 import com.family.common.dto.PagingRequest;
 import com.family.common.dto.PagingResponse;
 import com.family.modules.profile.dto.ProfileRequest;
+import com.family.modules.profile.dto.ProfileResponse;
 import com.family.modules.profile.entity.Profile;
 import com.family.modules.profile.service.ProfileService;
 import jakarta.validation.Valid;
@@ -26,34 +27,41 @@ public class ProfileController {
 
     @GetMapping
     @PreAuthorize("hasAuthority('PROFILE_VIEW')")
-    public ResponseEntity<ApiResponse<List<Profile>>> getAll() {
-        return ResponseEntity.ok(ApiResponse.success(profileService.getAll()));
+    public ResponseEntity<ApiResponse<List<ProfileResponse>>> getAll() {
+        List<ProfileResponse> profiles = profileService.getAll().stream()
+                .map(ProfileResponse::fromEntity)
+                .toList();
+        return ResponseEntity.ok(ApiResponse.success(profiles));
     }
 
     @PostMapping("/page")
     @PreAuthorize("hasAuthority('PROFILE_VIEW')")
-    public ResponseEntity<ApiResponse<PagingResponse<Profile>>> getPaged(@Valid @RequestBody PagingRequest request) {
+    public ResponseEntity<ApiResponse<PagingResponse<ProfileResponse>>> getPaged(@Valid @RequestBody PagingRequest request) {
         Page<Profile> page = profileService.getPaged(request);
-        return ResponseEntity.ok(ApiResponse.success(PagingResponse.fromPage(page)));
+        Page<ProfileResponse> dtoPage = page.map(ProfileResponse::fromEntity);
+        return ResponseEntity.ok(ApiResponse.success(PagingResponse.fromPage(dtoPage)));
     }
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('PROFILE_VIEW')")
-    public ResponseEntity<ApiResponse<Profile>> getById(@PathVariable UUID id) {
-        return ResponseEntity.ok(ApiResponse.success(profileService.getById(id)));
+    public ResponseEntity<ApiResponse<ProfileResponse>> getById(@PathVariable UUID id) {
+        Profile profile = profileService.getById(id);
+        return ResponseEntity.ok(ApiResponse.success(ProfileResponse.fromEntity(profile)));
     }
 
     @PostMapping
     @PreAuthorize("hasAuthority('PROFILE_CREATE')")
-    public ResponseEntity<ApiResponse<Profile>> create(@Valid @RequestBody ProfileRequest request) {
+    public ResponseEntity<ApiResponse<ProfileResponse>> create(@Valid @RequestBody ProfileRequest request) {
+        Profile profile = profileService.create(request);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.success("Profile created successfully", profileService.create(request)));
+                .body(ApiResponse.success("Profile created successfully", ProfileResponse.fromEntity(profile)));
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('PROFILE_EDIT')")
-    public ResponseEntity<ApiResponse<Profile>> update(@PathVariable UUID id, @Valid @RequestBody ProfileRequest request) {
-        return ResponseEntity.ok(ApiResponse.success("Profile updated successfully", profileService.update(id, request)));
+    public ResponseEntity<ApiResponse<ProfileResponse>> update(@PathVariable UUID id, @Valid @RequestBody ProfileRequest request) {
+        Profile profile = profileService.update(id, request);
+        return ResponseEntity.ok(ApiResponse.success("Profile updated successfully", ProfileResponse.fromEntity(profile)));
     }
 
     @DeleteMapping("/{id}")
@@ -65,7 +73,10 @@ public class ProfileController {
 
     @GetMapping("/search")
     @PreAuthorize("hasAuthority('PROFILE_VIEW')")
-    public ResponseEntity<ApiResponse<List<Profile>>> search(@RequestParam String keyword) {
-        return ResponseEntity.ok(ApiResponse.success(profileService.search(keyword)));
+    public ResponseEntity<ApiResponse<List<ProfileResponse>>> search(@RequestParam String keyword) {
+        List<ProfileResponse> profiles = profileService.search(keyword).stream()
+                .map(ProfileResponse::fromEntity)
+                .toList();
+        return ResponseEntity.ok(ApiResponse.success(profiles));
     }
 }

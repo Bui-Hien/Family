@@ -2,6 +2,7 @@ package com.family.modules.file.controller;
 
 import com.family.common.dto.ApiResponse;
 import com.family.common.enums.FileVisibility;
+import com.family.modules.file.dto.FileResponse;
 import com.family.modules.file.entity.FileDescription;
 import com.family.modules.file.service.FileService;
 import com.family.modules.user.entity.User;
@@ -25,26 +26,26 @@ public class FileController {
 
     @PostMapping("/upload")
     @PreAuthorize("hasAuthority('FILE_UPLOAD_PUBLIC')")
-    public ResponseEntity<ApiResponse<FileDescription>> uploadPublic(
+    public ResponseEntity<ApiResponse<FileResponse>> uploadPublic(
             @RequestParam("file") MultipartFile file,
             @RequestParam(required = false) String entityType,
             @RequestParam(required = false) UUID entityId
     ) {
         UUID userId = SecurityUtils.getCurrentUserId().orElse(null);
         FileDescription upload = fileService.uploadFile(file, FileVisibility.PUBLIC, userId, entityType, entityId);
-        return ResponseEntity.ok(ApiResponse.success("File uploaded successfully", upload));
+        return ResponseEntity.ok(ApiResponse.success("File uploaded successfully", FileResponse.fromEntity(upload)));
     }
 
     @PostMapping("/upload/private")
     @PreAuthorize("hasAuthority('FILE_UPLOAD_PRIVATE')")
-    public ResponseEntity<ApiResponse<FileDescription>> uploadPrivate(
+    public ResponseEntity<ApiResponse<FileResponse>> uploadPrivate(
             @RequestParam("file") MultipartFile file,
             @RequestParam(required = false) String entityType,
             @RequestParam(required = false) UUID entityId
     ) {
         UUID userId = SecurityUtils.getCurrentUserId().orElse(null);
         FileDescription upload = fileService.uploadFile(file, FileVisibility.PRIVATE, userId, entityType, entityId);
-        return ResponseEntity.ok(ApiResponse.success("Private file uploaded successfully", upload));
+        return ResponseEntity.ok(ApiResponse.success("Private file uploaded successfully", FileResponse.fromEntity(upload)));
     }
 
     @GetMapping("/{id}")

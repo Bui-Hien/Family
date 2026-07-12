@@ -4,6 +4,7 @@ import com.family.common.dto.ApiResponse;
 import com.family.common.dto.PagingRequest;
 import com.family.common.dto.PagingResponse;
 import com.family.modules.post.dto.PostRequest;
+import com.family.modules.post.dto.PostResponse;
 import com.family.modules.post.entity.Post;
 import com.family.modules.post.service.PostService;
 import com.family.security.SecurityUtils;
@@ -27,43 +28,50 @@ public class PostController {
 
     @GetMapping
     @PreAuthorize("hasAuthority('POST_VIEW')")
-    public ResponseEntity<ApiResponse<PagingResponse<Post>>> getPaged(@Valid PagingRequest request) {
-        // Can call it with parameters or POST to /api/posts/page, let's also map page queries
+    public ResponseEntity<ApiResponse<PagingResponse<PostResponse>>> getPaged(@Valid PagingRequest request) {
         Page<Post> page = postService.getPaged(request);
-        return ResponseEntity.ok(ApiResponse.success(PagingResponse.fromPage(page)));
+        Page<PostResponse> dtoPage = page.map(PostResponse::fromEntity);
+        return ResponseEntity.ok(ApiResponse.success(PagingResponse.fromPage(dtoPage)));
     }
 
     @PostMapping("/page")
     @PreAuthorize("hasAuthority('POST_VIEW')")
-    public ResponseEntity<ApiResponse<PagingResponse<Post>>> getPagedPost(@Valid @RequestBody PagingRequest request) {
+    public ResponseEntity<ApiResponse<PagingResponse<PostResponse>>> getPagedPost(@Valid @RequestBody PagingRequest request) {
         Page<Post> page = postService.getPaged(request);
-        return ResponseEntity.ok(ApiResponse.success(PagingResponse.fromPage(page)));
+        Page<PostResponse> dtoPage = page.map(PostResponse::fromEntity);
+        return ResponseEntity.ok(ApiResponse.success(PagingResponse.fromPage(dtoPage)));
     }
 
     @GetMapping("/featured")
     @PreAuthorize("hasAuthority('POST_VIEW')")
-    public ResponseEntity<ApiResponse<List<Post>>> getFeatured() {
-        return ResponseEntity.ok(ApiResponse.success(postService.getFeaturedPosts()));
+    public ResponseEntity<ApiResponse<List<PostResponse>>> getFeatured() {
+        List<PostResponse> featured = postService.getFeaturedPosts().stream()
+                .map(PostResponse::fromEntity)
+                .toList();
+        return ResponseEntity.ok(ApiResponse.success(featured));
     }
 
     @GetMapping("/{slug}")
     @PreAuthorize("hasAuthority('POST_VIEW')")
-    public ResponseEntity<ApiResponse<Post>> getBySlug(@PathVariable String slug) {
-        return ResponseEntity.ok(ApiResponse.success(postService.getBySlug(slug)));
+    public ResponseEntity<ApiResponse<PostResponse>> getBySlug(@PathVariable String slug) {
+        Post post = postService.getBySlug(slug);
+        return ResponseEntity.ok(ApiResponse.success(PostResponse.fromEntity(post)));
     }
 
     @PostMapping
     @PreAuthorize("hasAuthority('POST_CREATE')")
-    public ResponseEntity<ApiResponse<Post>> create(@Valid @RequestBody PostRequest request) {
+    public ResponseEntity<ApiResponse<PostResponse>> create(@Valid @RequestBody PostRequest request) {
         UUID authorId = SecurityUtils.getCurrentUserId().orElse(null);
+        Post post = postService.create(request, authorId);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.success("Post created successfully", postService.create(request, authorId)));
+                .body(ApiResponse.success("Post created successfully", PostResponse.fromEntity(post)));
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('POST_EDIT')")
-    public ResponseEntity<ApiResponse<Post>> update(@PathVariable UUID id, @Valid @RequestBody PostRequest request) {
-        return ResponseEntity.ok(ApiResponse.success("Post updated successfully", postService.update(id, request)));
+    public ResponseEntity<ApiResponse<PostResponse>> update(@PathVariable UUID id, @Valid @RequestBody PostRequest request) {
+        Post post = postService.update(id, request);
+        return ResponseEntity.ok(ApiResponse.success("Post updated successfully", PostResponse.fromEntity(post)));
     }
 
     @DeleteMapping("/{id}")

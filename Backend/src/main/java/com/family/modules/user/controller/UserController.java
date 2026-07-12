@@ -5,6 +5,7 @@ import com.family.common.dto.PagingRequest;
 import com.family.common.dto.PagingResponse;
 import com.family.common.enums.RoleEnum;
 import com.family.modules.user.dto.UserRequest;
+import com.family.modules.user.dto.UserResponse;
 import com.family.modules.user.entity.User;
 import com.family.modules.user.service.UserService;
 import jakarta.validation.Valid;
@@ -27,34 +28,41 @@ public class UserController {
 
     @GetMapping
     @PreAuthorize("hasAuthority('USER_VIEW')")
-    public ResponseEntity<ApiResponse<List<User>>> getAll() {
-        return ResponseEntity.ok(ApiResponse.success(userService.getAll()));
+    public ResponseEntity<ApiResponse<List<UserResponse>>> getAll() {
+        List<UserResponse> users = userService.getAll().stream()
+                .map(UserResponse::fromEntity)
+                .toList();
+        return ResponseEntity.ok(ApiResponse.success(users));
     }
 
     @PostMapping("/page")
     @PreAuthorize("hasAuthority('USER_VIEW')")
-    public ResponseEntity<ApiResponse<PagingResponse<User>>> getPaged(@Valid @RequestBody PagingRequest request) {
+    public ResponseEntity<ApiResponse<PagingResponse<UserResponse>>> getPaged(@Valid @RequestBody PagingRequest request) {
         Page<User> page = userService.getPaged(request);
-        return ResponseEntity.ok(ApiResponse.success(PagingResponse.fromPage(page)));
+        Page<UserResponse> dtoPage = page.map(UserResponse::fromEntity);
+        return ResponseEntity.ok(ApiResponse.success(PagingResponse.fromPage(dtoPage)));
     }
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('USER_VIEW')")
-    public ResponseEntity<ApiResponse<User>> getById(@PathVariable UUID id) {
-        return ResponseEntity.ok(ApiResponse.success(userService.getById(id)));
+    public ResponseEntity<ApiResponse<UserResponse>> getById(@PathVariable UUID id) {
+        User user = userService.getById(id);
+        return ResponseEntity.ok(ApiResponse.success(UserResponse.fromEntity(user)));
     }
 
     @PostMapping
     @PreAuthorize("hasAuthority('USER_CREATE')")
-    public ResponseEntity<ApiResponse<User>> create(@Valid @RequestBody UserRequest request) {
+    public ResponseEntity<ApiResponse<UserResponse>> create(@Valid @RequestBody UserRequest request) {
+        User user = userService.create(request);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.success("User created successfully", userService.create(request)));
+                .body(ApiResponse.success("User created successfully", UserResponse.fromEntity(user)));
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('USER_EDIT')")
-    public ResponseEntity<ApiResponse<User>> update(@PathVariable UUID id, @Valid @RequestBody UserRequest request) {
-        return ResponseEntity.ok(ApiResponse.success("User updated successfully", userService.update(id, request)));
+    public ResponseEntity<ApiResponse<UserResponse>> update(@PathVariable UUID id, @Valid @RequestBody UserRequest request) {
+        User user = userService.update(id, request);
+        return ResponseEntity.ok(ApiResponse.success("User updated successfully", UserResponse.fromEntity(user)));
     }
 
     @DeleteMapping("/{id}")
@@ -66,7 +74,8 @@ public class UserController {
 
     @PutMapping("/{id}/role")
     @PreAuthorize("hasAuthority('USER_ROLE')")
-    public ResponseEntity<ApiResponse<User>> changeRole(@PathVariable UUID id, @RequestParam RoleEnum role) {
-        return ResponseEntity.ok(ApiResponse.success("User role updated successfully", userService.changeRole(id, role)));
+    public ResponseEntity<ApiResponse<UserResponse>> changeRole(@PathVariable UUID id, @RequestParam RoleEnum role) {
+        User user = userService.changeRole(id, role);
+        return ResponseEntity.ok(ApiResponse.success("User role updated successfully", UserResponse.fromEntity(user)));
     }
 }
