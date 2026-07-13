@@ -65,11 +65,11 @@ export const useMemberStore = create((set, get) => ({
   fetchInitialData: async () => {
     set({ loading: true });
     try {
-      const res = await memberService.getAll();
+      const res = await memberService.getLookup();
       if (res.success) {
         set({ membersList: res.data || [] });
-        await get().pagingMember(true);
       }
+      await get().pagingMember(true);
     } catch (error) {
       console.error(error);
     } finally {
@@ -81,46 +81,13 @@ export const useMemberStore = create((set, get) => ({
     if (!skipLoading) set({ loading: true });
     const { pageIndex, pageSize, keyword, gender, generation, status } = get().searchObject;
     try {
-      let list = [...get().membersList];
-
-      // 1. Filter by keyword
-      if (keyword && keyword.trim() !== '') {
-        const kw = keyword.toLowerCase().trim();
-        list = list.filter(m => 
-          (m.fullName && m.fullName.toLowerCase().includes(kw)) ||
-          (m.occupation && m.occupation.toLowerCase().includes(kw)) ||
-          (m.branchCode && m.branchCode.toLowerCase().includes(kw))
-        );
+      const res = await memberService.getPaged(pageIndex, pageSize, keyword, gender, generation, status);
+      if (res.success && res.data) {
+        set({
+          dataList: res.data.content || [],
+          totalElements: res.data.totalElements || 0
+        });
       }
-
-      // 2. Filter by gender
-      if (gender && gender !== 'ALL') {
-        list = list.filter(m => m.gender === gender);
-      }
-
-      // 3. Filter by generation
-      if (generation && generation !== 'ALL') {
-        list = list.filter(m => m.generation === Number(generation));
-      }
-
-      // 4. Filter by status (alive or deceased)
-      if (status && status !== 'ALL') {
-        if (status === 'ALIVE') {
-          list = list.filter(m => !m.deathDate);
-        } else if (status === 'DECEASED') {
-          list = list.filter(m => !!m.deathDate);
-        }
-      }
-
-      // 5. Apply local pagination
-      const totalElements = list.length;
-      const startIndex = (pageIndex - 1) * pageSize;
-      const paginatedList = list.slice(startIndex, startIndex + pageSize);
-
-      set({
-        dataList: paginatedList,
-        totalElements: totalElements
-      });
     } catch (error) {
       console.error(error);
     } finally {

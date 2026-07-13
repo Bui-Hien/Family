@@ -7,9 +7,10 @@ import { vi } from 'date-fns/locale';
 import AppRoutes from './AppRoutes';
 import { getTheme } from './theme';
 import useUiStore from '@/stores/uiStore';
+import CommonLoading from '@/common/components/display/CommonLoading';
 
 const App = () => {
-  const { themeMode } = useUiStore();
+  const { themeMode, globalLoading } = useUiStore();
   const theme = getTheme(themeMode);
 
   return (
@@ -19,6 +20,7 @@ const App = () => {
         <BrowserRouter>
           <AppRoutes />
         </BrowserRouter>
+        <CommonLoading loading={globalLoading} type="spinner" overlay={true} />
       </ThemeProvider>
     </LocalizationProvider>
   );

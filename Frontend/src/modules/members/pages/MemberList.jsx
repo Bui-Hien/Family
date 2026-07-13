@@ -109,10 +109,12 @@ const MemberList = () => {
         columns={columns}
         loading={loading}
         totalElements={totalElements}
-        pageIndex={searchObject.pageIndex}
+        pageIndex={searchObject.pageIndex - 1}
         pageSize={searchObject.pageSize}
+        manualPagination
+        rowCount={totalElements}
         onPaginationChange={(updater) => {
-          const nextState = typeof updater === 'function' ? updater({ pageIndex: searchObject.pageIndex - 1, searchObject }) : updater;
+          const nextState = typeof updater === 'function' ? updater({ pageIndex: searchObject.pageIndex - 1, pageSize: searchObject.pageSize }) : updater;
           setSearchObject({
             pageIndex: nextState.pageIndex + 1,
             pageSize: nextState.pageSize,

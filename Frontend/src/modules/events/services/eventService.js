@@ -5,8 +5,14 @@ const eventService = {
     const response = await api.get('/events/upcoming');
     return response.data;
   },
-  getAll: async () => {
-    const response = await api.get('/events');
+  getPaged: async (pageIndex = 1, pageSize = 10, keyword = '', status = 'ALL', annual = 'ALL') => {
+    const response = await api.post('/events/page', {
+      pageIndex,
+      pageSize,
+      keyword,
+      status,
+      annual,
+    });
     return response.data;
   },
   create: async (data) => {

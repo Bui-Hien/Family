@@ -8,6 +8,8 @@ import PostFilter from './PostFilter';
 import CommonLoading from '@/common/components/display/CommonLoading';
 import CommonConfirmDialog from '@/common/components/popup/CommonConfirmDialog';
 
+import { Pagination, Stack } from '@mui/material';
+
 const PostsPage = () => {
   const {
     dataList,
@@ -17,7 +19,10 @@ const PostsPage = () => {
     openConfirmDeletePopup,
     openCreateEditPopup,
     handleClose,
-    handleConfirmDelete
+    handleConfirmDelete,
+    searchObject,
+    setSearchObject,
+    totalPages
   } = usePostStore();
 
   useEffect(() => {
@@ -40,6 +45,20 @@ const PostsPage = () => {
       <PostToolbar />
       <PostFilter />
       <PostList />
+
+      {totalPages > 1 && (
+        <Stack direction="row" justifyContent="center" sx={{ mt: 4, mb: 2 }}>
+          <Pagination
+            count={totalPages}
+            page={searchObject.pageIndex}
+            onChange={(e, value) => {
+              setSearchObject({ pageIndex: value });
+              pagingPost();
+            }}
+            color="primary"
+          />
+        </Stack>
+      )}
 
       {/* Add/Edit Form Dialog */}
       {openCreateEditPopup && <PostForm />}

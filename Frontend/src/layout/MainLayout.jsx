@@ -1,5 +1,6 @@
-import React, { useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback, useEffect } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
+import memberService from '@/modules/members/services/memberService';
 import { Box, Toolbar, useTheme, useMediaQuery } from '@mui/material';
 import {
     Dashboard as DashboardIcon, People as PeopleIcon, AccountTree as AccountTreeIcon,
@@ -22,7 +23,19 @@ const MainLayout = () => {
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
     const { sidebarOpen, toggleSidebar, setSidebarOpen, themeMode, toggleThemeMode } = useUiStore();
-    const { user, logout } = useAuthStore();
+    const { user, profile, setProfile, logout } = useAuthStore();
+
+    useEffect(() => {
+        if (user && !profile) {
+            memberService.getCurrentProfile()
+                .then((res) => {
+                    if (res.success && res.data) {
+                        setProfile(res.data);
+                    }
+                })
+                .catch((err) => console.error('Failed to fetch current profile:', err));
+        }
+    }, [user, profile, setProfile]);
 
     // 1. Memoize Menu Items: Tránh tạo lại array mỗi lần render
     const menuItems = useMemo(() => [
@@ -60,6 +73,7 @@ const MainLayout = () => {
                 onToggleSidebar={toggleSidebar}
                 onLogout={handleLogout}
                 user={user}
+                profile={profile}
                 themeMode={themeMode}
                 onToggleTheme={toggleThemeMode}
                 sidebarOpen={sidebarOpen}

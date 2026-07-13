@@ -7,7 +7,14 @@ const backdropSx = {
   // MUI hỗ trợ callback cho zIndex trong sx, khai báo ngoài này vẫn hoạt động hoàn hảo
   zIndex: (theme) => theme.zIndex.drawer + 999
 };
-const spinnerContainerSx = { display: 'flex', justifyContent: 'center', p: 3 };
+const spinnerContainerSx = {
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  minHeight: '200px',
+  width: '100%',
+  p: 3
+};
 const skeletonContainerSx = { width: '100%', p: 2 };
 const skeletonItemSx = { my: 1, borderRadius: 1 };
 

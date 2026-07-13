@@ -68,7 +68,7 @@ const MemberDetailPage = () => {
           }
 
           // Fetch children (filter from all profiles locally)
-          const allRes = await memberService.getAll().catch(() => ({ success: false, data: [] }));
+          const allRes = await memberService.getLookup().catch(() => ({ success: false, data: [] }));
           if (allRes.success && allRes.data) {
             const kids = allRes.data.filter((p) => p.parentId === currentProfile.id);
             setChildren(kids);
