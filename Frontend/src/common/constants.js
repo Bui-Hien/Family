@@ -51,19 +51,40 @@ export const PostStatus = {
   DRAFT: 'DRAFT',
 };
 
+export const PostStatusOptions = [
+  { value: PostStatus.PUBLISHED, name: 'Đã xuất bản' },
+  { value: PostStatus.DRAFT, name: 'Bản nháp' },
+];
+
 export const EventStatus = {
   ACTIVE: 'ACTIVE',
   INACTIVE: 'INACTIVE',
 };
+
+export const EventStatusOptions = [
+  { value: EventStatus.ACTIVE, name: 'Đang hoạt động' },
+  { value: EventStatus.INACTIVE, name: 'Ngừng hoạt động' },
+];
 
 export const TransactionType = {
   IN: 'IN',
   OUT: 'OUT',
 };
 
+export const TransactionTypeOptions = [
+  { value: TransactionType.IN, name: 'Thu (Đóng góp, tài trợ)' },
+  { value: TransactionType.OUT, name: 'Chi (Chi hoạt động, giỗ chạp, sửa sang)' },
+];
+
 export const TransactionStatus = {
   PENDING: 'PENDING',
   APPROVED: 'APPROVED',
   REJECTED: 'REJECTED',
 };
+
+export const TransactionStatusOptions = [
+  { value: TransactionStatus.PENDING, name: 'Chờ phê duyệt' },
+  { value: TransactionStatus.APPROVED, name: 'Đã phê duyệt' },
+  { value: TransactionStatus.REJECTED, name: 'Đã từ chối' },
+];
 
