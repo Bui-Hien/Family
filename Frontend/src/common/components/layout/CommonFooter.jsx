@@ -1,14 +1,23 @@
 import React from 'react';
 import { Box, Typography } from '@mui/material';
 
-const CommonFooter = () => {
+const CommonFooter = ({ sidebarOpen, drawerWidth = 260 }) => {
   return (
     <Box
       component="footer"
       sx={{
-        py: 3,
+        py: 2,
         px: 2,
-        mt: 'auto',
+        position: 'fixed',
+        bottom: 0,
+        right: 0,
+        zIndex: (theme) => theme.zIndex.drawer - 1,
+        width: { md: sidebarOpen ? `calc(100% - ${drawerWidth}px)` : '100%' },
+        transition: (theme) =>
+          theme.transitions.create(['width', 'margin'], {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.leavingScreen,
+          }),
         textAlign: 'center',
         borderTop: '2px solid',
         borderColor: (theme) => theme.palette.mode === 'light' ? 'secondary.main' : 'secondary.dark',

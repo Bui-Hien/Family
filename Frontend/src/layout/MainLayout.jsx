@@ -62,7 +62,7 @@ const MainLayout = () => {
 
     // 3. Tách Layout logic ra các biến sx memoized
     const mainBoxSx = useMemo(() => ({
-        flexGrow: 1, p: 3, width: '100%',
+        flexGrow: 1, p: 3, pb: 10, width: '100%',
         backgroundColor: 'background.default',
         minHeight: '100vh', display: 'flex', flexDirection: 'column',
     }), []);
@@ -95,7 +95,7 @@ const MainLayout = () => {
                 <Box sx={{ flexGrow: 1 }}>
                     <Outlet />
                 </Box>
-                <CommonFooter />
+                <CommonFooter sidebarOpen={sidebarOpen} drawerWidth={DRAWER_WIDTH} />
             </Box>
         </Box>
     );
