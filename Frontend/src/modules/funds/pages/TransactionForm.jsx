@@ -1,21 +1,13 @@
-import React, { useEffect } from 'react';
 import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Stack,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
   TextField,
-  Button
+  Grid
 } from '@mui/material';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useFundStore } from '@/modules/funds/store/useFundStore';
 import { TransactionType } from '@/common/constants';
+import CommonPopupForm from '@/common/components/popup/CommonPopupForm';
+import CommonSelectInput from '@/common/components/form/CommonSelectInput';
 
 const txValidationSchema = Yup.object({
   fundId: Yup.string().required('Quỹ không được để trống'),
@@ -57,92 +49,84 @@ const TransactionForm = () => {
   });
 
   return (
-    <Dialog open={openTxForm} onClose={() => setOpenTxForm(false)} maxWidth="sm" fullWidth>
-      <DialogTitle sx={{ fontWeight: 700 }}>Thực hiện Giao dịch mới</DialogTitle>
-      <form onSubmit={formik.handleSubmit}>
-        <DialogContent>
-          <Stack spacing={3} sx={{ mt: 1 }}>
-            <FormControl fullWidth size="small">
-              <InputLabel id="fund-select-label">Chọn quỹ áp dụng</InputLabel>
-              <Select
-                labelId="fund-select-label"
-                name="fundId"
-                label="Chọn quỹ áp dụng"
-                value={formik.values.fundId}
-                onChange={formik.handleChange}
-                error={formik.touched.fundId && Boolean(formik.errors.fundId)}
-              >
-                {funds.map((f) => (
-                  <MenuItem key={f.id} value={f.id}>
-                    {f.name} (Số dư: {f.currentBalance?.toLocaleString('vi-VN') || 0} ₫)
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+    <CommonPopupForm
+      open={openTxForm}
+      handleClose={() => setOpenTxForm(false)}
+      title="Thực hiện Giao dịch mới"
+      formik={formik}
+      size="sm"
+      textSubmit="Gửi yêu cầu"
+    >
+      <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <CommonSelectInput
+            name="fundId"
+            label="Chọn quỹ áp dụng"
+            required
+            noNullOption
+            options={funds.map((f) => ({
+              value: f.id,
+              name: `${f.name} (Số dư: ${f.currentBalance?.toLocaleString('vi-VN') || 0} ₫)`
+            }))}
+          />
+        </Grid>
 
-            <FormControl fullWidth size="small">
-              <InputLabel id="type-select-label">Loại giao dịch</InputLabel>
-              <Select
-                labelId="type-select-label"
-                name="type"
-                label="Loại giao dịch"
-                value={formik.values.type}
-                onChange={formik.handleChange}
-              >
-                <MenuItem value="IN">Thu (Thành viên đóng góp, tài trợ)</MenuItem>
-                <MenuItem value="OUT">Chi (Chi hoạt động, giỗ chạp, sửa sang)</MenuItem>
-              </Select>
-            </FormControl>
+        <Grid item xs={12}>
+          <CommonSelectInput
+            name="type"
+            label="Loại giao dịch"
+            required
+            noNullOption
+            options={[
+              { value: 'IN', name: 'Thu (Thành viên đóng góp, tài trợ)' },
+              { value: 'OUT', name: 'Chi (Chi hoạt động, giỗ chạp, sửa sang)' }
+            ]}
+          />
+        </Grid>
 
-            <FormControl fullWidth size="small">
-              <InputLabel id="profile-select-label">Thành viên liên quan</InputLabel>
-              <Select
-                labelId="profile-select-label"
-                name="profileId"
-                label="Thành viên liên quan"
-                value={formik.values.profileId}
-                onChange={formik.handleChange}
-              >
-                <MenuItem value="">-- Hội đồng dòng họ (Không chọn thành viên) --</MenuItem>
-                {members.map((m) => (
-                  <MenuItem key={m.id} value={m.id}>
-                    {m.fullName} (Đời thứ {m.generation})
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+        <Grid item xs={12}>
+          <CommonSelectInput
+            name="profileId"
+            label="Thành viên liên quan"
+            options={[
+              { value: '', name: '-- Hội đồng dòng họ (Không chọn thành viên) --' },
+              ...members.map((m) => ({
+                value: m.id,
+                name: `${m.fullName} (Đời thứ ${m.generation})`
+              }))
+            ]}
+          />
+        </Grid>
 
-            <TextField
-              fullWidth
-              size="small"
-              name="amount"
-              label="Số tiền giao dịch (₫)"
-              value={formik.values.amount}
-              onChange={formik.handleChange}
-              error={formik.touched.amount && Boolean(formik.errors.amount)}
-              helperText={formik.touched.amount && formik.errors.amount}
-            />
+        <Grid item xs={12}>
+          <TextField
+            fullWidth
+            size="small"
+            name="amount"
+            label="Số tiền giao dịch (₫)"
+            value={formik.values.amount}
+            onChange={formik.handleChange}
+            error={formik.touched.amount && Boolean(formik.errors.amount)}
+            helperText={formik.touched.amount && formik.errors.amount}
+          />
+        </Grid>
 
-            <TextField
-              fullWidth
-              size="small"
-              name="note"
-              label="Nội dung, lý do đóng góp/chi"
-              multiline
-              rows={3}
-              value={formik.values.note}
-              onChange={formik.handleChange}
-              error={formik.touched.note && Boolean(formik.errors.note)}
-              helperText={formik.touched.note && formik.errors.note}
-            />
-          </Stack>
-        </DialogContent>
-        <DialogActions sx={{ px: 3, pb: 2 }}>
-          <Button onClick={() => setOpenTxForm(false)} color="inherit">Hủy</Button>
-          <Button type="submit" variant="contained" color="primary">Gửi yêu cầu</Button>
-        </DialogActions>
-      </form>
-    </Dialog>
+        <Grid item xs={12}>
+          <TextField
+            fullWidth
+            size="small"
+            name="note"
+            label="Nội dung, lý do đóng góp/chi"
+            multiline
+            rows={3}
+            value={formik.values.note}
+            onChange={formik.handleChange}
+            error={formik.touched.note && Boolean(formik.errors.note)}
+            helperText={formik.touched.note && formik.errors.note}
+          />
+        </Grid>
+      </Grid>
+    </CommonPopupForm>
   );
 };
 

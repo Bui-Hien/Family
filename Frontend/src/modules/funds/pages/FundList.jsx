@@ -22,6 +22,7 @@ import {
 import { useFundStore } from '@/modules/funds/store/useFundStore';
 import useAuthStore from '@/stores/authStore';
 import CommonTable from '@/common/components/table/CommonTable';
+import CommonChip from '@/common/components/display/CommonChip';
 import { UserRole, TransactionType, TransactionStatus } from '@/common/constants';
 import HasPermission from '@/common/components/auth/HasPermission';
 
@@ -98,7 +99,7 @@ const FundList = () => {
           color = 'error';
           text = 'Từ chối';
         }
-        return <Chip label={text} color={color} size="small" />;
+        return <CommonChip label={text} color={color} />;
       },
     },
     {
@@ -139,9 +140,15 @@ const FundList = () => {
 
   if (funds.length === 0) {
     return (
-      <Typography color="textSecondary" sx={{ py: 3, textAlign: 'center' }}>
-        Chưa cấu hình quỹ dòng họ nào. Vui lòng tạo quỹ trước.
-      </Typography>
+      <Box sx={{ textAlign: 'center', py: 8, color: 'text.secondary' }}>
+        <Box sx={{ fontSize: 64, mb: 2, opacity: 0.4 }}>🪙</Box>
+        <Typography variant="h6" sx={{ mb: 1, fontWeight: 600 }}>
+          Chưa cấu hình quỹ dòng họ
+        </Typography>
+        <Typography variant="body2">
+          Hiện tại chưa có quỹ dòng họ nào được thiết lập. Vui lòng tạo quỹ mới để quản lý thu chi.
+        </Typography>
+      </Box>
     );
   }
 
@@ -189,8 +196,8 @@ const FundList = () => {
         </Card>
       )}
 
-      <Typography variant="h6" sx={{ fontWeight: 600, mb: 1.5 }}>
-        Lịch sử giao dịch quỹ
+      <Typography variant="h6" className="serif-title" sx={{ color: 'primary.main', mb: 1.5, fontWeight: 600 }}>
+        📊 Lịch sử giao dịch quỹ
       </Typography>
       <CommonTable columns={columns} data={transactions} />
     </Box>
