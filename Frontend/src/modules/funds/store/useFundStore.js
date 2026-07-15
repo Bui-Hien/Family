@@ -54,7 +54,7 @@ export const useFundStore = create((set, get) => ({
       const [reportRes, fundsRes, membersRes] = await Promise.all([
         fundService.getReport().catch(() => ({ success: false, data: null })),
         fundService.getAll().catch(() => ({ success: false, data: [] })),
-        memberService.getAll().catch(() => ({ success: false, data: [] })),
+        memberService.getLookup().catch(() => ({ success: false, data: [] })),
       ]);
 
       let selectedId = get().selectedFundId;

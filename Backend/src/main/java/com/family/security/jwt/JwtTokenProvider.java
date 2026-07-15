@@ -82,9 +82,9 @@ public class JwtTokenProvider {
     public boolean isTokenValid(String token) {
         try {
             extractAllClaims(token);
-            return !isTokenExpired(token);
+            return isTokenExpired(token);
         } catch (JwtException | IllegalArgumentException e) {
-            return false;
+            return true;
         }
     }
 

@@ -6,6 +6,8 @@ import { EventStatus } from '@/common/constants';
 
 export const useEventStore = create((set, get) => ({
   searchObject: {
+    pageIndex: 1,
+    pageSize: 10,
     keyword: '',
     status: 'ALL',
     annual: 'ALL',
@@ -27,7 +29,7 @@ export const useEventStore = create((set, get) => ({
   loading: false,
 
   resetStore: () => set({
-    searchObject: { keyword: '', status: 'ALL', annual: 'ALL' },
+    searchObject: { pageIndex: 1, pageSize: 10, keyword: '', status: 'ALL', annual: 'ALL' },
     totalElements: 0,
     totalPages: 0,
     eventsList: [],
@@ -49,47 +51,21 @@ export const useEventStore = create((set, get) => ({
 
   pagingEvent: async () => {
     set({ loading: true });
+    const { pageIndex, pageSize, keyword, status, annual } = get().searchObject;
     try {
-      const res = await eventService.getAll();
-      if (res.success) {
-        const content = res.data || [];
-        set({ eventsList: content });
-        get().applyFilters();
+      const res = await eventService.getPaged(pageIndex, pageSize, keyword, status, annual);
+      if (res.success && res.data) {
+        set({
+          dataList: res.data.content || [],
+          totalElements: res.data.totalElements || 0,
+          totalPages: res.data.totalPages || 0,
+        });
       }
     } catch (error) {
       console.error('Error fetching events:', error);
     } finally {
       set({ loading: false });
     }
-  },
-
-  applyFilters: () => {
-    const { keyword, status, annual } = get().searchObject;
-    let list = [...get().eventsList];
-
-    if (keyword && keyword.trim() !== '') {
-      const kw = keyword.toLowerCase().trim();
-      list = list.filter(e => 
-        (e.title && e.title.toLowerCase().includes(kw)) ||
-        (e.description && e.description.toLowerCase().includes(kw)) ||
-        (e.location && e.location.toLowerCase().includes(kw))
-      );
-    }
-
-    if (status && status !== 'ALL') {
-      list = list.filter(e => e.status === status);
-    }
-
-    if (annual && annual !== 'ALL') {
-      const isAnnual = annual === 'YES';
-      list = list.filter(e => e.annual === isAnnual);
-    }
-
-    set({
-      dataList: list,
-      totalElements: list.length,
-      totalPages: 1,
-    });
   },
 
   handleOpenCreateEdit: (row) => {

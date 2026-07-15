@@ -1,6 +1,7 @@
 package com.family.security;
 
-import com.family.modules.user.entity.User;
+import com.family.entity.User;
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,6 +13,7 @@ import java.util.UUID;
 
 public class CustomUserDetails implements UserDetails {
 
+    @Getter
     private final User user;
     private final Collection<? extends GrantedAuthority> authorities;
 
@@ -28,10 +30,6 @@ public class CustomUserDetails implements UserDetails {
         });
         
         this.authorities = auths;
-    }
-
-    public User getUser() {
-        return user;
     }
 
     public UUID getId() {

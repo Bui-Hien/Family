@@ -5,8 +5,14 @@ const postService = {
     const response = await api.get('/posts/featured');
     return response.data;
   },
-  getAll: async () => {
-    const response = await api.get('/posts');
+  getPaged: async (pageIndex = 1, pageSize = 10, keyword = '', category = 'ALL', status = 'ALL') => {
+    const response = await api.post('/posts/page', {
+      pageIndex,
+      pageSize,
+      keyword,
+      category,
+      status,
+    });
     return response.data;
   },
   getById: async (id) => {

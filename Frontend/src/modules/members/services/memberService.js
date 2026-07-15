@@ -1,19 +1,22 @@
 import api from '@/services/api';
 
 const memberService = {
-  getPaged: async (pageIndex = 1, pageSize = 10, keyword = '', sortField = '', sortDirection = 'DESC') => {
+  getCurrentProfile: async () => {
+    const response = await api.get('/profiles/current');
+    return response.data;
+  },
+
+  getPaged: async (pageIndex = 1, pageSize = 10, keyword = '', gender = 'ALL', generation = 'ALL', status = 'ALL', sortField = '', sortDirection = 'DESC') => {
     const response = await api.post('/profiles/page', {
       pageIndex,
       pageSize,
       keyword,
+      gender,
+      generation,
+      status,
       sortField,
       sortDirection,
     });
-    return response.data;
-  },
-
-  getAll: async () => {
-    const response = await api.get('/profiles');
     return response.data;
   },
 

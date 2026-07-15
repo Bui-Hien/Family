@@ -13,7 +13,7 @@ const dashboardService = {
   getFeaturedPosts: () => postService.getFeatured(),
   getMemberCount: () => memberService.getPaged(1, 1),
   getFundReport: () => fundService.getReport(),
-  getAllEvents: () => eventService.getAll(),
+  getAllEvents: () => eventService.getPaged(1, 1),
 };
 
 export default dashboardService;

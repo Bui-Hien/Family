@@ -8,6 +8,8 @@ import EventFilter from './EventFilter';
 import CommonLoading from '@/common/components/display/CommonLoading';
 import CommonConfirmDialog from '@/common/components/popup/CommonConfirmDialog';
 
+import { Pagination, Stack } from '@mui/material';
+
 const EventsPage = () => {
   const {
     dataList,
@@ -17,7 +19,10 @@ const EventsPage = () => {
     openConfirmDeletePopup,
     openCreateEditPopup,
     handleClose,
-    handleConfirmDelete
+    handleConfirmDelete,
+    searchObject,
+    setSearchObject,
+    totalPages
   } = useEventStore();
 
   useEffect(() => {
@@ -40,6 +45,20 @@ const EventsPage = () => {
       <EventToolbar />
       <EventFilter />
       <EventList />
+
+      {totalPages > 1 && (
+        <Stack direction="row" justifyContent="center" sx={{ mt: 4, mb: 2 }}>
+          <Pagination
+            count={totalPages}
+            page={searchObject.pageIndex}
+            onChange={(e, value) => {
+              setSearchObject({ pageIndex: value });
+              pagingEvent();
+            }}
+            color="primary"
+          />
+        </Stack>
+      )}
 
       {/* Add/Edit Form Dialog */}
       {openCreateEditPopup && <EventForm />}

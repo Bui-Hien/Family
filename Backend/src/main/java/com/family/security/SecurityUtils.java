@@ -2,7 +2,7 @@ package com.family.security;
 
 import com.family.common.enums.PrivilegeEnum;
 import com.family.common.enums.RoleEnum;
-import com.family.modules.user.entity.User;
+import com.family.entity.User;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;

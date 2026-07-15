@@ -8,7 +8,8 @@ export const useAuthPageStore = create(() => ({
     try {
       const response = await authService.login(values.username, values.password);
       if (response.success && response.data) {
-        const { user, accessToken, refreshToken } = response.data;
+        const { accessToken, refreshToken, userId, username, fullName, role } = response.data;
+        const user = { id: userId, username, fullName, role };
         useAuthStore.getState().setAuth(user, accessToken, refreshToken);
         useUiStore.getState().showNotification('Đăng nhập thành công!', 'success');
         return { success: true };

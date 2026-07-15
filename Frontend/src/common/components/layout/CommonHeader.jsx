@@ -1,16 +1,20 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { AppBar, Toolbar, Box, IconButton, Typography, Tooltip, Avatar, Menu, MenuItem, Divider, ListItemIcon, ListItemText } from '@mui/material';
-import { Menu as MenuIcon, Brightness4 as DarkIcon, Brightness7 as LightIcon, ExitToApp as LogoutIcon } from '@mui/icons-material';
+import { Menu as MenuIcon, Brightness4 as DarkIcon, Brightness7 as LightIcon, ExitToApp as LogoutIcon, AccountBox as ProfileIcon } from '@mui/icons-material';
+import CommonAvatar from '@/common/components/display/CommonAvatar';
 
 const CommonHeader = ({
   onToggleSidebar,
   onLogout,
   user,
+  profile,
   themeMode,
   onToggleTheme,
   sidebarOpen,
   drawerWidth = 260,
 }) => {
+  const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
 
   const handleMenuOpen = (event) => setAnchorEl(event.currentTarget);
@@ -74,9 +78,11 @@ const CommonHeader = ({
 
           <Tooltip title="Tài khoản">
             <IconButton onClick={handleMenuOpen} sx={{ p: 0, ml: 1 }}>
-              <Avatar sx={{ bgcolor: 'primary.main' }}>
-                {user?.fullName?.charAt(0) || 'U'}
-              </Avatar>
+              <CommonAvatar
+                name={profile?.fullName || user?.fullName || 'U'}
+                imgPath={profile?.avatarUrl || ''}
+                style={{ width: 40, height: 40 }}
+              />
             </IconButton>
           </Tooltip>
           <Menu
@@ -89,7 +95,7 @@ const CommonHeader = ({
             <MenuItem disabled sx={{ opacity: '1 !important' }}>
               <Box>
                 <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
-                  {user?.fullName || 'Thành viên dòng họ'}
+                  {profile?.fullName || user?.fullName || 'Thành viên dòng họ'}
                 </Typography>
                 <Typography variant="caption" color="textSecondary">
                   {user?.email || 'member@family.com'}
@@ -97,6 +103,17 @@ const CommonHeader = ({
               </Box>
             </MenuItem>
             <Divider />
+            {profile?.id && (
+              <>
+                <MenuItem onClick={() => { handleMenuClose(); navigate(`/members/${profile.id}`); }}>
+                  <ListItemIcon>
+                    <ProfileIcon fontSize="small" />
+                  </ListItemIcon>
+                  <ListItemText primary="Hồ sơ của tôi" />
+                </MenuItem>
+                <Divider />
+              </>
+            )}
             <MenuItem onClick={handleLogoutAction}>
               <ListItemIcon>
                 <LogoutIcon fontSize="small" />

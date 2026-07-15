@@ -1,16 +1,13 @@
 import api from '@/services/api';
 
 const userService = {
-  getPaged: async (pageIndex = 1, pageSize = 10, keyword = '') => {
+  getPaged: async (pageIndex = 1, pageSize = 10, keyword = '', role = 'ALL') => {
     const response = await api.post('/users/page', {
       pageIndex,
       pageSize,
       keyword,
+      role,
     });
-    return response.data;
-  },
-  getAll: async () => {
-    const response = await api.get('/users');
     return response.data;
   },
   changeRole: async (id, role) => {

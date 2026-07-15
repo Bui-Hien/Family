@@ -30,7 +30,7 @@ export const useDashboardStore = create((set) => ({
         postService.getFeatured().catch(() => ({ success: false, data: [] })),
         memberService.getPaged(1, 1).catch(() => ({ success: false, data: null })),
         fundService.getReport().catch(() => ({ success: false, data: null })),
-        eventService.getAll().catch(() => ({ success: false, data: [] })),
+        eventService.getPaged(1, 1).catch(() => ({ success: false, data: null })),
       ]);
 
       const updates = {};
@@ -43,7 +43,7 @@ export const useDashboardStore = create((set) => ({
         updates.fundBalance = fundRes.data.totalBalance || 0;
       }
       if (allEventsRes.success && allEventsRes.data) {
-        updates.totalEvents = allEventsRes.data.length || 0;
+        updates.totalEvents = allEventsRes.data.totalElements || 0;
       }
       set(updates);
     } catch (error) {

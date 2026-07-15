@@ -1,82 +1,89 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import MainLayout from '@/layout/MainLayout';
 import AuthLayout from '@/layout/AuthLayout';
 import useAuthStore from '@/stores/authStore';
+import CommonLoading from '@/common/components/display/CommonLoading';
 
 // Page Imports
-import LoginPage from '@/modules/auth/pages/LoginPage';
-import ForgotPasswordPage from '@/modules/auth/pages/ForgotPasswordPage';
-import DashboardPage from '@/modules/dashboard/pages/DashboardPage';
-import MembersPage from '@/modules/members/pages/MembersPage';
-import MemberDetailPage from '@/modules/members/pages/MemberDetailPage';
-import FamilyTreePage from '@/modules/family-tree/pages/FamilyTreePage';
-import EventsPage from '@/modules/events/pages/EventsPage';
-import PostsPage from '@/modules/posts/pages/PostsPage';
-import PostDetailPage from '@/modules/posts/pages/PostDetailPage';
-import GalleryPage from '@/modules/gallery/pages/GalleryPage';
-import FundsPage from '@/modules/funds/pages/FundsPage';
-import AdminPage from '@/modules/admin/pages/AdminPage';
+const LoginPage = lazy(() => import('@/modules/auth/pages/LoginPage'));
+const ForgotPasswordPage = lazy(() => import('@/modules/auth/pages/ForgotPasswordPage'));
+const DashboardPage = lazy(() => import('@/modules/dashboard/pages/DashboardPage'));
+const MembersPage = lazy(() => import('@/modules/members/pages/MembersPage'));
+const MemberDetailPage = lazy(() => import('@/modules/members/pages/MemberDetailPage'));
+const FamilyTreePage = lazy(() => import('@/modules/family-tree/pages/FamilyTreePage'));
+const EventsPage = lazy(() => import('@/modules/events/pages/EventsPage'));
+const PostsPage = lazy(() => import('@/modules/posts/pages/PostsPage'));
+const PostDetailPage = lazy(() => import('@/modules/posts/pages/PostDetailPage'));
+const GalleryPage = lazy(() => import('@/modules/gallery/pages/GalleryPage'));
+const FundsPage = lazy(() => import('@/modules/funds/pages/FundsPage'));
+const AdminPage = lazy(() => import('@/modules/admin/pages/AdminPage'));
+import { getCookie } from '@/common/utils/cookieUtils';
+import { UserRole } from '@/common/constants';
 
 // Component Route bảo vệ (Protected Route)
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated } = useAuthStore();
-  // Giả lập cho phép qua nếu chưa đăng nhập thực tế lần đầu để test
-  const hasToken = localStorage.getItem('accessToken') || isAuthenticated;
+  const hasToken = getCookie('accessToken') || isAuthenticated;
   return hasToken ? children : <Navigate to="/auth/login" replace />;
 };
 
 // Component Route Admin (Admin Route)
 const AdminRoute = ({ children }) => {
   const { user } = useAuthStore();
-  const isAdmin = user?.role === 'ADMIN' || true; // Cho phép test admin trong dev
+  const isAdmin =
+    user?.role === UserRole.SYSTEM_ADMIN ||
+    user?.role === UserRole.FAMILY_ADMIN ||
+    user?.role === UserRole.FAMILY_LEADER;
   return isAdmin ? children : <Navigate to="/" replace />;
 };
 
 const AppRoutes = () => {
   return (
-    <Routes>
-      {/* Auth Layout Routing */}
-      <Route path="/auth" element={<AuthLayout />}>
-        <Route path="login" element={<LoginPage />} />
-        <Route path="forgot-password" element={<ForgotPasswordPage />} />
-        <Route index element={<Navigate to="/auth/login" replace />} />
-      </Route>
+    <Suspense fallback={<CommonLoading loading={true} style={{ minHeight: '80vh' }} />}>
+      <Routes>
+        {/* Auth Layout Routing */}
+        <Route path="/auth" element={<AuthLayout />}>
+          <Route path="login" element={<LoginPage />} />
+          <Route path="forgot-password" element={<ForgotPasswordPage />} />
+          <Route index element={<Navigate to="/auth/login" replace />} />
+        </Route>
 
-      {/* Main Layout Routing */}
-      <Route
-        path="/"
-        element={
-          <ProtectedRoute>
-            <MainLayout />
-          </ProtectedRoute>
-        }
-      >
-        <Route index element={<Navigate to="/dashboard" replace />} />
-        <Route path="dashboard" element={<DashboardPage />} />
-        <Route path="members" element={<MembersPage />} />
-        <Route path="members/:id" element={<MemberDetailPage />} />
-        <Route path="family-tree" element={<FamilyTreePage />} />
-        <Route path="events" element={<EventsPage />} />
-        <Route path="posts" element={<PostsPage />} />
-        <Route path="posts/:id" element={<PostDetailPage />} />
-        <Route path="gallery" element={<GalleryPage />} />
-        <Route path="funds" element={<FundsPage />} />
-        
-        {/* Admin Section */}
+        {/* Main Layout Routing */}
         <Route
-          path="admin"
+          path="/"
           element={
-            <AdminRoute>
-              <AdminPage />
-            </AdminRoute>
+            <ProtectedRoute>
+              <MainLayout />
+            </ProtectedRoute>
           }
-        />
-      </Route>
+        >
+          <Route index element={<Navigate to="/dashboard" replace />} />
+          <Route path="dashboard" element={<DashboardPage />} />
+          <Route path="members" element={<MembersPage />} />
+          <Route path="members/:id" element={<MemberDetailPage />} />
+          <Route path="family-tree" element={<FamilyTreePage />} />
+          <Route path="events" element={<EventsPage />} />
+          <Route path="posts" element={<PostsPage />} />
+          <Route path="posts/:id" element={<PostDetailPage />} />
+          <Route path="gallery" element={<GalleryPage />} />
+          <Route path="funds" element={<FundsPage />} />
 
-      {/* Fallback */}
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
+          {/* Admin Section */}
+          <Route
+            path="admin"
+            element={
+              <AdminRoute>
+                <AdminPage />
+              </AdminRoute>
+            }
+          />
+        </Route>
+
+        {/* Fallback */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </Suspense>
   );
 };
 

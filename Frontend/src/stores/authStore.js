@@ -1,40 +1,34 @@
 import { create } from 'zustand';
+import { getCookie, setCookie, eraseCookie } from '@/common/utils/cookieUtils';
 
-const mockUser = {
-  id: 1,
-  username: "admin",
-  fullName: "Admin Dòng Họ (Test)",
-  email: "admin@family.com",
-  role: "ROLE_SYSTEM_ADMIN"
-};
-
-// Tạm thời tự động lưu token giả lập để bypass login màn hình
-if (!localStorage.getItem('accessToken') || JSON.parse(localStorage.getItem('user'))?.role === 'ADMIN') {
-  localStorage.setItem('accessToken', 'mock-access-token');
-  localStorage.setItem('refreshToken', 'mock-refresh-token');
-  localStorage.setItem('user', JSON.stringify(mockUser));
-}
+const savedUser = localStorage.getItem('user');
+const token = getCookie('accessToken');
 
 const useAuthStore = create((set, get) => ({
-  user: JSON.parse(localStorage.getItem('user')) || mockUser,
-  accessToken: localStorage.getItem('accessToken') || 'mock-access-token',
-  refreshToken: localStorage.getItem('refreshToken') || 'mock-refresh-token',
-  isAuthenticated: true,
+  user: savedUser ? JSON.parse(savedUser) : null,
+  profile: null,
+  accessToken: token || null,
+  refreshToken: getCookie('refreshToken') || null,
+  isAuthenticated: !!token,
   loading: false,
   error: null,
 
+  setProfile: (profile) => set({ profile }),
+
   setAuth: (user, accessToken, refreshToken) => {
     localStorage.setItem('user', JSON.stringify(user));
-    localStorage.setItem('accessToken', accessToken);
-    if (refreshToken) localStorage.setItem('refreshToken', refreshToken);
+    setCookie('accessToken', accessToken, 1); // Access token expires in 1 day
+    if (refreshToken) {
+      setCookie('refreshToken', refreshToken, 7); // Refresh token expires in 7 days
+    }
     set({ user, accessToken, refreshToken, isAuthenticated: true, error: null });
   },
 
   logout: () => {
     localStorage.removeItem('user');
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
-    set({ user: null, accessToken: null, refreshToken: null, isAuthenticated: false, error: null });
+    eraseCookie('accessToken');
+    eraseCookie('refreshToken');
+    set({ user: null, profile: null, accessToken: null, refreshToken: null, isAuthenticated: false, error: null });
   },
 
   setLoading: (loading) => set({ loading }),

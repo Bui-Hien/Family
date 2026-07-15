@@ -42,8 +42,8 @@ export const useAdminStore = create((set, get) => ({
     set({ loading: true });
     try {
       const [, membersRes] = await Promise.all([
-        get().fetchUsersInternal(),
-        memberService.getAll().catch(() => ({ success: false, data: [] })),
+        get().fetchUsersInternal(true),
+        memberService.getLookup().catch(() => ({ success: false, data: [] })),
       ]);
       if (membersRes.success) {
         set({ members: membersRes.data || [] });
@@ -55,57 +55,35 @@ export const useAdminStore = create((set, get) => ({
     }
   },
 
-  fetchUsersInternal: async () => {
+  fetchUsersInternal: async (skipLoading = false) => {
+    if (!skipLoading) set({ loading: true });
+    const { pageIndex, pageSize, keyword, role } = get().searchObject;
     try {
-      const res = await userService.getAll();
+      const res = await userService.getPaged(pageIndex, pageSize, keyword, role);
       if (res.success && res.data) {
-        set({ usersList: res.data || [] });
-        get().applyFilters();
+        set({
+          dataList: res.data.content || [],
+          totalElements: res.data.totalElements || 0
+        });
       }
       return res;
     } catch (error) {
       useUiStore.getState().showNotification('Lỗi khi tải danh sách người dùng', 'error');
       return { success: false };
+    } finally {
+      if (!skipLoading) set({ loading: false });
     }
-  },
-
-  applyFilters: () => {
-    const { pageIndex, pageSize, keyword, role } = get().searchObject;
-    let list = [...get().usersList];
-
-    if (keyword && keyword.trim() !== '') {
-      const kw = keyword.toLowerCase().trim();
-      list = list.filter(u => 
-        (u.username && u.username.toLowerCase().includes(kw)) ||
-        (u.fullName && u.fullName.toLowerCase().includes(kw)) ||
-        (u.email && u.email.toLowerCase().includes(kw)) ||
-        (u.phoneNumber && u.phoneNumber.toLowerCase().includes(kw))
-      );
-    }
-
-    if (role && role !== 'ALL') {
-      list = list.filter(u => u.role === role);
-    }
-
-    const totalElements = list.length;
-    const startIndex = (pageIndex - 1) * pageSize;
-    const paginatedList = list.slice(startIndex, startIndex + pageSize);
-
-    set({
-      dataList: paginatedList,
-      totalElements: totalElements
-    });
   },
 
   pagingUser: async () => {
-    get().applyFilters();
+    await get().fetchUsersInternal();
   },
 
   handleSearch: (val) => {
     set((state) => ({
       searchObject: { ...state.searchObject, keyword: val, pageIndex: 1 },
     }));
-    get().applyFilters();
+    get().fetchUsersInternal();
   },
 
   handleOpenCreateEdit: (user) => {

@@ -19,6 +19,13 @@ public class PagingRequest {
     private String sortField;
     private String sortDirection = "DESC";
 
+    private String gender;
+    private String generation;
+    private String status;
+    private String annual;
+    private String role;
+    private String category;
+
     public Pageable toPageable() {
         Sort sort = Sort.unsorted();
         if (sortField != null && !sortField.trim().isEmpty()) {
