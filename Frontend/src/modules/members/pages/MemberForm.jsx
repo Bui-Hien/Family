@@ -10,6 +10,7 @@ import {
   Paper, 
   Button, 
   IconButton, 
+  Tooltip,
   Box,
   TextField,
   Typography
@@ -217,7 +218,7 @@ const MemberForm = () => {
           <CommonTextField name="achievements" label="Thành tích / Đóng góp nổi bật" isTextArea rows={2} />
         </Grid>
         <Grid item xs={12}>
-          <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 'bold' }}>
+          <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 600 }}>
             Thông tin bổ sung đặc biệt
           </Typography>
           <FieldArray name="additionalInfo">
@@ -269,14 +270,18 @@ const MemberForm = () => {
                             />
                           </TableCell>
                           <TableCell align="center" sx={{ verticalAlign: 'top', pt: 1 }}>
-                            <IconButton
-                              color="error"
-                              onClick={() => remove(index)}
-                              disabled={formik.values.additionalInfo.length === 1 && !item.key && !item.value}
-                              size="small"
-                            >
-                              <DeleteIcon fontSize="small" />
-                            </IconButton>
+                            <Tooltip title="Xóa dòng">
+                              <span>
+                                <IconButton
+                                  color="error"
+                                  onClick={() => remove(index)}
+                                  disabled={formik.values.additionalInfo.length === 1 && !item.key && !item.value}
+                                  size="small"
+                                >
+                                  <DeleteIcon fontSize="small" />
+                                </IconButton>
+                              </span>
+                            </Tooltip>
                           </TableCell>
                         </TableRow>
                       );

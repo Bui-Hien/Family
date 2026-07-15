@@ -6,6 +6,7 @@ import { useMemberStore } from '@/modules/members/store/useMemberStore';
 import CommonTable from '@/common/components/table/CommonTable';
 import { Gender } from '@/common/constants';
 import CommonAuditLogPopup from '@/common/components/popup/CommonAuditLogPopup';
+import CommonChip from '@/common/components/display/CommonChip';
 
 const formatLocalDate = (dateStr) => {
   if (!dateStr) return '-';
@@ -62,7 +63,11 @@ const MemberList = () => {
     {
       accessorKey: 'deathDate',
       header: 'Trạng thái',
-      Cell: ({ cell }) => (cell.getValue() ? <span style={{ color: '#d32f2f' }}>Đã mất</span> : <span style={{ color: '#2e7d32' }}>Còn sống</span>),
+      Cell: ({ cell }) => (
+        cell.getValue() 
+          ? <CommonChip label="Đã mất" color="error" /> 
+          : <CommonChip label="Còn sống" color="success" />
+      ),
     },
     {
       id: 'actions',

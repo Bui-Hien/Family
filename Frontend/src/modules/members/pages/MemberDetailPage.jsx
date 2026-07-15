@@ -108,6 +108,20 @@ const MemberDetailPage = () => {
     <Box>
       <CommonBreadcrumb routeSegments={breadcrumbs} />
 
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mt: 1.5, mb: 3 }}>
+        <Box>
+          <Typography variant="h4" className="serif-title" sx={{ color: 'primary.main', mb: 0.5 }}>
+            🏛️ {profile.fullName}
+          </Typography>
+          <Typography variant="body2" color="textSecondary">
+            Thông tin chi tiết thành viên dòng họ
+          </Typography>
+        </Box>
+        <Button variant="outlined" startIcon={<BackIcon />} onClick={() => navigate('/members')}>
+          Quay lại
+        </Button>
+      </Box>
+
       <Grid container spacing={3}>
         {/* Profile Card */}
         <Grid item xs={12} md={4}>
@@ -177,7 +191,7 @@ const MemberDetailPage = () => {
                 <Typography variant="h6" className="serif-title" sx={{ mb: 2, color: 'primary.main', fontWeight: 600 }}>
                   📖 Tiểu sử & Cuộc đời
                 </Typography>
-                <Typography variant="body1" style={{ whiteSpace: 'pre-line' }}>
+                <Typography variant="body1" sx={{ whiteSpace: 'pre-line' }}>
                   {profile.biography || 'Chưa cập nhật tiểu sử chi tiết.'}
                 </Typography>
 
@@ -187,7 +201,7 @@ const MemberDetailPage = () => {
                     <Typography variant="h6" className="serif-title" sx={{ mb: 2, color: 'primary.main', fontWeight: 600 }}>
                       🏆 Thành tích & Đóng góp nổi bật
                     </Typography>
-                    <Typography variant="body1" style={{ whiteSpace: 'pre-line' }}>
+                    <Typography variant="body1" sx={{ whiteSpace: 'pre-line' }}>
                       {profile.achievements}
                     </Typography>
                   </>
