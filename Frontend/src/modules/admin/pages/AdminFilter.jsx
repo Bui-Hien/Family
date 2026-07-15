@@ -1,4 +1,4 @@
-import { Card, CardContent, Grid, MenuItem, TextField, Button, InputAdornment, IconButton } from '@mui/material';
+import { Card, CardContent, Grid, MenuItem, TextField, Button, InputAdornment, IconButton, Tooltip } from '@mui/material';
 import { Search as SearchIcon, Clear as ClearIcon, Refresh as RefreshIcon } from '@mui/icons-material';
 import { useAdminStore } from '@/modules/admin/store/useAdminStore';
 import { UserRole } from '@/common/constants';
@@ -36,7 +36,7 @@ const AdminFilter = () => {
         boxShadow: '0 4px 12px rgba(0, 0, 0, 0.02)'
       }}
     >
-      <CardContent sx={{ p: '16px !important' }}>
+      <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
         <Grid container spacing={2} alignItems="center">
           {/* Tìm kiếm tài khoản */}
           <Grid item xs={12} sm={6}>
@@ -54,9 +54,11 @@ const AdminFilter = () => {
                 ),
                 endAdornment: searchObject.keyword ? (
                   <InputAdornment position="end">
-                    <IconButton size="small" onClick={() => handleChange('keyword', '')}>
-                      <ClearIcon fontSize="small" />
-                    </IconButton>
+                    <Tooltip title="Xóa tìm kiếm">
+                      <IconButton size="small" onClick={() => handleChange('keyword', '')}>
+                        <ClearIcon fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
                   </InputAdornment>
                 ) : null
               }}
@@ -101,7 +103,7 @@ const AdminFilter = () => {
                 }
               }}
             >
-              Reset
+              Đặt lại
             </Button>
           </Grid>
         </Grid>

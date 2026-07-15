@@ -6,11 +6,16 @@ const AdminToolbar = () => {
   const { handleOpenCreateEdit } = useAdminStore();
 
   return (
-    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-      <Typography variant="h5" className="serif-title" sx={{ fontWeight: 700, color: 'primary.main' }}>
-        🛡️ Quản trị Tài khoản Hệ thống
-      </Typography>
-      <Button variant="contained" startIcon={<AddIcon />} onClick={() => handleOpenCreateEdit(null)} size="small">
+    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 3 }}>
+      <Box>
+        <Typography variant="h4" className="serif-title" sx={{ color: 'primary.main', mb: 0.5 }}>
+          🛡️ Quản trị Tài khoản Hệ thống
+        </Typography>
+        <Typography variant="body2" color="textSecondary">
+          Quản lý và cấp quyền tài khoản người dùng truy cập hệ thống gia tộc
+        </Typography>
+      </Box>
+      <Button variant="contained" startIcon={<AddIcon />} onClick={() => handleOpenCreateEdit(null)} size="medium">
         Thêm tài khoản
       </Button>
     </Box>
