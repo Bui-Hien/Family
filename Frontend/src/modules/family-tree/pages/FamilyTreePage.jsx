@@ -15,6 +15,7 @@ import { useMemberStore } from '@/modules/members/store/useMemberStore';
 import MemberForm from '@/modules/members/pages/MemberForm';
 import CommonLoading from '@/common/components/display/CommonLoading';
 import { useNavigate } from 'react-router-dom';
+import { Gender } from '@/common/constants';
 import FamilyNode from './FamilyNode';
 
 const nodeTypes = {
@@ -297,11 +298,16 @@ const FamilyTreePage = () => {
 
   return (
     <Box sx={{ height: 'calc(100vh - 120px)', display: 'flex', flexDirection: 'column' }}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-        <Typography variant="h5" className="serif-title" sx={{ fontWeight: 700, color: 'primary.main' }}>
-          🌳 Sơ đồ Phả hệ Gia tộc
-        </Typography>
-        <Button variant="outlined" startIcon={<DownloadIcon />} onClick={exportTree} size="small">
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 3 }}>
+        <Box>
+          <Typography variant="h4" className="serif-title" sx={{ color: 'primary.main', mb: 0.5 }}>
+            🌳 Sơ đồ Phả hệ Gia tộc
+          </Typography>
+          <Typography variant="body2" color="textSecondary">
+            Xem và tương tác trực quan với sơ đồ phả hệ và mối liên kết dòng tộc
+          </Typography>
+        </Box>
+        <Button variant="outlined" startIcon={<DownloadIcon />} onClick={exportTree} size="medium">
           Xuất dữ liệu gia phả
         </Button>
       </Box>
@@ -332,7 +338,7 @@ const FamilyTreePage = () => {
             <Controls />
             <MiniMap 
               nodeColor={(n) => {
-                if (n.data?.member?.gender === 'MALE') return '#0288d1';
+                if (n.data?.member?.gender === Gender.MALE) return '#0288d1';
                 return '#f44336';
               }}
               style={{ height: 120 }}

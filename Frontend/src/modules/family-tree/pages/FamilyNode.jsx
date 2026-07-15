@@ -1,9 +1,11 @@
 import { Handle, Position } from 'reactflow';
 import { Box, Card, CardContent, Typography, Avatar, Stack, Tooltip, IconButton } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import { Edit as EditIcon, Add as AddIcon } from '@mui/icons-material';
 import { Gender } from '@/common/constants';
 
 const FamilyNode = ({ data }) => {
+  const theme = useTheme();
   const { member, onNodeClick, onEditClick, onAddChildClick } = data;
   if (!member) return null;
 
@@ -30,7 +32,7 @@ const FamilyNode = ({ data }) => {
       <Handle 
         type="target" 
         position={Position.Top} 
-        style={{ background: '#c5a059', width: 8, height: 8, left: handleLeft }} 
+        style={{ background: theme.palette.secondary.main, width: 8, height: 8, left: handleLeft }} 
       />
 
       <Stack direction="row" spacing={1.5} alignItems="center" sx={{ p: 0.5 }}>
@@ -112,7 +114,7 @@ const FamilyNode = ({ data }) => {
           )}
 
           <CardContent sx={{ p: 1, '&:last-child': { pb: 1 } }}>
-            <Avatar src={member.avatarUrl} sx={{ mx: 'auto', mb: 0.5, width: 44, height: 44, border: '1px solid #eae3d2' }}>
+            <Avatar src={member.avatarUrl} sx={{ mx: 'auto', mb: 0.5, width: 44, height: 44, border: '1px solid', borderColor: 'divider' }}>
               {member.fullName ? member.fullName.charAt(0) : '?'}
             </Avatar>
             <Typography variant="body2" sx={{ fontWeight: 600, fontSize: '0.75rem', color: 'text.primary' }} noWrap>
@@ -197,7 +199,7 @@ const FamilyNode = ({ data }) => {
               )}
 
               <CardContent sx={{ p: 1, '&:last-child': { pb: 1 } }}>
-                <Avatar src={member.spouse.avatarUrl} sx={{ mx: 'auto', mb: 0.5, width: 44, height: 44, border: '1px solid #eae3d2' }}>
+                <Avatar src={member.spouse.avatarUrl} sx={{ mx: 'auto', mb: 0.5, width: 44, height: 44, border: '1px solid', borderColor: 'divider' }}>
                   {member.spouse.fullName ? member.spouse.fullName.charAt(0) : '?'}
                 </Avatar>
                 <Typography variant="body2" sx={{ fontWeight: 600, fontSize: '0.75rem', color: 'text.primary' }} noWrap>
@@ -217,7 +219,7 @@ const FamilyNode = ({ data }) => {
         <Handle 
           type="source" 
           position={Position.Bottom} 
-          style={{ background: '#c5a059', width: 8, height: 8, left: handleLeft }} 
+          style={{ background: theme.palette.secondary.main, width: 8, height: 8, left: handleLeft }} 
         />
       )}
     </Box>
