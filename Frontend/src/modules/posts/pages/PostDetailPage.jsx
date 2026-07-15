@@ -93,8 +93,8 @@ const PostDetailPage = () => {
         ]}
       />
 
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mt: 1.5, mb: 3, flexWrap: 'wrap', gap: 2 }}>
-        <Box sx={{ minWidth: 0, flex: 1 }}>
+      <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, justifyContent: 'space-between', alignItems: { xs: 'stretch', sm: 'flex-start' }, mt: 1.5, mb: 3, gap: 2 }}>
+        <Box sx={{ minWidth: 0 }}>
           <Typography variant="h4" className="serif-title" sx={{ color: 'primary.main', mb: 0.5, fontSize: { xs: '1.5rem', md: '2.125rem' }, display: 'flex', alignItems: 'center', gap: 1 }}>
             <ArticleIcon sx={{ fontSize: { xs: '1.75rem', md: '2.25rem' } }} /> Chi tiết Bài viết
           </Typography>
@@ -102,9 +102,11 @@ const PostDetailPage = () => {
             Đọc tin tức, sự kiện và các thông báo hoạt động của dòng tộc
           </Typography>
         </Box>
-        <Button variant="outlined" startIcon={<BackIcon />} onClick={() => navigate('/posts')}>
-          Quay lại
-        </Button>
+        <Box sx={{ display: 'flex', justifyContent: { xs: 'flex-start', sm: 'flex-end' } }}>
+          <Button variant="outlined" startIcon={<BackIcon />} onClick={() => navigate('/posts')}>
+            Quay lại
+          </Button>
+        </Box>
       </Box>
 
       {/* Article Container */}

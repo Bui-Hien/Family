@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Box, Card, CardContent, Typography, Grid, Avatar, Button, Divider, List, ListItem, ListItemText, Stack } from '@mui/material';
-import { ArrowBack as BackIcon, Edit as EditIcon } from '@mui/icons-material';
+import { ArrowBack as BackIcon, Edit as EditIcon, AccountBalance as AccountBalanceIcon } from '@mui/icons-material';
 import memberService from '@/modules/members/services/memberService';
 import useUiStore from '@/stores/uiStore';
 import CommonLoading from '@/common/components/display/CommonLoading';
@@ -108,18 +108,20 @@ const MemberDetailPage = () => {
     <Box>
       <CommonBreadcrumb routeSegments={breadcrumbs} />
 
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mt: 1.5, mb: 3, flexWrap: 'wrap', gap: 2 }}>
-        <Box sx={{ minWidth: 0, flex: 1 }}>
-          <Typography variant="h4" className="serif-title" sx={{ color: 'primary.main', mb: 0.5, fontSize: { xs: '1.5rem', md: '2.125rem' } }}>
-            🏛️ {profile.fullName}
+      <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, justifyContent: 'space-between', alignItems: { xs: 'stretch', sm: 'flex-start' }, mt: 1.5, mb: 3, gap: 2 }}>
+        <Box sx={{ minWidth: 0 }}>
+          <Typography variant="h4" className="serif-title" sx={{ color: 'primary.main', mb: 0.5, fontSize: { xs: '1.5rem', md: '2.125rem' }, display: 'flex', alignItems: 'center', gap: 1 }}>
+            <AccountBalanceIcon sx={{ fontSize: { xs: '1.75rem', md: '2.25rem' } }} /> {profile.fullName}
           </Typography>
           <Typography variant="body2" color="textSecondary">
             Thông tin chi tiết thành viên dòng họ
           </Typography>
         </Box>
-        <Button variant="outlined" startIcon={<BackIcon />} onClick={() => navigate('/members')}>
-          Quay lại
-        </Button>
+        <Box sx={{ display: 'flex', justifyContent: { xs: 'flex-start', sm: 'flex-end' } }}>
+          <Button variant="outlined" startIcon={<BackIcon />} onClick={() => navigate('/members')}>
+            Quay lại
+          </Button>
+        </Box>
       </Box>
 
       <Grid container spacing={3}>

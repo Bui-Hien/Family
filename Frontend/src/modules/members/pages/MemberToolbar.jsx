@@ -7,8 +7,8 @@ const MemberToolbar = () => {
 
   return (
     <Box>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 3, flexWrap: 'wrap', gap: 2 }}>
-        <Box sx={{ minWidth: 0, flex: 1 }}>
+      <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, justifyContent: 'space-between', alignItems: { xs: 'stretch', sm: 'flex-start' }, mb: 3, gap: 2 }}>
+        <Box sx={{ minWidth: 0 }}>
           <Typography variant="h4" className="serif-title" sx={{ color: 'primary.main', mb: 0.5, fontSize: { xs: '1.5rem', md: '2.125rem' }, display: 'flex', alignItems: 'center', gap: 1 }}>
             <PeopleIcon sx={{ fontSize: { xs: '1.75rem', md: '2.25rem' } }} /> Danh sách Thành viên
           </Typography>
@@ -16,9 +16,11 @@ const MemberToolbar = () => {
             Quản lý và tra cứu thông tin chi tiết các thành viên trong dòng họ
           </Typography>
         </Box>
-        <Button variant="contained" startIcon={<AddIcon />} onClick={() => handleOpenCreateEdit(null)} size="medium">
-          Thêm thành viên
-        </Button>
+        <Box sx={{ display: 'flex', justifyContent: { xs: 'flex-start', sm: 'flex-end' } }}>
+          <Button variant="contained" startIcon={<AddIcon />} onClick={() => handleOpenCreateEdit(null)} size="medium">
+            Thêm thành viên
+          </Button>
+        </Box>
       </Box>
     </Box>
   );

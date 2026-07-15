@@ -32,8 +32,8 @@ const FundToolbar = () => {
 
   return (
     <Box>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 3, flexWrap: 'wrap', gap: 2 }}>
-        <Box sx={{ minWidth: 0, flex: 1 }}>
+      <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, justifyContent: 'space-between', alignItems: { xs: 'stretch', sm: 'flex-start' }, mb: 3, gap: 2 }}>
+        <Box sx={{ minWidth: 0 }}>
           <Typography variant="h4" className="serif-title" sx={{ color: 'primary.main', mb: 0.5, fontSize: { xs: '1.5rem', md: '2.125rem' }, display: 'flex', alignItems: 'center', gap: 1 }}>
             <WalletIcon sx={{ fontSize: { xs: '1.75rem', md: '2.25rem' } }} /> Quỹ đóng góp dòng họ
           </Typography>
@@ -41,7 +41,7 @@ const FundToolbar = () => {
             Quản lý ngân quỹ dòng tộc, các khoản thu đóng góp đóng quỹ và chi tiêu hoạt động
           </Typography>
         </Box>
-        <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap', gap: 1 }}>
+        <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap', gap: 1, justifyContent: { xs: 'flex-start', sm: 'flex-end' } }}>
           <HasPermission roles={[UserRole.SYSTEM_ADMIN, UserRole.FAMILY_LEADER, UserRole.FAMILY_ADMIN]}>
             <Button variant="outlined" startIcon={<AddIcon />} onClick={handleOpenAddFund} size="medium">
               Tạo quỹ mới

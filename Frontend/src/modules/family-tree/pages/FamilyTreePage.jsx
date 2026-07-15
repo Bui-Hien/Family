@@ -301,8 +301,8 @@ const FamilyTreePage = () => {
 
   return (
     <Box sx={{ height: { xs: 'calc(100vh - 140px)', md: 'calc(100vh - 120px)' }, display: 'flex', flexDirection: 'column' }}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 3, flexWrap: 'wrap', gap: 2 }}>
-        <Box sx={{ minWidth: 0, flex: 1 }}>
+      <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, justifyContent: 'space-between', alignItems: { xs: 'stretch', sm: 'flex-start' }, mb: 3, gap: 2 }}>
+        <Box sx={{ minWidth: 0 }}>
           <Typography variant="h4" className="serif-title" sx={{ color: 'primary.main', mb: 0.5, fontSize: { xs: '1.5rem', md: '2.125rem' }, display: 'flex', alignItems: 'center', gap: 1 }}>
             <AccountTreeIcon sx={{ fontSize: { xs: '1.75rem', md: '2.25rem' } }} /> Sơ đồ Phả hệ Gia tộc
           </Typography>
@@ -310,9 +310,11 @@ const FamilyTreePage = () => {
             Xem và tương tác trực quan với sơ đồ phả hệ và mối liên kết dòng tộc
           </Typography>
         </Box>
-        <Button variant="outlined" startIcon={<DownloadIcon />} onClick={exportTree} size="medium">
-          Xuất dữ liệu gia phả
-        </Button>
+        <Box sx={{ display: 'flex', justifyContent: { xs: 'flex-start', sm: 'flex-end' } }}>
+          <Button variant="outlined" startIcon={<DownloadIcon />} onClick={exportTree} size="medium">
+            Xuất dữ liệu gia phả
+          </Button>
+        </Box>
       </Box>
 
       <Paper
