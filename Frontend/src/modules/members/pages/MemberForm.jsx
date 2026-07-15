@@ -1,13 +1,6 @@
 import React from 'react';
 import { 
   Grid, 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableContainer, 
-  TableHead, 
-  TableRow, 
-  Paper, 
   Button, 
   IconButton, 
   Tooltip,
@@ -223,71 +216,72 @@ const MemberForm = () => {
           </Typography>
           <FieldArray name="additionalInfo">
             {({ push, remove }) => (
-              <TableContainer component={Paper} variant="outlined">
-                <Table size="small">
-                  <TableHead>
-                    <TableRow sx={{ bgcolor: 'action.hover' }}>
-                      <TableCell sx={{ fontWeight: 'bold', width: '40%' }}>Tên thuộc tính (Key)</TableCell>
-                      <TableCell sx={{ fontWeight: 'bold', width: '50%' }}>Giá trị (Value)</TableCell>
-                      <TableCell align="center" sx={{ fontWeight: 'bold', width: '10%' }}>Thao tác</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {(formik.values.additionalInfo || []).map((item, index) => {
-                      const keyName = `additionalInfo[${index}].key`;
-                      const valueName = `additionalInfo[${index}].value`;
-                      const isKeyTouched = formik.touched.additionalInfo?.[index]?.key;
-                      const keyError = formik.errors.additionalInfo?.[index]?.key;
-                      const isValTouched = formik.touched.additionalInfo?.[index]?.value;
-                      const valError = formik.errors.additionalInfo?.[index]?.value;
+              <Box sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 2, overflow: 'hidden' }}>
+                {(formik.values.additionalInfo || []).map((item, index) => {
+                  const keyName = `additionalInfo[${index}].key`;
+                  const valueName = `additionalInfo[${index}].value`;
+                  const isKeyTouched = formik.touched.additionalInfo?.[index]?.key;
+                  const keyError = formik.errors.additionalInfo?.[index]?.key;
+                  const isValTouched = formik.touched.additionalInfo?.[index]?.value;
+                  const valError = formik.errors.additionalInfo?.[index]?.value;
 
-                      return (
-                        <TableRow key={index}>
-                          <TableCell sx={{ verticalAlign: 'top', pt: 1, pb: 1 }}>
-                            <TextField
-                              size="small"
-                              fullWidth
-                              name={keyName}
-                              value={item.key}
-                              onChange={formik.handleChange}
-                              onBlur={formik.handleBlur}
-                              placeholder="Ví dụ: Học vị"
-                              error={Boolean(isKeyTouched && keyError)}
-                              helperText={isKeyTouched && keyError ? keyError : ''}
-                            />
-                          </TableCell>
-                          <TableCell sx={{ verticalAlign: 'top', pt: 1, pb: 1 }}>
-                            <TextField
-                              size="small"
-                              fullWidth
-                              name={valueName}
-                              value={item.value}
-                              onChange={formik.handleChange}
-                              onBlur={formik.handleBlur}
-                              placeholder="Ví dụ: Tiến sĩ"
-                              error={Boolean(isValTouched && valError)}
-                              helperText={isValTouched && valError ? valError : ''}
-                            />
-                          </TableCell>
-                          <TableCell align="center" sx={{ verticalAlign: 'top', pt: 1 }}>
-                            <Tooltip title="Xóa dòng">
-                              <span>
-                                <IconButton
-                                  color="error"
-                                  onClick={() => remove(index)}
-                                  disabled={formik.values.additionalInfo.length === 1 && !item.key && !item.value}
-                                  size="small"
-                                >
-                                  <DeleteIcon fontSize="small" />
-                                </IconButton>
-                              </span>
-                            </Tooltip>
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })}
-                  </TableBody>
-                </Table>
+                  return (
+                    <Box
+                      key={index}
+                      sx={{
+                        p: 1.5,
+                        borderBottom: '1px solid',
+                        borderColor: 'divider',
+                        '&:last-of-type': { borderBottom: 'none' },
+                      }}
+                    >
+                      <Grid container spacing={1.5} alignItems="flex-start">
+                        <Grid item xs={12} sm={5}>
+                          <TextField
+                            size="small"
+                            fullWidth
+                            name={keyName}
+                            value={item.key}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            placeholder="Ví dụ: Học vị"
+                            label="Tên thuộc tính"
+                            error={Boolean(isKeyTouched && keyError)}
+                            helperText={isKeyTouched && keyError ? keyError : ''}
+                          />
+                        </Grid>
+                        <Grid item xs={10} sm={5}>
+                          <TextField
+                            size="small"
+                            fullWidth
+                            name={valueName}
+                            value={item.value}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            placeholder="Ví dụ: Tiến sĩ"
+                            label="Giá trị"
+                            error={Boolean(isValTouched && valError)}
+                            helperText={isValTouched && valError ? valError : ''}
+                          />
+                        </Grid>
+                        <Grid item xs={2} sm={2} sx={{ display: 'flex', justifyContent: 'center', pt: { xs: 1, sm: 0 } }}>
+                          <Tooltip title="Xóa dòng">
+                            <span>
+                              <IconButton
+                                color="error"
+                                onClick={() => remove(index)}
+                                disabled={formik.values.additionalInfo.length === 1 && !item.key && !item.value}
+                                size="small"
+                              >
+                                <DeleteIcon fontSize="small" />
+                              </IconButton>
+                            </span>
+                          </Tooltip>
+                        </Grid>
+                      </Grid>
+                    </Box>
+                  );
+                })}
                 <Box sx={{ p: 1, display: 'flex', justifyContent: 'flex-start' }}>
                   <Button
                     size="small"
@@ -297,7 +291,7 @@ const MemberForm = () => {
                     Thêm dòng
                   </Button>
                 </Box>
-              </TableContainer>
+              </Box>
             )}
           </FieldArray>
         </Grid>

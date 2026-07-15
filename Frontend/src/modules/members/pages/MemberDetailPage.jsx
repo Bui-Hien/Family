@@ -108,9 +108,9 @@ const MemberDetailPage = () => {
     <Box>
       <CommonBreadcrumb routeSegments={breadcrumbs} />
 
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mt: 1.5, mb: 3 }}>
-        <Box>
-          <Typography variant="h4" className="serif-title" sx={{ color: 'primary.main', mb: 0.5 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mt: 1.5, mb: 3, flexWrap: 'wrap', gap: 2 }}>
+        <Box sx={{ minWidth: 0, flex: 1 }}>
+          <Typography variant="h4" className="serif-title" sx={{ color: 'primary.main', mb: 0.5, fontSize: { xs: '1.5rem', md: '2.125rem' } }}>
             🏛️ {profile.fullName}
           </Typography>
           <Typography variant="body2" color="textSecondary">
@@ -129,7 +129,7 @@ const MemberDetailPage = () => {
             <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', p: 3 }}>
               <Avatar
                 src={profile.avatarUrl}
-                sx={{ width: 150, height: 150, mb: 2, border: '4px solid', borderColor: 'primary.light' }}
+                sx={{ width: { xs: 100, md: 150 }, height: { xs: 100, md: 150 }, mb: 2, border: '4px solid', borderColor: 'primary.light' }}
               >
                 {profile.fullName.charAt(0)}
               </Avatar>
@@ -240,7 +240,7 @@ const MemberDetailPage = () => {
                 </Typography>
                 <Grid container spacing={2}>
                   {/* Cha */}
-                  <Grid item xs={12} sm={3}>
+                  <Grid item xs={6} sm={6} md={3}>
                     <Typography variant="subtitle2" color="textSecondary" sx={{ mb: 1 }}>
                       Cha
                     </Typography>
@@ -263,7 +263,7 @@ const MemberDetailPage = () => {
                   </Grid>
 
                   {/* Mẹ */}
-                  <Grid item xs={12} sm={3}>
+                  <Grid item xs={6} sm={6} md={3}>
                     <Typography variant="subtitle2" color="textSecondary" sx={{ mb: 1 }}>
                       Mẹ
                     </Typography>
@@ -286,7 +286,7 @@ const MemberDetailPage = () => {
                   </Grid>
 
                   {/* Vợ/Chồng */}
-                  <Grid item xs={12} sm={3}>
+                  <Grid item xs={6} sm={6} md={3}>
                     <Typography variant="subtitle2" color="textSecondary" sx={{ mb: 1 }}>
                       Vợ / Chồng
                     </Typography>
@@ -309,7 +309,7 @@ const MemberDetailPage = () => {
                   </Grid>
 
                   {/* Con cái */}
-                  <Grid item xs={12} sm={3}>
+                  <Grid item xs={6} sm={6} md={3}>
                     <Typography variant="subtitle2" color="textSecondary" sx={{ mb: 1 }}>
                       Con cái ({children.length})
                     </Typography>

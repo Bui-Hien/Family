@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import clsx from 'clsx';
 import { getIn } from 'formik';
 import Pagination from '@mui/material/Pagination';
-import { Box, CircularProgress, Typography } from '@mui/material';
+import { Box, Card, CardContent, CircularProgress, Stack, Typography, useMediaQuery, useTheme } from '@mui/material';
 
 const CommonTable = ({
     // Data & Columns
@@ -54,9 +54,16 @@ const CommonTable = ({
     isPaginationHeader = false,
     stylePagination = '',
 
+    // Mobile Card Layout Props
+    mobileColumns, // { primary: 'fieldName', secondary: ['field1', 'field2'] } — controls card layout
+    mobileCardAction, // (row) => JSX — custom action renderer for mobile cards
+    hideMobileCard = false, // force table even on mobile
+
     ...props
 }) => {
     const { t } = useTranslation();
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const [selectedRows, setSelectedRows] = useState(initStateRow);
 
     // Local pagination state for client-side pagination
@@ -179,8 +186,139 @@ const CommonTable = ({
     const activePagination = dataPagination || defaultPagination;
     const finalNoDataText = titleNodata || t('noData') || 'Không có dữ liệu';
 
+    // ============ MOBILE CARD LAYOUT ============
+    const renderMobileCards = () => {
+        if (paginatedData.length === 0) {
+            return (
+                <Box sx={{ textAlign: 'center', py: 6, color: 'text.secondary' }}>
+                    <Box sx={{ fontSize: 48, mb: 1.5, opacity: 0.5 }}>📭</Box>
+                    <Typography variant="subtitle1" sx={{ fontWeight: 600, color: 'text.primary', mb: 0.5 }}>
+                        {finalNoDataText}
+                    </Typography>
+                    <Typography variant="body2" sx={{ color: 'text.secondary', fontSize: '13px' }}>
+                        Hãy thử thay đổi bộ lọc hoặc thêm mới dữ liệu.
+                    </Typography>
+                </Box>
+            );
+        }
+
+        // Determine primary field (shown as card title)
+        const primaryField = mobileColumns?.primary || resolvedColumns.find(c => !c.isHide)?.field;
+        // Determine secondary fields (shown as details)
+        const secondaryFields = mobileColumns?.secondary
+            || resolvedColumns.filter(c => !c.isHide && c.field !== primaryField && c.field !== 'actions' && c.id !== 'actions').map(c => c.field);
+
+        return (
+            <Stack spacing={1.5}>
+                {paginatedData.map((row, index) => {
+                    const primaryCol = resolvedColumns.find(c => c.field === primaryField);
+                    const primaryValue = getIn(row, primaryField);
+
+                    // Render primary cell content
+                    let primaryContent;
+                    if (primaryCol?.Cell) {
+                        primaryContent = primaryCol.Cell({
+                            cell: { getValue: () => primaryValue },
+                            row: { original: row },
+                            value: primaryValue,
+                            index
+                        });
+                    } else {
+                        primaryContent = primaryValue;
+                    }
+
+                    // Render action column if exists
+                    const actionCol = resolvedColumns.find(c => c.id === 'actions' || c.field === 'actions');
+                    let actionContent = null;
+                    if (mobileCardAction) {
+                        actionContent = mobileCardAction(row, index);
+                    } else if (actionCol?.Cell) {
+                        actionContent = actionCol.Cell({
+                            cell: { getValue: () => null },
+                            row: { original: row },
+                            value: null,
+                            index
+                        });
+                    }
+
+                    return (
+                        <Card
+                            key={row[valueCompare] || index}
+                            variant="outlined"
+                            sx={{
+                                borderRadius: 2,
+                                transition: 'all 0.2s ease',
+                                borderLeft: '3px solid transparent',
+                                '&:active': { borderLeftColor: 'secondary.main', bgcolor: 'rgba(140, 29, 64, 0.02)' },
+                                cursor: onRowClick ? 'pointer' : 'default',
+                            }}
+                            onClick={() => onRowClick && onRowClick(row)}
+                        >
+                            <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
+                                {/* STT + Primary Content */}
+                                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 1 }}>
+                                    <Box sx={{ flexGrow: 1, minWidth: 0 }}>
+                                        {showOrdinalNumbers && (
+                                            <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 500 }}>
+                                                #{activePageIndex * activePageSize + index + 1}
+                                            </Typography>
+                                        )}
+                                        <Box sx={{ fontWeight: 600, fontSize: '0.95rem' }}>
+                                            {primaryContent}
+                                        </Box>
+                                    </Box>
+                                    {/* Actions */}
+                                    {actionContent && (
+                                        <Box sx={{ flexShrink: 0, ml: 1 }} onClick={(e) => e.stopPropagation()}>
+                                            {actionContent}
+                                        </Box>
+                                    )}
+                                </Box>
+
+                                {/* Secondary Fields */}
+                                <Stack spacing={0.5}>
+                                    {secondaryFields.slice(0, 4).map((fieldName) => {
+                                        const col = resolvedColumns.find(c => c.field === fieldName);
+                                        if (!col || col.isHide) return null;
+
+                                        const cellValue = getIn(row, fieldName);
+                                        let cellContent;
+                                        if (col.Cell) {
+                                            cellContent = col.Cell({
+                                                cell: { getValue: () => cellValue },
+                                                row: { original: row },
+                                                value: cellValue,
+                                                index
+                                            });
+                                        } else {
+                                            cellContent = cellValue;
+                                        }
+
+                                        return (
+                                            <Box key={fieldName} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                                <Typography variant="caption" color="text.secondary" sx={{ minWidth: 80, fontWeight: 500 }}>
+                                                    {col.title}:
+                                                </Typography>
+                                                <Box sx={{ fontSize: '0.8rem', color: 'text.primary', minWidth: 0, overflow: 'hidden' }}>
+                                                    {cellContent ?? '-'}
+                                                </Box>
+                                            </Box>
+                                        );
+                                    })}
+                                </Stack>
+                            </CardContent>
+                        </Card>
+                    );
+                })}
+            </Stack>
+        );
+    };
+
+    // ============ RENDER ============
+    const showMobileLayout = isMobile && !hideMobileCard;
+
     return (
-        <div className={`table-root ${className}`}>
+        <div className={`table-root ${className}`} style={showMobileLayout ? { border: 'none', boxShadow: 'none', background: 'transparent' } : {}}>
             {/* Loading Indicator */}
             {loading && (
                 <Box
@@ -219,7 +357,11 @@ const CommonTable = ({
                 </div>
             )}
 
-            <div style={{ overflow: 'auto', maxHeight: maxHeight ? maxHeight : 'auto' }}>
+            {/* Mobile Card View */}
+            {showMobileLayout && renderMobileCards()}
+
+            {/* Desktop Table View */}
+            <div style={{ overflow: 'auto', maxHeight: maxHeight ? maxHeight : 'auto', display: showMobileLayout ? 'none' : 'block' }}>
                 <table className="table-container" style={{ minWidth: minWidth ? minWidth : 'auto', ...style }}>
                     <thead>
                         <tr className="row-table-header">

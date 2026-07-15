@@ -1,6 +1,6 @@
 import React, { useRef, useMemo } from 'react';
 import Draggable from 'react-draggable';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Paper, IconButton } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Paper, IconButton, useMediaQuery, useTheme } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 
 // 1. Tối ưu PaperComponent: Chắc chắn rằng nodeRef được quản lý ổn định
@@ -27,6 +27,9 @@ const CommonPopup = ({
                        ...props
                      }) => {
   // 2. Tối ưu sx bằng useMemo để tránh re-render object không cần thiết
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
   const closeButtonSx = useMemo(() => ({
     position: 'absolute',
     right: 8,
@@ -38,16 +41,16 @@ const CommonPopup = ({
       <Dialog
           open={open}
           onClose={handleClose}
-          PaperComponent={PaperComponent}
+          PaperComponent={isMobile ? undefined : PaperComponent}
           aria-labelledby="draggable-dialog-title"
           maxWidth={size}
           fullWidth
-          // 3. Đảm bảo Popup luôn nằm trên các thành phần khác khi kéo
-          sx={{ '& .MuiDialog-container': { alignItems: 'flex-start', pt: 10 } }}
+          fullScreen={isMobile}
+          sx={isMobile ? {} : { '& .MuiDialog-container': { alignItems: 'flex-start', pt: 10 } }}
           {...props}
       >
         <DialogTitle
-            style={{ cursor: 'move', paddingRight: '48px' }}
+            style={{ cursor: isMobile ? 'default' : 'move', paddingRight: '48px' }}
             id="draggable-dialog-title"
         >
           {title}

@@ -13,6 +13,7 @@ import useAuthStore from '@/stores/authStore';
 import CommonHeader from '@/common/components/layout/CommonHeader';
 import CommonSidebar from '@/common/components/layout/CommonSidebar';
 import CommonFooter from '@/common/components/layout/CommonFooter';
+import CommonBottomNav from '@/common/components/layout/CommonBottomNav';
 
 const DRAWER_WIDTH = 260;
 
@@ -62,9 +63,14 @@ const MainLayout = () => {
 
     // 3. Tách Layout logic ra các biến sx memoized
     const mainBoxSx = useMemo(() => ({
-        flexGrow: 1, p: 3, pb: 10, width: '100%',
+        flexGrow: 1,
+        p: { xs: 1.5, sm: 2, md: 3 },
+        pb: { xs: 12, md: 10 },
+        width: '100%',
         backgroundColor: 'background.default',
-        minHeight: '100vh', display: 'flex', flexDirection: 'column',
+        minHeight: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
     }), []);
 
     return (
@@ -97,6 +103,7 @@ const MainLayout = () => {
                 </Box>
                 <CommonFooter sidebarOpen={sidebarOpen} drawerWidth={DRAWER_WIDTH} />
             </Box>
+            <CommonBottomNav />
         </Box>
     );
 };

@@ -118,6 +118,11 @@ const MemberList = () => {
         pageSize={searchObject.pageSize}
         manualPagination
         rowCount={totalElements}
+        mobileColumns={{
+          primary: 'fullName',
+          secondary: ['generation', 'gender', 'deathDate']
+        }}
+        onRowClick={(row) => navigate(`/members/${row.id}`)}
         onPaginationChange={(updater) => {
           const nextState = typeof updater === 'function' ? updater({ pageIndex: searchObject.pageIndex - 1, pageSize: searchObject.pageSize }) : updater;
           setSearchObject({

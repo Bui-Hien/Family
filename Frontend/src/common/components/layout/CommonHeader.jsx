@@ -65,9 +65,15 @@ const CommonHeader = ({
               fontFamily: '"Playfair Display", serif',
               fontWeight: 700,
               color: 'primary.main',
+              fontSize: { xs: '0.95rem', sm: '1.1rem', md: '1.25rem' },
             }}
           >
-            🏛️ QUẢN LÝ DÒNG HỌ
+            <Box component="span" sx={{ display: { xs: 'none', sm: 'inline' } }}>
+              🏛️ QUẢN LÝ DÒNG HỌ
+            </Box>
+            <Box component="span" sx={{ display: { xs: 'inline', sm: 'none' } }}>
+              🏛️ DÒNG HỌ
+            </Box>
           </Typography>
         </Box>
 

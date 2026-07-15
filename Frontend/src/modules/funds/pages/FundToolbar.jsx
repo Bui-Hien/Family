@@ -32,16 +32,16 @@ const FundToolbar = () => {
 
   return (
     <Box>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 3 }}>
-        <Box>
-          <Typography variant="h4" className="serif-title" sx={{ color: 'primary.main', mb: 0.5 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 3, flexWrap: 'wrap', gap: 2 }}>
+        <Box sx={{ minWidth: 0, flex: 1 }}>
+          <Typography variant="h4" className="serif-title" sx={{ color: 'primary.main', mb: 0.5, fontSize: { xs: '1.5rem', md: '2.125rem' } }}>
             🪙 Quỹ đóng góp dòng họ
           </Typography>
           <Typography variant="body2" color="textSecondary">
             Quản lý ngân quỹ dòng tộc, các khoản thu đóng góp đóng quỹ và chi tiêu hoạt động
           </Typography>
         </Box>
-        <Stack direction="row" spacing={1}>
+        <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap', gap: 1 }}>
           <HasPermission roles={[UserRole.SYSTEM_ADMIN, UserRole.FAMILY_LEADER, UserRole.FAMILY_ADMIN]}>
             <Button variant="outlined" startIcon={<AddIcon />} onClick={handleOpenAddFund} size="medium">
               Tạo quỹ mới

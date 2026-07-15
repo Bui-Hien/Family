@@ -81,9 +81,8 @@ const MemberFilter = () => {
             />
           </Grid>
 
-          {/* Cụm nút bấm điều khiển */}
           <Grid item xs={12} sm={5} md={4}>
-            <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end' }}>
+            <Box sx={{ display: 'flex', gap: 1, justifyContent: { xs: 'stretch', sm: 'flex-end' } }}>
               <Button
                 variant={showAdvanced ? 'contained' : 'outlined'}
                 size="medium"
@@ -93,9 +92,10 @@ const MemberFilter = () => {
                   height: 40, 
                   borderRadius: 2, 
                   textTransform: 'none',
+                  flex: { xs: 1, sm: 'initial' }
                 }}
               >
-                {showAdvanced ? 'Ẩn bộ lọc' : 'Bộ lọc nâng cao'}
+                {showAdvanced ? 'Ẩn bộ lọc' : 'Bộ lọc'}
               </Button>
               <Button
                 variant="outlined"
@@ -108,6 +108,7 @@ const MemberFilter = () => {
                   textTransform: 'none',
                   borderColor: 'divider',
                   color: 'text.secondary',
+                  flex: { xs: 1, sm: 'initial' },
                   '&:hover': {
                     borderColor: 'primary.main',
                     color: 'primary.main'

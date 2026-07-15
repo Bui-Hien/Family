@@ -113,6 +113,10 @@ const AdminList = () => {
         pageSize={searchObject.pageSize}
         manualPagination
         rowCount={totalElements}
+        mobileColumns={{
+          primary: 'username',
+          secondary: ['fullName', 'role', 'email']
+        }}
         onPaginationChange={(updater) => {
           const nextState = typeof updater === 'function'
             ? updater({ pageIndex: searchObject.pageIndex - 1, pageSize: searchObject.pageSize })

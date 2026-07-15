@@ -1,17 +1,20 @@
 import { Handle, Position } from 'reactflow';
-import { Box, Card, CardContent, Typography, Avatar, Stack, Tooltip, IconButton } from '@mui/material';
+import { Box, Card, CardContent, Typography, Avatar, Stack, Tooltip, IconButton, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { Edit as EditIcon, Add as AddIcon } from '@mui/icons-material';
 import { Gender } from '@/common/constants';
 
 const FamilyNode = ({ data }) => {
   const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  
   const { member, onNodeClick, onEditClick, onAddChildClick } = data;
   if (!member) return null;
 
   const hasSpouse = !!member.spouse;
-  // Căn chỉnh vị trí handle trùng với tâm của Card thành viên chính bên trái (rộng 140px, nửa là 70px + border = 72px)
-  const handleLeft = hasSpouse ? 72 : '50%';
+  // Căn chỉnh vị trí handle trùng với tâm của Card thành viên chính bên trái
+  // (rộng 140px trên desktop, nửa là 70px + border = 72px; rộng 110px trên mobile, nửa là 55px + border = 57px)
+  const handleLeft = hasSpouse ? (isMobile ? 57 : 72) : '50%';
 
   const mainGenderColor = member.gender === Gender.MALE ? 'info.main' : 'error.light';
   const spouseGenderColor = member.spouse 
@@ -41,7 +44,7 @@ const FamilyNode = ({ data }) => {
           onClick={() => onNodeClick(member.id)}
           className="hover-lift"
           sx={{
-            width: 140,
+            width: { xs: 110, md: 140 },
             cursor: 'pointer',
             border: '2px solid',
             borderColor: mainGenderColor,
@@ -70,8 +73,8 @@ const FamilyNode = ({ data }) => {
                 transform: 'translateX(-50%)',
                 display: 'flex',
                 gap: 0.5,
-                opacity: 0,
-                visibility: 'hidden',
+                opacity: { xs: 1, md: 0 },
+                visibility: { xs: 'visible', md: 'hidden' },
                 transition: 'opacity 0.2s, visibility 0.2s',
                 bgcolor: 'background.paper',
                 borderRadius: 1,
@@ -113,14 +116,14 @@ const FamilyNode = ({ data }) => {
             </Box>
           )}
 
-          <CardContent sx={{ p: 1, '&:last-child': { pb: 1 } }}>
-            <Avatar src={member.avatarUrl} sx={{ mx: 'auto', mb: 0.5, width: 44, height: 44, border: '1px solid', borderColor: 'divider' }}>
+          <CardContent sx={{ p: { xs: 0.5, md: 1 }, '&:last-child': { pb: { xs: 0.5, md: 1 } } }}>
+            <Avatar src={member.avatarUrl} sx={{ mx: 'auto', mb: 0.5, width: { xs: 32, md: 44 }, height: { xs: 32, md: 44 }, border: '1px solid', borderColor: 'divider' }}>
               {member.fullName ? member.fullName.charAt(0) : '?'}
             </Avatar>
-            <Typography variant="body2" sx={{ fontWeight: 600, fontSize: '0.75rem', color: 'text.primary' }} noWrap>
+            <Typography variant="body2" sx={{ fontWeight: 600, fontSize: { xs: '0.65rem', md: '0.75rem' }, color: 'text.primary' }} noWrap>
               {member.fullName}
             </Typography>
-            <Typography variant="caption" color="textSecondary" sx={{ display: 'block', fontSize: '0.65rem' }}>
+            <Typography variant="caption" color="textSecondary" sx={{ display: 'block', fontSize: { xs: '0.55rem', md: '0.65rem' } }}>
               Đời thứ {member.generation}
             </Typography>
           </CardContent>
@@ -136,7 +139,7 @@ const FamilyNode = ({ data }) => {
               onClick={() => onNodeClick(member.spouse.id)}
               className="hover-lift"
               sx={{
-                width: 140,
+                width: { xs: 110, md: 140 },
                 cursor: 'pointer',
                 border: '2px solid',
                 borderColor: spouseGenderColor,
@@ -165,8 +168,8 @@ const FamilyNode = ({ data }) => {
                     transform: 'translateX(-50%)',
                     display: 'flex',
                     gap: 0.5,
-                    opacity: 0,
-                    visibility: 'hidden',
+                    opacity: { xs: 1, md: 0 },
+                    visibility: { xs: 'visible', md: 'hidden' },
                     transition: 'opacity 0.2s, visibility 0.2s',
                     bgcolor: 'background.paper',
                     borderRadius: 1,
@@ -198,14 +201,14 @@ const FamilyNode = ({ data }) => {
                 </Box>
               )}
 
-              <CardContent sx={{ p: 1, '&:last-child': { pb: 1 } }}>
-                <Avatar src={member.spouse.avatarUrl} sx={{ mx: 'auto', mb: 0.5, width: 44, height: 44, border: '1px solid', borderColor: 'divider' }}>
+              <CardContent sx={{ p: { xs: 0.5, md: 1 }, '&:last-child': { pb: { xs: 0.5, md: 1 } } }}>
+                <Avatar src={member.spouse.avatarUrl} sx={{ mx: 'auto', mb: 0.5, width: { xs: 32, md: 44 }, height: { xs: 32, md: 44 }, border: '1px solid', borderColor: 'divider' }}>
                   {member.spouse.fullName ? member.spouse.fullName.charAt(0) : '?'}
                 </Avatar>
-                <Typography variant="body2" sx={{ fontWeight: 600, fontSize: '0.75rem', color: 'text.primary' }} noWrap>
+                <Typography variant="body2" sx={{ fontWeight: 600, fontSize: { xs: '0.65rem', md: '0.75rem' }, color: 'text.primary' }} noWrap>
                   {member.spouse.fullName}
                 </Typography>
-                <Typography variant="caption" color="textSecondary" sx={{ display: 'block', fontSize: '0.65rem' }}>
+                <Typography variant="caption" color="textSecondary" sx={{ display: 'block', fontSize: { xs: '0.55rem', md: '0.65rem' } }}>
                   Vợ / Chồng
                 </Typography>
               </CardContent>

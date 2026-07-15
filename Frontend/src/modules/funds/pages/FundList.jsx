@@ -199,7 +199,14 @@ const FundList = () => {
       <Typography variant="h6" className="serif-title" sx={{ color: 'primary.main', mb: 1.5, fontWeight: 600 }}>
         📊 Lịch sử giao dịch quỹ
       </Typography>
-      <CommonTable columns={columns} data={transactions} />
+      <CommonTable
+        columns={columns}
+        data={transactions}
+        mobileColumns={{
+          primary: 'transactionDate',
+          secondary: ['type', 'amount', 'status']
+        }}
+      />
     </Box>
   );
 };

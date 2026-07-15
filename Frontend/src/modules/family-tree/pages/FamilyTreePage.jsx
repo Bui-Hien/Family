@@ -8,7 +8,7 @@ import ReactFlow, {
   applyNodeChanges
 } from 'reactflow';
 import 'reactflow/dist/style.css';
-import { Box, Typography, Button, Paper } from '@mui/material';
+import { Box, Typography, Button, Paper, useMediaQuery, useTheme as useMuiTheme } from '@mui/material';
 import { Download as DownloadIcon } from '@mui/icons-material';
 import { useTreeStore } from '@/modules/family-tree/store/useTreeStore';
 import { useMemberStore } from '@/modules/members/store/useMemberStore';
@@ -34,6 +34,9 @@ const FamilyTreePage = () => {
 
   const [nodes, setNodes] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+
+  const theme = useMuiTheme();
+  const treeMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const onNodesChangeCustom = useCallback((changes) => {
     setNodes((nds) => {
@@ -188,9 +191,9 @@ const FamilyTreePage = () => {
   useEffect(() => {
     if (!treeData) return;
 
-    const nodeWidth = 320; // Width including spacing
-    const xGap = 60;
-    const yGap = 220;
+    const nodeWidth = treeMobile ? 260 : 320; // Width including spacing
+    const xGap = treeMobile ? 30 : 60;
+    const yGap = treeMobile ? 180 : 220;
     
     // Store the right-most X position for each generation layer to prevent overlap
     const nextXForDepth = {};
@@ -290,20 +293,20 @@ const FamilyTreePage = () => {
     const { nodes: layoutNodes, edges: layoutEdges } = buildLayout(treeData, 0);
     setNodes(layoutNodes);
     setEdges(layoutEdges);
-  }, [treeData, handleNodeClick, handleEditClick, handleAddChildClick, setEdges, setNodes]);
+  }, [treeData, handleNodeClick, handleEditClick, handleAddChildClick, setEdges, setNodes, treeMobile]);
 
   if (loading) {
     return <CommonLoading loading={loading} type="skeleton" rows={5} />;
   }
 
   return (
-    <Box sx={{ height: 'calc(100vh - 120px)', display: 'flex', flexDirection: 'column' }}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 3 }}>
-        <Box>
-          <Typography variant="h4" className="serif-title" sx={{ color: 'primary.main', mb: 0.5 }}>
+    <Box sx={{ height: { xs: 'calc(100vh - 140px)', md: 'calc(100vh - 120px)' }, display: 'flex', flexDirection: 'column' }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 3, flexWrap: 'wrap', gap: 2 }}>
+        <Box sx={{ minWidth: 0, flex: 1 }}>
+          <Typography variant="h4" className="serif-title" sx={{ color: 'primary.main', mb: 0.5, fontSize: { xs: '1.5rem', md: '2.125rem' } }}>
             🌳 Sơ đồ Phả hệ Gia tộc
           </Typography>
-          <Typography variant="body2" color="textSecondary">
+          <Typography variant="body2" color="textSecondary" sx={{ display: { xs: 'none', sm: 'block' } }}>
             Xem và tương tác trực quan với sơ đồ phả hệ và mối liên kết dòng tộc
           </Typography>
         </Box>
@@ -336,15 +339,17 @@ const FamilyTreePage = () => {
             maxZoom={1.5}
           >
             <Controls />
-            <MiniMap 
-              nodeColor={(n) => {
-                if (n.data?.member?.gender === Gender.MALE) return '#0288d1';
-                return '#f44336';
-              }}
-              style={{ height: 120 }}
-              zoomable
-              pannable
-            />
+            {!treeMobile && (
+              <MiniMap 
+                nodeColor={(n) => {
+                  if (n.data?.member?.gender === Gender.MALE) return '#0288d1';
+                  return '#f44336';
+                }}
+                style={{ height: 120 }}
+                zoomable
+                pannable
+              />
+            )}
             <Background color="#ccc" gap={16} size={1} />
           </ReactFlow>
         ) : (
