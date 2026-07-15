@@ -39,9 +39,11 @@ const CommonHeader = ({
           }),
         backgroundColor: 'background.paper',
         color: 'text.primary',
-        boxShadow: '0 1px 10px rgba(0,0,0,0.05)',
-        borderBottom: '1px solid',
-        borderColor: 'divider',
+        boxShadow: (theme) => theme.palette.mode === 'light' 
+          ? '0 2px 10px rgba(140, 29, 64, 0.04)' 
+          : '0 2px 15px rgba(0,0,0,0.3)',
+        borderBottom: '2px solid',
+        borderColor: (theme) => theme.palette.mode === 'light' ? 'secondary.main' : 'secondary.dark',
       }}
     >
       <Toolbar sx={{ justifyContent: 'space-between' }}>

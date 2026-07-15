@@ -17,22 +17,42 @@ const CommonBreadcrumb = ({
         justifyContent: 'space-between',
         mb: 3,
         bgcolor: 'background.paper',
-        p: 1.5,
+        py: 1,
+        px: 2,
         borderRadius: 2,
-        boxShadow: '0 1px 4px rgba(0,0,0,0.03)',
+        boxShadow: (theme) => theme.palette.mode === 'light' 
+          ? '0 2px 8px rgba(140, 29, 64, 0.02)' 
+          : '0 2px 10px rgba(0,0,0,0.2)',
         border: '1px solid',
         borderColor: 'divider',
       }}
     >
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-        <IconButton size="small" onClick={() => navigate(-1)} sx={{ mr: 1 }}>
+        <IconButton 
+          size="small" 
+          onClick={() => navigate(-1)} 
+          sx={{ 
+            mr: 1, 
+            transition: 'all 0.2s ease',
+            '&:hover': { color: 'primary.main', backgroundColor: 'rgba(140, 29, 64, 0.08)' } 
+          }}
+        >
           <BackIcon fontSize="small" />
         </IconButton>
         
         <Breadcrumbs aria-label="breadcrumb">
           <Link
             underline="hover"
-            sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer', color: 'text.secondary', fontSize: '14px' }}
+            sx={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              cursor: 'pointer', 
+              color: 'text.secondary', 
+              fontSize: '13px',
+              fontWeight: 500,
+              transition: 'color 0.2s ease',
+              '&:hover': { color: 'primary.main' }
+            }}
             onClick={() => navigate('/')}
           >
             <HomeIcon sx={{ mr: 0.5 }} fontSize="inherit" />
@@ -41,14 +61,21 @@ const CommonBreadcrumb = ({
           {routeSegments.map((segment, index) => {
             const isLast = index === routeSegments.length - 1;
             return isLast ? (
-              <Typography key={index} color="text.primary" sx={{ fontWeight: 500, fontSize: '14px' }}>
+              <Typography key={index} color="text.primary" sx={{ fontWeight: 600, fontSize: '13px' }}>
                 {segment.name}
               </Typography>
             ) : (
               <Link
                 key={index}
                 underline="hover"
-                sx={{ cursor: 'pointer', color: 'text.secondary', fontSize: '14px' }}
+                sx={{ 
+                  cursor: 'pointer', 
+                  color: 'text.secondary', 
+                  fontSize: '13px',
+                  fontWeight: 500,
+                  transition: 'color 0.2s ease',
+                  '&:hover': { color: 'primary.main' }
+                }}
                 onClick={() => navigate(segment.path)}
               >
                 {segment.name}
@@ -57,10 +84,18 @@ const CommonBreadcrumb = ({
           })}
         </Breadcrumbs>
       </Box>
-
+ 
       {onRefresh && (
         <Tooltip title="Làm mới">
-          <IconButton size="small" onClick={onRefresh} color="primary">
+          <IconButton 
+            size="small" 
+            onClick={onRefresh} 
+            color="primary"
+            sx={{ 
+              transition: 'all 0.2s ease',
+              '&:hover': { backgroundColor: 'rgba(140, 29, 64, 0.08)' } 
+            }}
+          >
             <RefreshIcon fontSize="small" />
           </IconButton>
         </Tooltip>

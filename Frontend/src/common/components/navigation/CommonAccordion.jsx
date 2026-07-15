@@ -5,27 +5,37 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 // 1. Tách toàn bộ CSS tĩnh ra ngoài vòng đời Component
 // Giúp trình duyệt không phải tạo ra hàng chục Object CSS mới mỗi khi render lại mảng items
 const accordionSx = {
-  mb: 1,
-  borderRadius: 1,
+  mb: 1.5,
+  borderRadius: '8px !important',
   '&:before': { display: 'none' }, // Ẩn đường kẻ mặc định khá xấu của MUI
   border: '1px solid',
   borderColor: 'divider',
   boxShadow: 'none',
-  // Bo góc an toàn, tránh bị gãy góc khi danh sách xếp chồng lên nhau
-  '&:first-of-type': { borderTopLeftRadius: 4, borderTopRightRadius: 4 },
-  '&:last-of-type': { borderBottomLeftRadius: 4, borderBottomRightRadius: 4 },
+  transition: 'all 0.2s ease',
+  '&.Mui-expanded': {
+    borderLeft: '4px solid',
+    borderLeftColor: 'secondary.main',
+  },
+  // Bo góc an toàn
+  '&:first-of-type': { borderTopLeftRadius: 8, borderTopRightRadius: 8 },
+  '&:last-of-type': { borderBottomLeftRadius: 8, borderBottomRightRadius: 8 },
 };
 
 const summarySx = {
-  backgroundColor: 'action.hover',
+  backgroundColor: 'background.paper',
   minHeight: 48,
+  borderRadius: '8px !important',
+  transition: 'background-color 0.2s ease',
+  '&:hover': {
+    backgroundColor: 'action.hover',
+  },
   // Vá lỗi "Giật khung hình" (Jumping UI) của MUI khi mở Accordion
   '& .MuiAccordionSummary-content': { my: 1.5 },
   '& .MuiAccordionSummary-content.Mui-expanded': { my: 1.5 },
 };
 
-const titleSx = { fontWeight: 600 };
-const detailsSx = { borderTop: '1px solid', borderColor: 'divider', p: 2 };
+const titleSx = { fontWeight: 600, fontFamily: '"Inter", sans-serif' };
+const detailsSx = { borderTop: '1px solid', borderColor: 'divider', p: 2, backgroundColor: 'background.paper', borderRadius: '0 0 8px 8px' };
 
 const CommonAccordion = ({
                            items = [],

@@ -27,14 +27,18 @@ const CommonSidebar = ({
               <ListItemButton
                 onClick={() => onNavigate && onNavigate(item.path)}
                 sx={{
-                  minHeight: 48,
+                  minHeight: 46,
                   px: 2.5,
                   borderRadius: 2,
+                  borderLeft: isActive ? '4px solid' : '4px solid transparent',
+                  borderColor: isActive ? 'secondary.main' : 'transparent',
                   backgroundColor: isActive ? 'primary.main' : 'transparent',
                   color: isActive ? 'primary.contrastText' : 'text.primary',
                   '&:hover': {
-                    backgroundColor: isActive ? 'primary.main' : 'rgba(140, 29, 64, 0.08)',
+                    backgroundColor: isActive ? 'primary.main' : 'rgba(140, 29, 64, 0.06)',
+                    ...(isActive ? {} : { color: 'primary.main', '& .MuiListItemIcon-root': { color: 'primary.main' } })
                   },
+                  transition: 'all 0.2s ease',
                 }}
               >
                 <ListItemIcon
@@ -43,6 +47,7 @@ const CommonSidebar = ({
                     mr: 3,
                     justifyContent: 'center',
                     color: isActive ? 'primary.contrastText' : 'text.secondary',
+                    transition: 'color 0.2s ease',
                   }}
                 >
                   {item.icon}
@@ -73,7 +78,10 @@ const CommonSidebar = ({
           '& .MuiDrawer-paper': {
             boxSizing: 'border-box',
             width: drawerWidth,
-            background: (theme) => theme.palette.mode === 'light' ? '#FAF8F5' : '#1E1E1E',
+            backgroundColor: (theme) => theme.palette.mode === 'light' ? '#FAF8F5' : '#181818',
+            backgroundImage: (theme) => theme.palette.mode === 'light'
+              ? `linear-gradient(rgba(250, 248, 245, 0.96), rgba(250, 248, 245, 0.96)), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cpath d='M30 10c-5.5 0-10 4.5-10 10s4.5 10 10 10 10-4.5 10-10-4.5-10-10-10zm0 16c-3.3 0-6-2.7-6-6s2.7-6 6-6 6 2.7 6 6-2.7 6-6 6zm0 14c-5.5 0-10 4.5-10 10s4.5 10 10 10 10-4.5 10-10-4.5-10-10-10zm0 16c-3.3 0-6-2.7-6-6s2.7-6 6-6 6 2.7 6 6-2.7 6-6 6zM10 30c0-5.5 4.5-10 10-10s10 4.5 10 10-4.5 10-10 10-10-4.5-10-10zm16 0c0-3.3-2.7-6-6-6s-6 2.7-6 6 2.7 6 6 6 6-2.7 6-6zm24 0c0-5.5 4.5-10 10-10s10 4.5 10 10-4.5 10-10 10-10-4.5-10-10zm16 0c0-3.3-2.7-6-6-6s-6 2.7-6 6 2.7 6 6 6 6-2.7 6-6z' fill='%23c5a059' fill-opacity='0.04' fill-rule='evenodd'/%3E%3C/svg%3E")`
+              : `linear-gradient(rgba(24, 24, 24, 0.97), rgba(24, 24, 24, 0.97)), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cpath d='M30 10c-5.5 0-10 4.5-10 10s4.5 10 10 10 10-4.5 10-10-4.5-10-10-10zm0 16c-3.3 0-6-2.7-6-6s2.7-6 6-6 6 2.7 6 6-2.7 6-6 6zm0 14c-5.5 0-10 4.5-10 10s4.5 10 10 10 10-4.5 10-10-4.5-10-10-10zm0 16c-3.3 0-6-2.7-6-6s2.7-6 6-6 6 2.7 6 6-2.7 6-6 6zM10 30c0-5.5 4.5-10 10-10s10 4.5 10 10-4.5 10-10 10-10-4.5-10-10zm16 0c0-3.3-2.7-6-6-6s-6 2.7-6 6 2.7 6 6 6 6-2.7 6-6zm24 0c0-5.5 4.5-10 10-10s10 4.5 10 10-4.5 10-10 10-10-4.5-10-10zm16 0c0-3.3-2.7-6-6-6s-6 2.7-6 6 2.7 6 6 6 6-2.7 6-6z' fill='%23f1d592' fill-opacity='0.03' fill-rule='evenodd'/%3E%3C/svg%3E")`,
           },
         }}
       >
@@ -93,7 +101,10 @@ const CommonSidebar = ({
           boxSizing: 'border-box',
           borderRight: '1px solid',
           borderColor: 'divider',
-          background: (theme) => theme.palette.mode === 'light' ? '#FAF8F5' : '#1E1E1E',
+          backgroundColor: (theme) => theme.palette.mode === 'light' ? '#FAF8F5' : '#181818',
+          backgroundImage: (theme) => theme.palette.mode === 'light'
+            ? `linear-gradient(rgba(250, 248, 245, 0.96), rgba(250, 248, 245, 0.96)), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cpath d='M30 10c-5.5 0-10 4.5-10 10s4.5 10 10 10 10-4.5 10-10-4.5-10-10-10zm0 16c-3.3 0-6-2.7-6-6s2.7-6 6-6 6 2.7 6 6-2.7 6-6 6zm0 14c-5.5 0-10 4.5-10 10s4.5 10 10 10 10-4.5 10-10-4.5-10-10-10zm0 16c-3.3 0-6-2.7-6-6s2.7-6 6-6 6 2.7 6 6-2.7 6-6 6zM10 30c0-5.5 4.5-10 10-10s10 4.5 10 10-4.5 10-10 10-10-4.5-10-10zm16 0c0-3.3-2.7-6-6-6s-6 2.7-6 6 2.7 6 6 6 6-2.7 6-6zm24 0c0-5.5 4.5-10 10-10s10 4.5 10 10-4.5 10-10 10-10-4.5-10-10zm16 0c0-3.3-2.7-6-6-6s-6 2.7-6 6 2.7 6 6 6 6-2.7 6-6z' fill='%23c5a059' fill-opacity='0.04' fill-rule='evenodd'/%3E%3C/svg%3E")`
+            : `linear-gradient(rgba(24, 24, 24, 0.97), rgba(24, 24, 24, 0.97)), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cpath d='M30 10c-5.5 0-10 4.5-10 10s4.5 10 10 10 10-4.5 10-10-4.5-10-10-10zm0 16c-3.3 0-6-2.7-6-6s2.7-6 6-6 6 2.7 6 6-2.7 6-6 6zm0 14c-5.5 0-10 4.5-10 10s4.5 10 10 10 10-4.5 10-10-4.5-10-10-10zm0 16c-3.3 0-6-2.7-6-6s2.7-6 6-6 6 2.7 6 6-2.7 6-6 6zM10 30c0-5.5 4.5-10 10-10s10 4.5 10 10-4.5 10-10 10-10-4.5-10-10zm16 0c0-3.3-2.7-6-6-6s-6 2.7-6 6 2.7 6 6 6 6-2.7 6-6zm24 0c0-5.5 4.5-10 10-10s10 4.5 10 10-4.5 10-10 10-10-4.5-10-10zm16 0c0-3.3-2.7-6-6-6s-6 2.7-6 6 2.7 6 6 6 6-2.7 6-6z' fill='%23f1d592' fill-opacity='0.03' fill-rule='evenodd'/%3E%3C/svg%3E")`,
           transition: (theme) =>
             theme.transitions.create('width', {
               easing: theme.transitions.easing.sharp,

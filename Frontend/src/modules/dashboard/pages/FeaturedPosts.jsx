@@ -8,7 +8,9 @@ import {
   ListItemButton,
   ListItemText,
   ListItemIcon,
-  Divider
+  Divider,
+  Box,
+  Button
 } from '@mui/material';
 import { Article as ArticleIcon } from '@mui/icons-material';
 import { useDashboardStore } from '@/modules/dashboard/store/useDashboardStore';
@@ -20,9 +22,19 @@ const FeaturedPosts = () => {
   return (
     <Card sx={{ height: '100%' }}>
       <CardContent>
-        <Typography variant="h6" className="serif-title" sx={{ mb: 2, color: 'primary.main' }}>
-          📰 Tin tức & Hoạt động nổi bật
-        </Typography>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+          <Typography variant="h6" className="serif-title" sx={{ color: 'primary.main' }}>
+            📰 Tin tức & Hoạt động
+          </Typography>
+          <Button 
+            size="small" 
+            variant="text" 
+            onClick={() => navigate('/posts')}
+            sx={{ fontWeight: 600, '&:hover': { color: 'primary.light' } }}
+          >
+            Xem tất cả
+          </Button>
+        </Box>
         {featuredPosts.length === 0 ? (
           <Typography variant="body2" color="textSecondary" sx={{ py: 2 }}>
             Không có tin nổi bật nào mới đăng.
@@ -53,7 +65,7 @@ const FeaturedPosts = () => {
                       </Typography>
                     }
                     secondary={
-                      <Typography component="span" variant="body2" color="textSecondary" sx={{ display: 'block', mt: 0.5 }}>
+                      <Typography component="span" variant="body2" color="textSecondary" sx={{ display: 'block', mt: 0.5, fontSize: '13px' }}>
                         {post.summary || 'Không có tóm tắt...'}
                       </Typography>
                     }

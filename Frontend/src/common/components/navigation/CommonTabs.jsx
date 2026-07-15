@@ -3,7 +3,17 @@ import { Tabs, Tab, Box } from '@mui/material';
 
 // 1. Tách cấu hình CSS tĩnh ra ngoài để tránh cấp phát lại bộ nhớ
 const boxSx = { borderBottom: 1, borderColor: 'divider', mb: 2 };
-const tabSx = { fontWeight: 600, minHeight: 48, textTransform: 'none' };
+const tabSx = { 
+    fontWeight: 600, 
+    minHeight: 48, 
+    textTransform: 'none',
+    fontSize: '14px',
+    transition: 'all 0.2s ease',
+    '&:hover': {
+        color: 'primary.light',
+        opacity: 0.85,
+    }
+};
 
 const CommonTabs = ({
                         value,
@@ -39,8 +49,6 @@ const CommonTabs = ({
                 value={value}
                 onChange={onChange}
                 variant={variant}
-                textColor="primary"
-                indicatorColor="primary"
             >
                 {renderedTabs}
             </Tabs>

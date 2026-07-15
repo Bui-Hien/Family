@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import clsx from 'clsx';
 import { getIn } from 'formik';
 import Pagination from '@mui/material/Pagination';
-import { Box, CircularProgress } from '@mui/material';
+import { Box, CircularProgress, Typography } from '@mui/material';
 
 const CommonTable = ({
     // Data & Columns
@@ -393,9 +393,17 @@ const CommonTable = ({
                                 {finalDetailRow && finalDetailRow}
                             </>
                         ) : (
-                            <tr className="row-table-body">
-                                <td colSpan={totalColumns || 0} align="center">
-                                    {finalNoDataText}
+                            <tr className="row-table-body" style={{ background: 'transparent' }}>
+                                <td colSpan={totalColumns || 0} align="center" style={{ padding: '48px 16px' }}>
+                                    <Box sx={{ textAlign: 'center', color: 'text.secondary' }}>
+                                        <Box sx={{ fontSize: 48, mb: 1.5, opacity: 0.5 }}>📭</Box>
+                                        <Typography variant="subtitle1" sx={{ fontWeight: 600, color: 'text.primary', mb: 0.5 }}>
+                                            {finalNoDataText}
+                                        </Typography>
+                                        <Typography variant="body2" sx={{ color: 'text.secondary', fontSize: '13px' }}>
+                                            Hãy thử thay đổi bộ lọc hoặc thêm mới dữ liệu.
+                                        </Typography>
+                                    </Box>
                                 </td>
                             </tr>
                         )}
