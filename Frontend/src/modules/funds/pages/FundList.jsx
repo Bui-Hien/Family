@@ -17,7 +17,8 @@ import {
   TrendingUp as IncomeIcon,
   TrendingDown as OutcomeIcon,
   Check as CheckIcon,
-  Close as CloseIcon
+  Close as CloseIcon,
+  AccountBalanceWallet as WalletIcon
 } from '@mui/icons-material';
 import { useFundStore } from '@/modules/funds/store/useFundStore';
 import useAuthStore from '@/stores/authStore';
@@ -141,7 +142,7 @@ const FundList = () => {
   if (funds.length === 0) {
     return (
       <Box sx={{ textAlign: 'center', py: 8, color: 'text.secondary' }}>
-        <Box sx={{ fontSize: 64, mb: 2, opacity: 0.4 }}>🪙</Box>
+        <WalletIcon sx={{ fontSize: 64, mb: 2, opacity: 0.4, color: 'primary.main' }} />
         <Typography variant="h6" sx={{ mb: 1, fontWeight: 600 }}>
           Chưa cấu hình quỹ dòng họ
         </Typography>

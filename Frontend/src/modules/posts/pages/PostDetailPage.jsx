@@ -95,8 +95,8 @@ const PostDetailPage = () => {
 
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mt: 1.5, mb: 3, flexWrap: 'wrap', gap: 2 }}>
         <Box sx={{ minWidth: 0, flex: 1 }}>
-          <Typography variant="h4" className="serif-title" sx={{ color: 'primary.main', mb: 0.5, fontSize: { xs: '1.5rem', md: '2.125rem' } }}>
-            📰 Chi tiết Bài viết
+          <Typography variant="h4" className="serif-title" sx={{ color: 'primary.main', mb: 0.5, fontSize: { xs: '1.5rem', md: '2.125rem' }, display: 'flex', alignItems: 'center', gap: 1 }}>
+            <ArticleIcon sx={{ fontSize: { xs: '1.75rem', md: '2.25rem' } }} /> Chi tiết Bài viết
           </Typography>
           <Typography variant="body2" color="textSecondary">
             Đọc tin tức, sự kiện và các thông báo hoạt động của dòng tộc

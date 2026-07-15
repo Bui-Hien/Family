@@ -34,8 +34,8 @@ const FundToolbar = () => {
     <Box>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 3, flexWrap: 'wrap', gap: 2 }}>
         <Box sx={{ minWidth: 0, flex: 1 }}>
-          <Typography variant="h4" className="serif-title" sx={{ color: 'primary.main', mb: 0.5, fontSize: { xs: '1.5rem', md: '2.125rem' } }}>
-            🪙 Quỹ đóng góp dòng họ
+          <Typography variant="h4" className="serif-title" sx={{ color: 'primary.main', mb: 0.5, fontSize: { xs: '1.5rem', md: '2.125rem' }, display: 'flex', alignItems: 'center', gap: 1 }}>
+            <WalletIcon sx={{ fontSize: { xs: '1.75rem', md: '2.25rem' } }} /> Quỹ đóng góp dòng họ
           </Typography>
           <Typography variant="body2" color="textSecondary">
             Quản lý ngân quỹ dòng tộc, các khoản thu đóng góp đóng quỹ và chi tiêu hoạt động

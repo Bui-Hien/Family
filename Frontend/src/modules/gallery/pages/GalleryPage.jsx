@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { Box, Typography, Button } from '@mui/material';
-import { Add as AddIcon } from '@mui/icons-material';
+import { Add as AddIcon, PhotoLibrary as PhotoLibraryIcon } from '@mui/icons-material';
 import { useGalleryStore } from '@/modules/gallery/store/useGalleryStore';
 import CommonLoading from '@/common/components/display/CommonLoading';
 import HasPermission from '@/common/components/auth/HasPermission';
@@ -40,8 +40,8 @@ const GalleryPage = () => {
     <Box>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 3, flexWrap: 'wrap', gap: 2 }}>
         <Box sx={{ minWidth: 0, flex: 1 }}>
-          <Typography variant="h4" className="serif-title" sx={{ color: 'primary.main', mb: 0.5, fontSize: { xs: '1.5rem', md: '2.125rem' } }}>
-            🖼️ Thư viện ảnh Gia tộc
+          <Typography variant="h4" className="serif-title" sx={{ color: 'primary.main', mb: 0.5, fontSize: { xs: '1.5rem', md: '2.125rem' }, display: 'flex', alignItems: 'center', gap: 1 }}>
+            <PhotoLibraryIcon sx={{ fontSize: { xs: '1.75rem', md: '2.25rem' } }} /> Thư viện ảnh Gia tộc
           </Typography>
           <Typography variant="body2" color="textSecondary">
             Lưu giữ những khoảnh khắc, hình ảnh ý nghĩa của các thành viên và dòng họ

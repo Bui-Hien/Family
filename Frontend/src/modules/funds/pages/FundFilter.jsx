@@ -122,8 +122,8 @@ const FundFilter = () => {
                   onChange={(e) => handleChange('type', e.target.value)}
                 >
                   <MenuItem value="ALL">Tất cả giao dịch</MenuItem>
-                  <MenuItem value="INCOME">Thu quỹ (+)</MenuItem>
-                  <MenuItem value="OUTCOME">Chi quỹ (-)</MenuItem>
+                  <MenuItem value="IN">Thu quỹ (+)</MenuItem>
+                  <MenuItem value="OUT">Chi quỹ (-)</MenuItem>
                 </TextField>
               </Grid>
 

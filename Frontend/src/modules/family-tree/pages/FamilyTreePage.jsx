@@ -9,7 +9,7 @@ import ReactFlow, {
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { Box, Typography, Button, Paper, useMediaQuery, useTheme as useMuiTheme } from '@mui/material';
-import { Download as DownloadIcon } from '@mui/icons-material';
+import { Download as DownloadIcon, AccountTree as AccountTreeIcon } from '@mui/icons-material';
 import { useTreeStore } from '@/modules/family-tree/store/useTreeStore';
 import { useMemberStore } from '@/modules/members/store/useMemberStore';
 import MemberForm from '@/modules/members/pages/MemberForm';
@@ -303,8 +303,8 @@ const FamilyTreePage = () => {
     <Box sx={{ height: { xs: 'calc(100vh - 140px)', md: 'calc(100vh - 120px)' }, display: 'flex', flexDirection: 'column' }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 3, flexWrap: 'wrap', gap: 2 }}>
         <Box sx={{ minWidth: 0, flex: 1 }}>
-          <Typography variant="h4" className="serif-title" sx={{ color: 'primary.main', mb: 0.5, fontSize: { xs: '1.5rem', md: '2.125rem' } }}>
-            🌳 Sơ đồ Phả hệ Gia tộc
+          <Typography variant="h4" className="serif-title" sx={{ color: 'primary.main', mb: 0.5, fontSize: { xs: '1.5rem', md: '2.125rem' }, display: 'flex', alignItems: 'center', gap: 1 }}>
+            <AccountTreeIcon sx={{ fontSize: { xs: '1.75rem', md: '2.25rem' } }} /> Sơ đồ Phả hệ Gia tộc
           </Typography>
           <Typography variant="body2" color="textSecondary" sx={{ display: { xs: 'none', sm: 'block' } }}>
             Xem và tương tác trực quan với sơ đồ phả hệ và mối liên kết dòng tộc
