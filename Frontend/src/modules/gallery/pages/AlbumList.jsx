@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, Card, CardMedia, CardContent, Typography } from '@mui/material';
+import { Grid, Card, CardMedia, CardContent, Typography, Box } from '@mui/material';
 import { useGalleryStore } from '@/modules/gallery/store/useGalleryStore';
 
 const AlbumList = () => {
@@ -7,9 +7,15 @@ const AlbumList = () => {
 
   if (galleries.length === 0) {
     return (
-      <Typography color="textSecondary" sx={{ py: 5, textAlign: 'center' }}>
-        Chưa có album ảnh nào được tạo.
-      </Typography>
+      <Box sx={{ textAlign: 'center', py: 8, color: 'text.secondary' }}>
+        <Box sx={{ fontSize: 64, mb: 2, opacity: 0.4 }}>📸</Box>
+        <Typography variant="h6" sx={{ mb: 1, fontWeight: 600 }}>
+          Chưa có album ảnh nào
+        </Typography>
+        <Typography variant="body2">
+          Hiện tại chưa có album ảnh nào được tạo trong hệ thống thư viện.
+        </Typography>
+      </Box>
     );
   }
 
@@ -18,12 +24,12 @@ const AlbumList = () => {
       {galleries.map((album) => (
         <Grid item xs={12} sm={6} md={4} key={album.id}>
           <Card
+            className="hover-lift"
             sx={{
               height: '100%',
               display: 'flex',
               flexDirection: 'column',
               cursor: 'pointer',
-              '&:hover': { boxShadow: 4 },
             }}
             onClick={() => handleOpenAlbum(album)}
           >

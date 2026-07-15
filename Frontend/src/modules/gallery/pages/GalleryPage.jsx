@@ -38,12 +38,17 @@ const GalleryPage = () => {
   // Albums grid view
   return (
     <Box>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-        <Typography variant="h5" className="serif-title" sx={{ fontWeight: 700, color: 'primary.main' }}>
-          🖼️ Thư viện ảnh Gia tộc
-        </Typography>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 3 }}>
+        <Box>
+          <Typography variant="h4" className="serif-title" sx={{ color: 'primary.main', mb: 0.5 }}>
+            🖼️ Thư viện ảnh Gia tộc
+          </Typography>
+          <Typography variant="body2" color="textSecondary">
+            Lưu giữ những khoảnh khắc, hình ảnh ý nghĩa của các thành viên và dòng họ
+          </Typography>
+        </Box>
         <HasPermission roles={[UserRole.SYSTEM_ADMIN, UserRole.FAMILY_LEADER, UserRole.FAMILY_ADMIN]}>
-          <Button variant="contained" startIcon={<AddIcon />} onClick={() => setOpenAlbumForm(true)} size="small">
+          <Button variant="contained" startIcon={<AddIcon />} onClick={() => setOpenAlbumForm(true)} size="medium">
             Tạo Album mới
           </Button>
         </HasPermission>

@@ -1,5 +1,4 @@
-import React from 'react';
-import { Box, Typography, Card, CardContent, Button } from '@mui/material';
+import { Box, Typography, Button } from '@mui/material';
 import { Upload as UploadIcon, ArrowBack as BackIcon } from '@mui/icons-material';
 import { useGalleryStore } from '@/modules/gallery/store/useGalleryStore';
 import CommonLoading from '@/common/components/display/CommonLoading';
@@ -37,35 +36,40 @@ const AlbumDetail = () => {
 
   return (
     <Box>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-        <Button startIcon={<BackIcon />} onClick={handleBackToAlbums} color="inherit">
-          Quay lại album
-        </Button>
-        <HasPermission roles={[UserRole.SYSTEM_ADMIN, UserRole.FAMILY_LEADER, UserRole.FAMILY_ADMIN]}>
-          <Button variant="contained" component="label" startIcon={<UploadIcon />} size="small">
-            Tải ảnh lên
-            <input type="file" multiple accept="image/*" hidden onChange={handleFileUpload} />
-          </Button>
-        </HasPermission>
-      </Box>
-
-      <Card sx={{ mb: 4, bgcolor: 'background.paper', border: '1px solid', borderColor: 'divider' }} elevation={0}>
-        <CardContent>
-          <Typography variant="h5" sx={{ fontWeight: 700, color: 'primary.main', mb: 1 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 3 }}>
+        <Box>
+          <Typography variant="h4" className="serif-title" sx={{ color: 'primary.main', mb: 0.5 }}>
             🖼️ {selectedAlbum.name}
           </Typography>
           <Typography variant="body2" color="textSecondary">
             {selectedAlbum.description || 'Không có mô tả cho album này.'}
           </Typography>
-        </CardContent>
-      </Card>
+        </Box>
+        <Box sx={{ display: 'flex', gap: 1 }}>
+          <Button variant="outlined" startIcon={<BackIcon />} onClick={handleBackToAlbums}>
+            Quay lại
+          </Button>
+          <HasPermission roles={[UserRole.SYSTEM_ADMIN, UserRole.FAMILY_LEADER, UserRole.FAMILY_ADMIN]}>
+            <Button variant="contained" component="label" startIcon={<UploadIcon />} size="medium">
+              Tải ảnh lên
+              <input type="file" multiple accept="image/*" hidden onChange={handleFileUpload} />
+            </Button>
+          </HasPermission>
+        </Box>
+      </Box>
 
       {mediaLoading ? (
         <CommonLoading loading={mediaLoading} type="skeleton" rows={3} />
       ) : formattedImages.length === 0 ? (
-        <Typography color="textSecondary" sx={{ py: 5, textAlign: 'center' }}>
-          Album này chưa có ảnh nào. {isManager && 'Nhấn nút "Tải ảnh lên" để thêm hình ảnh.'}
-        </Typography>
+        <Box sx={{ textAlign: 'center', py: 8, color: 'text.secondary' }}>
+          <Box sx={{ fontSize: 64, mb: 2, opacity: 0.4 }}>📷</Box>
+          <Typography variant="h6" sx={{ mb: 1, fontWeight: 600 }}>
+            Chưa có hình ảnh
+          </Typography>
+          <Typography variant="body2">
+            Album này hiện chưa có hình ảnh nào. {isManager && 'Hãy nhấn nút "Tải ảnh lên" ở trên để thêm hình ảnh đầu tiên.'}
+          </Typography>
+        </Box>
       ) : (
         <CommonImageGallery
           images={formattedImages}
