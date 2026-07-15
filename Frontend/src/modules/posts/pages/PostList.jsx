@@ -29,9 +29,15 @@ const PostList = () => {
 
   if (dataList.length === 0) {
     return (
-      <Typography color="textSecondary" sx={{ py: 5, textAlign: 'center' }}>
-        Chưa có bài viết hay hoạt động nào đăng tải.
-      </Typography>
+      <Box sx={{ textAlign: 'center', py: 8, color: 'text.secondary' }}>
+        <Box sx={{ fontSize: 64, mb: 2, opacity: 0.4 }}>📰</Box>
+        <Typography variant="h6" sx={{ mb: 1, fontWeight: 600 }}>
+          Chưa có bài viết nào
+        </Typography>
+        <Typography variant="body2">
+          Hiện tại chưa có bài viết hay hoạt động nào được đăng tải trong hệ thống.
+        </Typography>
+      </Box>
     );
   }
 
@@ -39,7 +45,10 @@ const PostList = () => {
     <Grid container spacing={3}>
       {dataList.map((post) => (
         <Grid item xs={12} md={6} key={post.id}>
-          <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+          <Card 
+            className="hover-lift" 
+            sx={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}
+          >
             <CardContent sx={{ display: 'flex', gap: 2 }}>
               <Avatar sx={{ bgcolor: 'rgba(197, 160, 89, 0.08)', color: 'secondary.main', p: 1 }}>
                 <ArticleIcon />

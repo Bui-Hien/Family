@@ -1,4 +1,4 @@
-import { Card, CardContent, Grid, MenuItem, TextField, Button, InputAdornment, IconButton } from '@mui/material';
+import { Card, CardContent, Grid, MenuItem, TextField, Button, InputAdornment, IconButton, Tooltip } from '@mui/material';
 import { Search as SearchIcon, Clear as ClearIcon, Refresh as RefreshIcon } from '@mui/icons-material';
 import { usePostStore } from '@/modules/posts/store/usePostStore';
 
@@ -35,7 +35,7 @@ const PostFilter = () => {
         boxShadow: '0 4px 12px rgba(0, 0, 0, 0.02)'
       }}
     >
-      <CardContent sx={{ p: '16px !important' }}>
+      <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
         <Grid container spacing={2} alignItems="center">
           {/* Tìm kiếm từ khóa */}
           <Grid item xs={12} sm={5}>
@@ -53,9 +53,11 @@ const PostFilter = () => {
                 ),
                 endAdornment: searchObject.keyword ? (
                   <InputAdornment position="end">
-                    <IconButton size="small" onClick={() => handleChange('keyword', '')}>
-                      <ClearIcon fontSize="small" />
-                    </IconButton>
+                    <Tooltip title="Xóa tìm kiếm">
+                      <IconButton size="small" onClick={() => handleChange('keyword', '')}>
+                        <ClearIcon fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
                   </InputAdornment>
                 ) : null
               }}
@@ -115,7 +117,7 @@ const PostFilter = () => {
                 }
               }}
             >
-              Reset
+              Đặt lại
             </Button>
           </Grid>
         </Grid>

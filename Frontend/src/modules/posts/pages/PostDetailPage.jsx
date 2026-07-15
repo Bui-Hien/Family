@@ -93,6 +93,20 @@ const PostDetailPage = () => {
         ]}
       />
 
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mt: 1.5, mb: 3 }}>
+        <Box>
+          <Typography variant="h4" className="serif-title" sx={{ color: 'primary.main', mb: 0.5 }}>
+            📰 Chi tiết Bài viết
+          </Typography>
+          <Typography variant="body2" color="textSecondary">
+            Đọc tin tức, sự kiện và các thông báo hoạt động của dòng tộc
+          </Typography>
+        </Box>
+        <Button variant="outlined" startIcon={<BackIcon />} onClick={() => navigate('/posts')}>
+          Quay lại
+        </Button>
+      </Box>
+
       {/* Article Container */}
       <Paper
         elevation={0}
