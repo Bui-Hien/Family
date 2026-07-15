@@ -25,9 +25,15 @@ const EventList = () => {
 
   if (dataList.length === 0) {
     return (
-      <Typography color="textSecondary" sx={{ py: 5, textAlign: 'center' }}>
-        Chưa có sự kiện nào được ghi nhận.
-      </Typography>
+      <Box sx={{ textAlign: 'center', py: 8, color: 'text.secondary' }}>
+        <Box sx={{ fontSize: 64, mb: 2, opacity: 0.4 }}>📅</Box>
+        <Typography variant="h6" sx={{ mb: 1, fontWeight: 600 }}>
+          Chưa có sự kiện nào
+        </Typography>
+        <Typography variant="body2">
+          Hiện tại chưa có sự kiện nào được ghi nhận trong hệ thống dòng họ.
+        </Typography>
+      </Box>
     );
   }
 
@@ -35,7 +41,10 @@ const EventList = () => {
     <Grid container spacing={3}>
       {dataList.map((event) => (
         <Grid item xs={12} sm={6} key={event.id}>
-          <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+          <Card 
+            className="hover-lift" 
+            sx={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}
+          >
             <CardContent sx={{ display: 'flex', gap: 2, alignItems: 'flex-start' }}>
               <Avatar sx={{ bgcolor: 'rgba(140, 29, 64, 0.08)', color: 'primary.main', p: 1 }}>
                 <EventIcon />
